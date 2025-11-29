@@ -45,6 +45,62 @@
         }
         .glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
 
+        /* Duolingo-style tlačítka */
+        .btn-answer {
+            transform: translateY(0);
+            box-shadow: 0 4px 0 #d1d5db;
+            transition: all 0.1s ease;
+        }
+        .btn-answer:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #d1d5db;
+        }
+        .btn-answer.selected {
+            box-shadow: 0 4px 0 #22c55e;
+            border-color: #22c55e;
+            background: #dcfce7;
+        }
+        .btn-answer.selected:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #22c55e;
+        }
+        .btn-answer.correct {
+            box-shadow: 0 4px 0 #16a34a;
+            animation: correctPop 0.4s ease;
+        }
+        .btn-answer.wrong {
+            box-shadow: 0 4px 0 #dc2626;
+            animation: wrongShake 0.4s ease;
+        }
+        @keyframes correctPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+
+        /* Efekt úspěchu */
+        .success-burst {
+            position: relative;
+        }
+        .success-burst::after {
+            content: '✨';
+            position: absolute;
+            font-size: 24px;
+            animation: burstOut 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes burstOut {
+            0% { opacity: 1; transform: scale(0.5) translateY(0); }
+            100% { opacity: 0; transform: scale(1.5) translateY(-30px); }
+        }
+
         /* Konfety animace */
         .confetti {
             position: fixed;
@@ -478,24 +534,23 @@
 
                         {/* Odpovědi */}
                         <div className="flex-1 px-4 overflow-y-auto">
-                            <div className="space-y-2">
+                            <div className="space-y-3">
                                 {question.options.map((option, index) => {
-                                    let bgClass = 'bg-white active:bg-gray-100';
-                                    let borderClass = 'border-2 border-gray-200';
+                                    let stateClass = '';
+                                    let extraClass = '';
 
                                     if (showAnswer) {
                                         if (option.isCorrect) {
-                                            bgClass = 'bg-green-100';
-                                            borderClass = 'border-2 border-green-500';
+                                            stateClass = 'correct';
+                                            extraClass = 'bg-green-100 border-green-500';
                                         } else if (index === selectedAnswer && !option.isCorrect) {
-                                            bgClass = 'bg-red-100 shake';
-                                            borderClass = 'border-2 border-red-500';
+                                            stateClass = 'wrong';
+                                            extraClass = 'bg-red-100 border-red-500';
                                         } else {
-                                            bgClass = 'bg-gray-50 opacity-50';
+                                            extraClass = 'bg-gray-100 opacity-50 border-gray-300';
                                         }
                                     } else if (index === selectedAnswer) {
-                                        bgClass = 'bg-green-50';
-                                        borderClass = 'border-2 border-green-400';
+                                        stateClass = 'selected';
                                     }
 
                                     return (
@@ -503,13 +558,17 @@
                                             key={index}
                                             onClick={() => handleAnswer(index)}
                                             disabled={showAnswer}
-                                            className={`w-full py-3 px-4 rounded-xl ${bgClass} ${borderClass} transition-all text-left`}
+                                            className={`btn-answer w-full py-4 px-5 rounded-2xl bg-white border-2 border-gray-200 text-left ${stateClass} ${extraClass}`}
                                         >
-                                            <div className="flex items-center gap-3">
-                                                {option.icon && <span className="text-xl">{option.icon}</span>}
-                                                <span className="font-semibold text-gray-700 flex-1">{option.text}</span>
-                                                {showAnswer && option.isCorrect && <span className="text-green-500 text-xl">✓</span>}
-                                                {showAnswer && index === selectedAnswer && !option.isCorrect && <span className="text-red-500 text-xl">✗</span>}
+                                            <div className="flex items-center gap-4">
+                                                {option.icon && <span className="text-2xl">{option.icon}</span>}
+                                                <span className="font-bold text-gray-800 flex-1 text-base">{option.text}</span>
+                                                {showAnswer && option.isCorrect && (
+                                                    <span className="text-green-500 text-2xl">✓</span>
+                                                )}
+                                                {showAnswer && index === selectedAnswer && !option.isCorrect && (
+                                                    <span className="text-red-500 text-2xl">✗</span>
+                                                )}
                                             </div>
                                         </button>
                                     );
@@ -519,26 +578,38 @@
 
                         {/* Spodní popup panel - fixně pozicovaný */}
                         {showAnswer && (
-                            <div className={`fixed bottom-0 left-0 right-0 px-4 py-4 rounded-t-3xl shadow-2xl slide-up ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
-                                 style={{boxShadow: '0 -10px 40px rgba(0,0,0,0.15)'}}>
-                                <div className="flex items-start gap-3 mb-4">
-                                    <div className={`text-3xl ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                                        {isCorrect ? '✓' : '✗'}
+                            <div className={`fixed bottom-0 left-0 right-0 px-4 py-5 rounded-t-3xl slide-up ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
+                                 style={{boxShadow: '0 -10px 40px rgba(0,0,0,0.2)'}}>
+
+                                {/* Mini hvězdičky při správné odpovědi */}
+                                {isCorrect && (
+                                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 flex gap-2">
+                                        <span className="text-2xl star-burst" style={{animationDelay: '0s'}}>⭐</span>
+                                        <span className="text-3xl star-burst" style={{animationDelay: '0.1s'}}>🌟</span>
+                                        <span className="text-2xl star-burst" style={{animationDelay: '0.2s'}}>⭐</span>
+                                    </div>
+                                )}
+
+                                <div className="flex items-start gap-4 mb-4">
+                                    <div className={`text-4xl ${isCorrect ? 'bounce-in' : 'shake'}`}>
+                                        {isCorrect ? '🎉' : '😢'}
                                     </div>
                                     <div className="flex-1">
-                                        <div className={`font-bold text-lg ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                                            {isCorrect ? 'Správně!' : 'Špatně!'}
+                                        <div className={`font-bold text-xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                                            {isCorrect ? 'Výborně!' : 'Bohužel ne'}
                                         </div>
                                         <div className="text-sm text-gray-700 mt-1">{question.explanation}</div>
                                     </div>
                                 </div>
                                 <button
                                     onClick={nextQuestion}
-                                    className={`w-full py-4 rounded-xl font-bold text-lg text-white shadow-lg ${
-                                        isCorrect ? 'bg-green-500' : 'bg-red-500'
+                                    className={`btn-answer w-full py-4 rounded-2xl font-bold text-lg text-white ${
+                                        isCorrect
+                                            ? 'bg-green-500 shadow-[0_4px_0_#16a34a]'
+                                            : 'bg-red-500 shadow-[0_4px_0_#dc2626]'
                                     }`}
                                 >
-                                    {currentQuestion + 1 >= questions.length ? 'Dokončit' : 'Pokračovat'}
+                                    {currentQuestion + 1 >= questions.length ? '🏆 Dokončit' : '→ Pokračovat'}
                                 </button>
                             </div>
                         )}
