@@ -101,6 +101,121 @@
             100% { opacity: 0; transform: scale(1.5) translateY(-30px); }
         }
 
+        /* ========================================
+           MOBILNÍ OPTIMALIZACE (360-420px Android)
+           Pro low-literacy users - větší prvky
+           ======================================== */
+        @media (max-width: 600px) {
+            /* Hlavní kontejner */
+            .mobile-container {
+                padding: 12px 16px;
+            }
+
+            /* Karta otázky - větší padding a zaoblení */
+            .question-card {
+                padding: 18px 20px !important;
+                border-radius: 18px !important;
+                margin-bottom: 16px !important;
+            }
+
+            /* Text otázky - větší pro čitelnost */
+            .question-text {
+                font-size: 20px !important;
+                line-height: 1.4 !important;
+                font-weight: 700 !important;
+            }
+
+            /* Ikona otázky */
+            .question-icon {
+                font-size: 36px !important;
+                min-width: 44px !important;
+            }
+
+            /* Tlačítka odpovědí - velká klikací plocha */
+            .btn-answer {
+                min-height: 68px !important;
+                padding: 18px 20px !important;
+                border-radius: 16px !important;
+                margin-bottom: 12px !important;
+                box-shadow: 0 5px 0 #d1d5db !important;
+            }
+
+            /* Text odpovědi */
+            .answer-text {
+                font-size: 18px !important;
+                font-weight: 600 !important;
+            }
+
+            /* Ikona odpovědi */
+            .answer-icon {
+                font-size: 28px !important;
+                min-width: 40px !important;
+            }
+
+            /* Mezery mezi odpověďmi */
+            .answers-container {
+                gap: 14px !important;
+            }
+
+            /* Progress bar */
+            .progress-bar {
+                height: 10px !important;
+                border-radius: 5px !important;
+            }
+
+            /* Header - srdíčka */
+            .hearts-display {
+                font-size: 22px !important;
+            }
+
+            /* Spodní feedback panel */
+            .feedback-panel {
+                padding: 20px !important;
+                border-radius: 24px 24px 0 0 !important;
+            }
+
+            .feedback-text {
+                font-size: 18px !important;
+            }
+
+            .feedback-title {
+                font-size: 22px !important;
+            }
+
+            .feedback-emoji {
+                font-size: 48px !important;
+            }
+
+            /* Tlačítko pokračovat */
+            .continue-btn {
+                min-height: 60px !important;
+                font-size: 20px !important;
+                border-radius: 16px !important;
+                padding: 16px 24px !important;
+            }
+
+            /* Větší dotyková oblast pro X tlačítko */
+            .close-btn {
+                min-width: 48px !important;
+                min-height: 48px !important;
+                font-size: 24px !important;
+            }
+        }
+
+        /* Extra malé telefony (< 360px) */
+        @media (max-width: 360px) {
+            .question-text {
+                font-size: 18px !important;
+            }
+            .btn-answer {
+                min-height: 60px !important;
+                padding: 14px 16px !important;
+            }
+            .answer-text {
+                font-size: 16px !important;
+            }
+        }
+
         /* Konfety animace */
         .confetti {
             position: fixed;
@@ -502,17 +617,17 @@
 
                 return (
                     <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col overflow-hidden relative">
-                        {/* Header */}
-                        <div className="bg-white shadow-sm px-4 py-2 flex-shrink-0">
-                            <div className="flex items-center justify-between mb-1">
-                                <button onClick={() => setScreen('levels')} className="text-xl">✕</button>
-                                <div className="flex items-center">
+                        {/* Header s progress barem */}
+                        <div className="bg-white shadow-sm px-4 py-3 flex-shrink-0">
+                            <div className="flex items-center justify-between mb-2">
+                                <button onClick={() => setScreen('levels')} className="close-btn text-2xl p-2 -ml-2">✕</button>
+                                <div className="hearts-display flex items-center">
                                     {Array.from({length: 5}, (_, i) => (
-                                        <span key={i} className={`text-lg ${i < hearts ? '' : 'opacity-30'}`}>❤️</span>
+                                        <span key={i} className={`text-xl ${i < hearts ? '' : 'opacity-30'}`}>❤️</span>
                                     ))}
                                 </div>
                             </div>
-                            <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                            <div className="progress-bar bg-gray-200 rounded-full h-3 overflow-hidden">
                                 <div
                                     className={`bg-gradient-to-r ${module.color} h-full transition-all duration-500`}
                                     style={{width: `${((currentQuestion + 1) / questions.length) * 100}%`}}
@@ -520,21 +635,21 @@
                             </div>
                         </div>
 
-                        {/* Otázka */}
-                        <div className="px-4 py-3 flex-shrink-0">
-                            <div className="bg-white rounded-xl p-4 shadow-lg">
-                                <div className="flex items-start gap-3">
-                                    <span className="text-3xl">{module.icon}</span>
-                                    <h2 className="text-lg font-bold text-gray-800 flex-1">
+                        {/* Karta s otázkou */}
+                        <div className="mobile-container px-4 py-3 flex-shrink-0">
+                            <div className="question-card bg-white rounded-2xl p-5 shadow-lg">
+                                <div className="flex items-start gap-4">
+                                    <span className="question-icon text-4xl">{module.icon}</span>
+                                    <h2 className="question-text text-xl font-bold text-gray-800 flex-1 leading-snug">
                                         {question.question}
                                     </h2>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Odpovědi */}
-                        <div className="flex-1 px-4 overflow-y-auto">
-                            <div className="space-y-3">
+                        {/* Odpovědi - velké tlačítka pro mobil */}
+                        <div className="flex-1 px-4 overflow-y-auto pb-4">
+                            <div className="answers-container flex flex-col gap-3">
                                 {question.options.map((option, index) => {
                                     let stateClass = '';
                                     let extraClass = '';
@@ -558,16 +673,16 @@
                                             key={index}
                                             onClick={() => handleAnswer(index)}
                                             disabled={showAnswer}
-                                            className={`btn-answer w-full py-4 px-5 rounded-2xl bg-white border-2 border-gray-200 text-left ${stateClass} ${extraClass}`}
+                                            className={`btn-answer w-full min-h-[64px] py-4 px-5 rounded-2xl bg-white border-2 border-gray-200 text-left ${stateClass} ${extraClass}`}
                                         >
                                             <div className="flex items-center gap-4">
-                                                {option.icon && <span className="text-2xl">{option.icon}</span>}
-                                                <span className="font-bold text-gray-800 flex-1 text-base">{option.text}</span>
+                                                {option.icon && <span className="answer-icon text-3xl">{option.icon}</span>}
+                                                <span className="answer-text font-bold text-gray-800 flex-1 text-lg">{option.text}</span>
                                                 {showAnswer && option.isCorrect && (
-                                                    <span className="text-green-500 text-2xl">✓</span>
+                                                    <span className="text-green-500 text-3xl">✓</span>
                                                 )}
                                                 {showAnswer && index === selectedAnswer && !option.isCorrect && (
-                                                    <span className="text-red-500 text-2xl">✗</span>
+                                                    <span className="text-red-500 text-3xl">✗</span>
                                                 )}
                                             </div>
                                         </button>
@@ -576,37 +691,37 @@
                             </div>
                         </div>
 
-                        {/* Spodní popup panel - fixně pozicovaný */}
+                        {/* Spodní feedback panel */}
                         {showAnswer && (
-                            <div className={`fixed bottom-0 left-0 right-0 px-4 py-5 rounded-t-3xl slide-up ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
+                            <div className={`feedback-panel fixed bottom-0 left-0 right-0 px-5 py-6 rounded-t-3xl slide-up ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
                                  style={{boxShadow: '0 -10px 40px rgba(0,0,0,0.2)'}}>
 
-                                {/* Mini hvězdičky při správné odpovědi */}
+                                {/* Hvězdičky při správné odpovědi */}
                                 {isCorrect && (
-                                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 flex gap-2">
-                                        <span className="text-2xl star-burst" style={{animationDelay: '0s'}}>⭐</span>
-                                        <span className="text-3xl star-burst" style={{animationDelay: '0.1s'}}>🌟</span>
-                                        <span className="text-2xl star-burst" style={{animationDelay: '0.2s'}}>⭐</span>
+                                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 flex gap-3">
+                                        <span className="text-3xl star-burst" style={{animationDelay: '0s'}}>⭐</span>
+                                        <span className="text-4xl star-burst" style={{animationDelay: '0.1s'}}>🌟</span>
+                                        <span className="text-3xl star-burst" style={{animationDelay: '0.2s'}}>⭐</span>
                                     </div>
                                 )}
 
-                                <div className="flex items-start gap-4 mb-4">
-                                    <div className={`text-4xl ${isCorrect ? 'bounce-in' : 'shake'}`}>
+                                <div className="flex items-start gap-4 mb-5">
+                                    <div className={`feedback-emoji text-5xl ${isCorrect ? 'bounce-in' : 'shake'}`}>
                                         {isCorrect ? '🎉' : '😢'}
                                     </div>
                                     <div className="flex-1">
-                                        <div className={`font-bold text-xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                                        <div className={`feedback-title font-bold text-2xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
                                             {isCorrect ? 'Výborně!' : 'Bohužel ne'}
                                         </div>
-                                        <div className="text-sm text-gray-700 mt-1">{question.explanation}</div>
+                                        <div className="feedback-text text-base text-gray-700 mt-1">{question.explanation}</div>
                                     </div>
                                 </div>
                                 <button
                                     onClick={nextQuestion}
-                                    className={`btn-answer w-full py-4 rounded-2xl font-bold text-lg text-white ${
+                                    className={`continue-btn btn-answer w-full min-h-[56px] py-4 rounded-2xl font-bold text-xl text-white ${
                                         isCorrect
-                                            ? 'bg-green-500 shadow-[0_4px_0_#16a34a]'
-                                            : 'bg-red-500 shadow-[0_4px_0_#dc2626]'
+                                            ? 'bg-green-500 shadow-[0_5px_0_#16a34a]'
+                                            : 'bg-red-500 shadow-[0_5px_0_#dc2626]'
                                     }`}
                                 >
                                     {currentQuestion + 1 >= questions.length ? '🏆 Dokončit' : '→ Pokračovat'}
