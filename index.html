@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroLinguo - Vzdělávací aplikace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Moduly otázek -->
+    <script src="questions_module1.js"></script>
+    <script src="questions_module2.js"></script>
+    <script src="questions_module3.js"></script>
+    <script src="questions_module4.js"></script>
+    <script src="questions_module5.js"></script>
+    <script src="questions_module6.js"></script>
+    <!-- Hlavní loader -->
+    <script src="questions.js"></script>
+    <style>
+        * { font-family: 'Nunito', sans-serif; }
+        .progress-ring { transform: rotate(-90deg); }
+        .bounce-in { animation: bounceIn 0.5s ease-out; }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake { animation: shake 0.5s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-green-50 to-green-100 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // Hlavní komponenta aplikace
+        function App() {
+            const [screen, setScreen] = useState('home');
+            const [selectedModule, setSelectedModule] = useState(null);
+            const [selectedLevel, setSelectedLevel] = useState(null);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [score, setScore] = useState(0);
+            const [hearts, setHearts] = useState(5);
+            const [xp, setXp] = useState(0);
+            const [totalXp, setTotalXp] = useState(0);
+            const [streak, setStreak] = useState(0);
+            const [gems, setGems] = useState(100);
+            const [showAnswer, setShowAnswer] = useState(false);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [levelProgress, setLevelProgress] = useState({});
+            const [dailyGoal, setDailyGoal] = useState(50);
+            const [dailyXp, setDailyXp] = useState(0);
+
+            // Načíst uložená data
+            useEffect(() => {
+                const saved = localStorage.getItem('agrolinguo_save');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    setTotalXp(data.totalXp || 0);
+                    setGems(data.gems || 100);
+                    setStreak(data.streak || 0);
+                    setLevelProgress(data.levelProgress || {});
+                    setDailyXp(data.dailyXp || 0);
+                    setHearts(data.hearts || 5);
+                }
+            }, []);
+
+            // Uložit data
+            useEffect(() => {
+                localStorage.setItem('agrolinguo_save', JSON.stringify({
+                    totalXp, gems, streak, levelProgress, dailyXp, hearts
+                }));
+            }, [totalXp, gems, streak, levelProgress, dailyXp, hearts]);
+
+            // Vypočítat level hráče
+            const playerLevel = Math.floor(totalXp / 100) + 1;
+            const xpToNextLevel = 100 - (totalXp % 100);
+
+            // Moduly kurzu
+            const modules = [
+                {
+                    id: 1,
+                    name: 'Půda a Základy',
+                    icon: '🌱',
+                    color: 'from-green-400 to-green-600',
+                    levels: 10,
+                    description: 'Naučte se základy zemědělství'
+                },
+                {
+                    id: 2,
+                    name: 'Ochrana Rostlin',
+                    icon: '🛡️',
+                    color: 'from-blue-400 to-blue-600',
+                    levels: 10,
+                    description: 'Škůdci a choroby'
+                },
+                {
+                    id: 3,
+                    name: 'Sklizeň a Prodej',
+                    icon: '🌾',
+                    color: 'from-yellow-400 to-yellow-600',
+                    levels: 10,
+                    description: 'Od pole na trh'
+                },
+                {
+                    id: 4,
+                    name: 'Zavlažování',
+                    icon: '💧',
+                    color: 'from-cyan-400 to-cyan-600',
+                    levels: 10,
+                    description: 'Vodní hospodářství'
+                },
+                {
+                    id: 5,
+                    name: 'Mechanizace',
+                    icon: '🚜',
+                    color: 'from-orange-400 to-orange-600',
+                    levels: 10,
+                    description: 'Stroje a technika'
+                },
+                {
+                    id: 6,
+                    name: 'Ekologie',
+                    icon: '🌍',
+                    color: 'from-emerald-400 to-emerald-600',
+                    levels: 10,
+                    description: 'Udržitelné zemědělství'
+                }
+            ];
+
+            // Získat otázky pro level
+            const getQuestionsForLevel = (moduleId, levelNum) => {
+                const key = `module${moduleId}_level${levelNum}`;
+                return QUESTIONS[key] || [];
+            };
+
+            // Spustit level
+            const startLevel = (moduleId, levelNum) => {
+                setSelectedModule(moduleId);
+                setSelectedLevel(levelNum);
+                setCurrentQuestion(0);
+                setScore(0);
+                setXp(0);
+                setShowAnswer(false);
+                setSelectedAnswer(null);
+                setScreen('quiz');
+            };
+
+            // Zpracovat odpověď
+            const handleAnswer = (answerIndex) => {
+                if (showAnswer) return;
+
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const question = questions[currentQuestion];
+                const isCorrect = question.options[answerIndex].isCorrect;
+
+                setSelectedAnswer(answerIndex);
+                setShowAnswer(true);
+
+                if (isCorrect) {
+                    setScore(s => s + 1);
+                    setXp(x => x + 10);
+                } else {
+                    setHearts(h => Math.max(0, h - 1));
+                }
+            };
+
+            // Další otázka
+            const nextQuestion = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+
+                if (hearts <= 0) {
+                    setScreen('gameover');
+                    return;
+                }
+
+                if (currentQuestion + 1 >= questions.length) {
+                    finishLevel();
+                } else {
+                    setCurrentQuestion(c => c + 1);
+                    setShowAnswer(false);
+                    setSelectedAnswer(null);
+                }
+            };
+
+            // Dokončit level
+            const finishLevel = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const percentage = (score / questions.length) * 100;
+                const stars = percentage >= 90 ? 3 : percentage >= 70 ? 2 : percentage >= 50 ? 1 : 0;
+
+                const levelKey = `${selectedModule}-${selectedLevel}`;
+                const prevStars = levelProgress[levelKey] || 0;
+
+                if (stars > prevStars) {
+                    setLevelProgress(prev => ({...prev, [levelKey]: stars}));
+                }
+
+                const earnedXp = xp + (stars * 5);
+                setTotalXp(t => t + earnedXp);
+                setDailyXp(d => d + earnedXp);
+
+                if (stars >= 2) {
+                    setStreak(s => s + 1);
+                    if (streak > 0 && streak % 5 === 4) {
+                        setGems(g => g + 10);
+                    }
+                }
+
+                setScreen('results');
+            };
+
+            // Resetovat srdíčka
+            const refillHearts = () => {
+                if (gems >= 50) {
+                    setGems(g => g - 50);
+                    setHearts(5);
+                }
+            };
+
+            // Header komponenta
+            const Header = () => (
+                <div className="bg-white shadow-md p-4 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        <span className="text-2xl">🌿</span>
+                        <span className="font-bold text-green-700">AgroLinguo</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-1 bg-red-100 px-3 py-1 rounded-full">
+                            <span>❤️</span>
+                            <span className="font-bold text-red-600">{hearts}</span>
+                        </div>
+                        <div className="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full">
+                            <span>💎</span>
+                            <span className="font-bold text-yellow-600">{gems}</span>
+                        </div>
+                        <div className="flex items-center gap-1 bg-orange-100 px-3 py-1 rounded-full">
+                            <span>🔥</span>
+                            <span className="font-bold text-orange-600">{streak}</span>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // Domovská obrazovka
+            const HomeScreen = () => (
+                <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
+                    <Header />
+
+                    {/* Profil a level */}
+                    <div className="p-4">
+                        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                            <div className="flex items-center gap-4">
+                                <div className="relative">
+                                    <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-3xl">
+                                        🧑‍🌾
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full px-2 py-0.5 text-xs font-bold">
+                                        {playerLevel}
+                                    </div>
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-bold text-lg">Farmář</div>
+                                    <div className="text-sm text-gray-500">Level {playerLevel}</div>
+                                    <div className="mt-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                                        <div
+                                            className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-500"
+                                            style={{width: `${((totalXp % 100) / 100) * 100}%`}}
+                                        />
+                                    </div>
+                                    <div className="text-xs text-gray-400 mt-1">{totalXp % 100}/100 XP do dalšího levelu</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Denní cíl */}
+                        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="font-bold">Denní cíl</span>
+                                <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
+                            </div>
+                            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all duration-500"
+                                    style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Moduly */}
+                        <div className="space-y-3">
+                            <h2 className="font-bold text-xl text-gray-800">Kurzy</h2>
+                            {modules.map(module => (
+                                <div
+                                    key={module.id}
+                                    onClick={() => {setSelectedModule(module.id); setScreen('levels');}}
+                                    className={`bg-gradient-to-r ${module.color} p-4 rounded-2xl shadow-lg cursor-pointer transform transition hover:scale-102 active:scale-98`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="text-4xl bg-white/30 rounded-xl p-2">
+                                            {module.icon}
+                                        </div>
+                                        <div className="flex-1 text-white">
+                                            <div className="font-bold text-lg">{module.name}</div>
+                                            <div className="text-sm opacity-90">{module.description}</div>
+                                            <div className="text-xs opacity-75 mt-1">{module.levels} levelů</div>
+                                        </div>
+                                        <div className="text-white text-2xl">→</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // Obrazovka levelů
+            const LevelsScreen = () => {
+                const module = modules.find(m => m.id === selectedModule);
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
+                        <div className="bg-white shadow-md p-4 flex items-center gap-3">
+                            <button
+                                onClick={() => setScreen('home')}
+                                className="text-2xl"
+                            >
+                                ←
+                            </button>
+                            <span className="text-2xl">{module.icon}</span>
+                            <span className="font-bold text-lg">{module.name}</span>
+                        </div>
+
+                        <div className="p-4">
+                            <div className="grid grid-cols-5 gap-3">
+                                {Array.from({length: module.levels}, (_, i) => {
+                                    const levelNum = i + 1;
+                                    const levelKey = `${module.id}-${levelNum}`;
+                                    const stars = levelProgress[levelKey] || 0;
+                                    const prevLevelKey = `${module.id}-${levelNum - 1}`;
+                                    const isUnlocked = levelNum === 1 || (levelProgress[prevLevelKey] || 0) >= 1;
+
+                                    return (
+                                        <button
+                                            key={levelNum}
+                                            onClick={() => isUnlocked && startLevel(module.id, levelNum)}
+                                            disabled={!isUnlocked}
+                                            className={`aspect-square rounded-2xl flex flex-col items-center justify-center shadow-lg transition transform hover:scale-105 ${
+                                                isUnlocked
+                                                    ? `bg-gradient-to-r ${module.color} text-white`
+                                                    : 'bg-gray-300 text-gray-500'
+                                            }`}
+                                        >
+                                            {isUnlocked ? (
+                                                <>
+                                                    <span className="font-bold text-lg">{levelNum}</span>
+                                                    <div className="flex mt-1">
+                                                        {[1,2,3].map(s => (
+                                                            <span key={s} className={`text-xs ${s <= stars ? 'text-yellow-300' : 'text-white/40'}`}>
+                                                                ⭐
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <span className="text-2xl">🔒</span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Quiz obrazovka
+            const QuizScreen = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const question = questions[currentQuestion];
+                const module = modules.find(m => m.id === selectedModule);
+
+                if (!question) {
+                    return (
+                        <div className="min-h-screen flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="text-6xl mb-4">📚</div>
+                                <div className="text-xl font-bold text-gray-600">Otázky pro tento level nejsou k dispozici</div>
+                                <button
+                                    onClick={() => setScreen('levels')}
+                                    className="mt-4 bg-green-500 text-white px-6 py-2 rounded-full"
+                                >
+                                    Zpět
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col">
+                        {/* Header */}
+                        <div className="bg-white shadow-md p-4">
+                            <div className="flex items-center justify-between mb-3">
+                                <button onClick={() => setScreen('levels')} className="text-2xl">✕</button>
+                                <div className="flex items-center gap-1">
+                                    {Array.from({length: 5}, (_, i) => (
+                                        <span key={i} className={`text-xl ${i < hearts ? '' : 'opacity-30'}`}>❤️</span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className={`bg-gradient-to-r ${module.color} h-full transition-all duration-500`}
+                                    style={{width: `${((currentQuestion + 1) / questions.length) * 100}%`}}
+                                />
+                            </div>
+                            <div className="text-center text-sm text-gray-500 mt-1">
+                                {currentQuestion + 1} / {questions.length}
+                            </div>
+                        </div>
+
+                        {/* Otázka */}
+                        <div className="flex-1 p-4 flex flex-col">
+                            <div className="bg-white rounded-2xl p-6 shadow-lg mb-4 slide-up">
+                                <div className="text-center mb-4">
+                                    <span className="text-4xl">{module.icon}</span>
+                                </div>
+                                <h2 className="text-xl font-bold text-center text-gray-800 mb-2">
+                                    {question.question}
+                                </h2>
+                                {question.type === 'true_false' && (
+                                    <div className="text-center text-sm text-gray-500">Pravda nebo Nepravda?</div>
+                                )}
+                            </div>
+
+                            {/* Odpovědi */}
+                            <div className="space-y-3 flex-1">
+                                {question.options.map((option, index) => {
+                                    let bgClass = 'bg-white hover:bg-gray-50';
+                                    let borderClass = 'border-2 border-gray-200';
+
+                                    if (showAnswer) {
+                                        if (option.isCorrect) {
+                                            bgClass = 'bg-green-100';
+                                            borderClass = 'border-2 border-green-500';
+                                        } else if (index === selectedAnswer && !option.isCorrect) {
+                                            bgClass = 'bg-red-100 shake';
+                                            borderClass = 'border-2 border-red-500';
+                                        }
+                                    } else if (index === selectedAnswer) {
+                                        borderClass = 'border-2 border-green-400';
+                                    }
+
+                                    return (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleAnswer(index)}
+                                            disabled={showAnswer}
+                                            className={`w-full p-4 rounded-xl ${bgClass} ${borderClass} transition-all transform active:scale-98 text-left`}
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                {option.icon && <span className="text-2xl">{option.icon}</span>}
+                                                <span className="font-semibold text-gray-700">{option.text}</span>
+                                                {showAnswer && option.isCorrect && <span className="ml-auto text-green-500 text-xl">✓</span>}
+                                                {showAnswer && index === selectedAnswer && !option.isCorrect && <span className="ml-auto text-red-500 text-xl">✗</span>}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Vysvětlení a tlačítko */}
+                            {showAnswer && (
+                                <div className="mt-4 slide-up">
+                                    {question.explanation && (
+                                        <div className={`p-4 rounded-xl mb-4 ${
+                                            question.options[selectedAnswer]?.isCorrect
+                                                ? 'bg-green-100 border-2 border-green-300'
+                                                : 'bg-red-100 border-2 border-red-300'
+                                        }`}>
+                                            <div className="font-bold mb-1">
+                                                {question.options[selectedAnswer]?.isCorrect ? '✓ Správně!' : '✗ Špatně!'}
+                                            </div>
+                                            <div className="text-sm text-gray-700">{question.explanation}</div>
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={nextQuestion}
+                                        className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg transform transition hover:scale-102 active:scale-98"
+                                    >
+                                        {currentQuestion + 1 >= questions.length ? 'Dokončit' : 'Pokračovat'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            // Obrazovka výsledků
+            const ResultsScreen = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const percentage = Math.round((score / questions.length) * 100);
+                const stars = percentage >= 90 ? 3 : percentage >= 70 ? 2 : percentage >= 50 ? 1 : 0;
+                const module = modules.find(m => m.id === selectedModule);
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col items-center justify-center p-4">
+                        <div className="bg-white rounded-3xl p-8 shadow-2xl text-center max-w-sm w-full bounce-in">
+                            <div className="text-6xl mb-4">
+                                {stars >= 2 ? '🎉' : stars === 1 ? '👍' : '💪'}
+                            </div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                                {stars >= 2 ? 'Výborně!' : stars === 1 ? 'Dobrá práce!' : 'Zkus to znovu!'}
+                            </h2>
+
+                            <div className="flex justify-center gap-2 my-4">
+                                {[1,2,3].map(s => (
+                                    <span key={s} className={`text-4xl ${s <= stars ? 'bounce-in' : 'opacity-30'}`} style={{animationDelay: `${s * 0.2}s`}}>
+                                        ⭐
+                                    </span>
+                                ))}
+                            </div>
+
+                            <div className="bg-gray-100 rounded-2xl p-4 mb-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <div className="text-3xl font-bold text-green-600">{score}/{questions.length}</div>
+                                        <div className="text-sm text-gray-500">Správných</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-3xl font-bold text-yellow-600">+{xp + (stars * 5)}</div>
+                                        <div className="text-sm text-gray-500">XP</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setScreen('levels')}
+                                    className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-xl font-bold"
+                                >
+                                    Zpět
+                                </button>
+                                <button
+                                    onClick={() => startLevel(selectedModule, selectedLevel)}
+                                    className={`flex-1 bg-gradient-to-r ${module.color} text-white py-3 rounded-xl font-bold`}
+                                >
+                                    Znovu
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Game Over obrazovka
+            const GameOverScreen = () => (
+                <div className="min-h-screen bg-gradient-to-b from-red-50 to-red-100 flex flex-col items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl p-8 shadow-2xl text-center max-w-sm w-full bounce-in">
+                        <div className="text-6xl mb-4">💔</div>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Došla ti srdíčka!</h2>
+                        <p className="text-gray-500 mb-6">Počkej nebo použij drahokamy k doplnění</p>
+
+                        <div className="space-y-3">
+                            <button
+                                onClick={refillHearts}
+                                disabled={gems < 50}
+                                className={`w-full py-3 rounded-xl font-bold flex items-center justify-center gap-2 ${
+                                    gems >= 50
+                                        ? 'bg-gradient-to-r from-purple-500 to-purple-600 text-white'
+                                        : 'bg-gray-200 text-gray-400'
+                                }`}
+                            >
+                                <span>💎</span> Doplnit za 50 drahokamů
+                            </button>
+                            <button
+                                onClick={() => setScreen('home')}
+                                className="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-bold"
+                            >
+                                Zpět domů
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // Render podle aktuální obrazovky
+            switch (screen) {
+                case 'home': return <HomeScreen />;
+                case 'levels': return <LevelsScreen />;
+                case 'quiz': return <QuizScreen />;
+                case 'results': return <ResultsScreen />;
+                case 'gameover': return <GameOverScreen />;
+                default: return <HomeScreen />;
+            }
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
