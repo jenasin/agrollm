@@ -149,8 +149,9 @@
 
             // Získat otázky pro level
             const getQuestionsForLevel = (moduleId, levelNum) => {
-                if (window.ALL_QUESTIONS && window.ALL_QUESTIONS[moduleId] && window.ALL_QUESTIONS[moduleId][levelNum]) {
-                    return window.ALL_QUESTIONS[moduleId][levelNum];
+                const key = `module${moduleId}_level${levelNum}`;
+                if (window.ALL_QUESTIONS && window.ALL_QUESTIONS[moduleId] && window.ALL_QUESTIONS[moduleId][key]) {
+                    return window.ALL_QUESTIONS[moduleId][key];
                 }
                 return [];
             };
