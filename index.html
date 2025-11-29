@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriLingo: Stabilní Učební Verze</title>
-    <!-- Tailwind CSS (pro vizuální stránku) -->
+    <title>AgriLingo: Sierra Leone Farming Quiz</title>
+    <!-- Tailwind CSS (for styling) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React a Babel (pro spouštění JSX) -->
+    <!-- React and Babel (for running JSX) -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- trigger build -->
+    
     <style>
-        /* Tailwind CSS pro responzivní design */
+        /* Tailwind CSS for responsive design */
         html, body, #root { height: 100%; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         
-        /* Vlastní animace */
+        /* Custom Animations */
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
@@ -42,8 +42,7 @@
     
     const { useState, useCallback, useMemo, createContext, useContext, useReducer } = React;
 
-    // --- ICON COMPONENTS (Opraveno: Použití inline SVG pro eliminaci globálních chyb) ---
-    // Nyní definujeme ikony přímo v Reactu, čímž se vyhneme chybám z Lucide CDN.
+    // --- ICON COMPONENTS (Inline SVG for stability) ---
     const SVGIcon = ({ d, className = "w-6 h-6", fill = "none", stroke = "currentColor" }) => (
       <svg className={className} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill={fill} stroke={stroke} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d={d} />
@@ -73,118 +72,118 @@
     const MODEL_NAME = 'gemini-2.5-flash-preview-09-2025';
     const QUIZ_QUESTION_COUNT = 6; 
 
-    // JSON Schema definition for question generation (KRITICKÉ pro strukturu odpovědi LLM)
+    // JSON Schema definition for question generation (CRITICAL for LLM response structure)
     const QUIZ_SCHEMA = {
       type: "ARRAY",
       items: {
         type: "OBJECT",
         properties: {
-          "question": { "type": "STRING", description: "Text kvízové otázky zaměřený na africké zemědělské postupy, psaný česky." },
-          "type": { "type": "STRING", enum: ["multiple_choice", "true_false", "select_image"], description: "Typ kvízové otázky." },
+          "question": { "type": "STRING", description: "Quiz question text focused on African agricultural practices, written in simple, clear English suitable for Primary School (Basic Education) level." },
+          "type": { "type": "STRING", enum: ["multiple_choice", "true_false", "select_image"], description: "Type of quiz question." },
           "options": {
             "type": "ARRAY",
             "items": {
               "type": "OBJECT",
               properties: {
-                "text": { "type": "STRING", description: "Text možnosti." },
+                "text": { "type": "STRING", description: "Option text." },
                 "isCorrect": { "type": "BOOLEAN" },
-                "icon": { "type": "STRING", description: "Relevantní emoji symbol, použito pouze pokud je typ 'select_image'. Například: 🌾 pro sklizeň, ☀️ pro slunce." }
+                "icon": { "type": "STRING", description: "Relevant emoji symbol, used only if type is 'select_image'. Example: 🌾 for harvest, ☀️ for sun." }
               },
               "required": ["text", "isCorrect"]
             }
           },
-          "explanation": { "type": "STRING", description: "Stručné, vzdělávací vysvětlení správné odpovědi, psané česky." }
+          "explanation": { "type": "STRING", description: "A concise, educational explanation of the correct answer, written in simple English." }
         },
         "required": ["question", "type", "options", "explanation"]
       }
     };
 
-    // Seznam zemí pro nastavení kontextu
+    // Country list for context setting
     const COUNTRY_OPTIONS = [
-      { code: 'SL', name: 'Sierra Leone', context: 'Sierra Leone', lang: 'English' },
+      { code: 'SL', name: 'Sierra Leone', context: 'Sierra Leone', lang: 'English' }, // Set as default
       { code: 'GH', name: 'Ghana', context: 'Ghana', lang: 'English' },
       { code: 'KE', name: 'Kenya', context: 'Kenya', lang: 'English' },
       { code: 'NG', name: 'Nigeria', context: 'Nigeria', lang: 'English' },
       { code: 'ET', name: 'Ethiopia', context: 'Ethiopia', lang: 'English' },
     ];
 
-    // Pevně kódované otázky pro Úroveň 1 (v češtině, pro rychlý start)
+    // Hardcoded questions for Level 1 (Translated to simple English, ZS level)
     const LEVEL_1_QUESTIONS = [
       {
-        id: 1, type: "select_image", question: "Který typ půdy je zdravý a plný živin?",
+        id: 1, type: "select_image", question: "Which type of soil is healthy and full of food for plants?",
         options: [
-          { id: 'a', text: "Suchý písek", icon: "🏜️", isCorrect: false },
-          { id: 'b', text: "Tmavá humusová půda", icon: "💩", isCorrect: true },
+          { id: 'a', text: "Dry sand", icon: "🏜️", isCorrect: false },
+          { id: 'b', text: "Dark, rich topsoil (humus)", icon: "💩", isCorrect: true },
         ],
-        explanation: "Tmavá, na humus bohatá půda zadržuje vodu a živiny lépe než písek. Je to jídlo pro vaše rostliny."
+        explanation: "Dark, humus-rich soil holds water and nutrients better than sand. It is food for your crops."
       },
       {
-        id: 2, type: "multiple_choice", question: "Proč zakrýváme půdu suchou trávou nebo zbytky plodin (mulčování)?",
+        id: 2, type: "multiple_choice", question: "Why do we cover the soil with dry grass or crop leftovers (mulching)?",
         options: [
-          { id: 'a', text: "Aby farma vypadala úhledně", isCorrect: false },
-          { id: 'b', text: "Aby se udržela vlhkost a chlad", isCorrect: true },
-          { id: 'c', text: "Aby se nakrmil dobytek", isCorrect: false },
+          { id: 'a', text: "To make the farm look tidy", isCorrect: false },
+          { id: 'b', text: "To keep the soil wet and cool", isCorrect: true },
+          { id: 'c', text: "To feed the livestock", isCorrect: false },
         ],
-        explanation: "Mulč funguje jako přikrývka. Zabraňuje slunci vysušit vodu z půdy, což je klíčové během období sucha."
+        explanation: "Mulch is like a blanket. It stops the sun from drying the water out of the soil, which is vital during dry seasons."
       },
       {
-        id: 3, type: "true_false", question: "Pálení strniště po sklizni je dobrý postup pro půdu.",
+        id: 3, type: "true_false", question: "Burning crop residue after harvest is a good practice for the soil.",
         options: [
-          { id: 'a', text: "Pravda", isCorrect: false },
-          { id: 'b', text: "Nepravda", isCorrect: true },
+          { id: 'a', text: "True", isCorrect: false },
+          { id: 'b', text: "False", isCorrect: true },
         ],
-        explanation: "Nepravda! Pálení ničí organickou hmotu, zabíjí prospěšný život v půdě a uvolňuje živiny příliš rychle. Místo toho vždy kompostujte nebo mulčujte!"
+        explanation: "False! Burning destroys organic matter, kills helpful soil life, and releases nutrients too fast. Always compost or mulch instead!"
       },
       {
-        id: 4, type: "multiple_choice", question: "Který nástroj je nejlepší pro pletí malého pole?",
+        id: 4, type: "multiple_choice", question: "Which tool is best for weeding a small farm field?",
         options: [
-          { id: 'a', text: "Traktor", isCorrect: false },
-          { id: 'b', text: "Motyka (hoe)", isCorrect: true },
-          { id: 'c', text: "Buldozer", isCorrect: false },
+          { id: 'a', text: "A large tractor", isCorrect: false },
+          { id: 'b', text: "A hoe (hand tool)", isCorrect: true },
+          { id: 'c', text: "A bulldozer", isCorrect: false },
         ],
-        explanation: "Motyka je pro malé farmáře účinný a cenově dostupný nástroj pro odstraňování plevele."
+        explanation: "A hoe is an effective and affordable tool for small farmers to remove weeds."
       },
       {
-        id: 5, type: "select_image", question: "Vyberte symbol pro zdravý kořenový systém rostliny.",
+        id: 5, type: "select_image", question: "Choose the symbol for a strong, healthy root system for a plant.",
         options: [
-          { id: 'a', text: "Zakrněné kořeny", icon: "🕸️", isCorrect: false },
-          { id: 'b', text: "Silné a hluboké kořeny", icon: "🥕", isCorrect: true },
+          { id: 'a', text: "Shallow, weak roots", icon: "🕸️", isCorrect: false },
+          { id: 'b', text: "Strong and deep roots", icon: "🥕", isCorrect: true },
         ],
-        explanation: "Silné a hluboké kořeny pomáhají rostlině najít vodu a živiny i v suchých podmínkách."
+        explanation: "Strong, deep roots help the plant find water and nutrients even in dry conditions."
       },
       {
-        id: 6, type: "true_false", question: "Střídání plodin pomáhá snižovat škůdce a nemoci.",
+        id: 6, type: "true_false", question: "Rotating your crops helps reduce pests and diseases.",
         options: [
-          { id: 'a', text: "Pravda", isCorrect: true },
-          { id: 'b', text: "Nepravda", isCorrect: false },
+          { id: 'a', text: "True", isCorrect: true },
+          { id: 'b', text: "False", isCorrect: false },
         ],
-        explanation: "Pravda! Různé plodiny přitahují různé škůdce. Jejich střídání narušuje životní cykly škůdců a udržuje půdu zdravou."
+        explanation: "True! Different crops attract different pests. Rotating them breaks the pest life cycle and keeps the soil healthy."
       }
     ];
 
-    // --- COURSE STRUCTURE (dynamicky se mení) ---
+    // --- COURSE STRUCTURE (Translated to English) ---
     const INITIAL_COURSE_DATA = [
       {
-        id: 1, title: "Modul 1: Půda a Kořeny", color: "bg-green-600",
+        id: 1, title: "Module 1: Soil and Roots", color: "bg-green-600",
         levels: [
-          { id: 'l1', title: "Základy", icon: IconSprout, status: 'unlocked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
-          { id: 'l2', title: "Kompostování", icon: IconShovel, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
-          { id: 'l3', title: "Hospodaření s vodou", icon: IconDroplets, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
-          { id: 'l5', title: "Hnojení", icon: IconZap, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l1', title: "Basics", icon: IconSprout, status: 'unlocked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l2', title: "Composting", icon: IconShovel, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l3', title: "Water Management", icon: IconDroplets, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l5', title: "Fertilizing", icon: IconZap, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
         ]
       },
       {
-        id: 2, title: "Modul 2: Ochrana Plodin", color: "bg-amber-600",
+        id: 2, title: "Module 2: Crop Protection", color: "bg-amber-600",
         levels: [
-          { id: 'l4', title: "Škůdci a nemoci", icon: IconBug, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
-          { id: 'l6', title: "IPM Strategie", icon: IconShieldCheck, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l4', title: "Pests and Diseases", icon: IconBug, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l6', title: "IPM Strategies", icon: IconShieldCheck, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
         ]
       },
       {
-        id: 3, title: "Modul 3: Sklizeň a Prodej", color: "bg-blue-600",
+        id: 3, title: "Module 3: Harvest and Sales", color: "bg-blue-600",
         levels: [
-          { id: 'l7', title: "Optimální Sklizeň", icon: IconTrophy, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
-          { id: 'l8', title: "Skladování po sklizni", icon: IconHome, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l7', title: "Optimal Harvesting", icon: IconTrophy, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
+          { id: 'l8', title: "Post-Harvest Storage", icon: IconHome, status: 'locked', stars: 0, questionCount: QUIZ_QUESTION_COUNT },
         ]
       }
     ];
@@ -199,6 +198,7 @@
         levelQuestions: { 'l1': LEVEL_1_QUESTIONS },
         loadingMessage: '',
         showCountrySelector: false,
+        // Default to Sierra Leone
         targetCountry: COUNTRY_OPTIONS.find(c => c.name === 'Sierra Leone') || COUNTRY_OPTIONS[0],
         hearts: 5,
         gems: 450,
@@ -235,17 +235,18 @@
                     ...state, 
                     targetCountry: action.payload, 
                     showCountrySelector: false,
-                    // Reset dynamicky generovaných otázek pro nový kontext
+                    // Reset dynamically generated questions for the new context
                     levelQuestions: { 'l1': LEVEL_1_QUESTIONS }
                 };
             case 'TOGGLE_COUNTRY_SELECTOR':
                 return { ...state, showCountrySelector: action.payload !== undefined ? action.payload : !state.showCountrySelector };
             case 'SET_SELECTED_OPTION':
-                return { ...state, selectedOption: action.payload, checkResult: null }; // Reset checkResult, pokud vybereme novou možnost
+                return { ...state, selectedOption: action.payload, checkResult: null }; // Reset checkResult when a new option is selected
             case 'CHECK_ANSWER':
                 const isCorrect = action.payload;
                 const newHearts = isCorrect ? state.hearts : Math.max(0, state.hearts - 1);
                 const newStreak = isCorrect ? state.streak + 1 : 0;
+                // Only count correct attempts if it's the first time checking (checkResult !== 'wrong')
                 const attempts = isCorrect && state.checkResult !== 'wrong' ? state.currentLevelCorrectAttempts + 1 : state.currentLevelCorrectAttempts;
 
                 return {
@@ -265,7 +266,7 @@
                         checkResult: null
                     };
                 } else {
-                    // Konec úrovně, vypočítat hvězdičky a odemknout
+                    // End of level, calculate stars and unlock the next one
                     const totalQuestions = currentQuestions.length;
                     const finalStars = Math.min(3, Math.floor((state.currentLevelCorrectAttempts / totalQuestions) * 3));
                     
@@ -333,7 +334,7 @@
             await new Promise(resolve => setTimeout(resolve, delay));
           } else {
             console.error("API call failed after max retries:", error);
-            throw new Error("Nepodařilo se připojit k LLM API.");
+            throw new Error("Failed to connect to LLM API.");
           }
         }
       }
@@ -389,10 +390,11 @@
         
         // --- LLM GENERATION LOGIC ---
         const fetchQuizData = useCallback(async (levelId, levelTitle) => {
-            dispatch({ type: 'SET_LOADING', payload: `Generuji ${QUIZ_QUESTION_COUNT} nových otázek pro: ${levelTitle}...` });
+            dispatch({ type: 'SET_LOADING', payload: `Generating ${QUIZ_QUESTION_COUNT} new questions for: ${levelTitle}...` });
 
-            const systemPrompt = `Jsi africký agronom a učitel jménem Kwame. Vytvoř ${QUIZ_QUESTION_COUNT} kvízových otázek na téma "${levelTitle}". Otázky musí být vysoce relevantní pro drobné zemědělce v ${state.targetCountry.context}. JSON výstup, včetně vysvětlení, MUSÍ být napsán VÝHRADNE v češtine. Ujisti se, že tvá vysvětlení jsou stručná a praktická.`;
-            const userQuery = `Vytvoř ${QUIZ_QUESTION_COUNT} kvízových otázek na téma: ${levelTitle}. Každá otázka musí mít pouze jednu správnou odpověď.`;
+            // CRITICAL: Adjusted prompt for English, Sierra Leone, and Primary School level (ZS)
+            const systemPrompt = `You are Kwame, an African Agronomist and teacher. Create ${QUIZ_QUESTION_COUNT} quiz questions on the topic "${levelTitle}". The questions must be highly relevant for smallholder farmers in ${state.targetCountry.context} and written in simple, clear English suitable for a Primary School (Basic Education) level. Ensure your explanations are concise and practical.`;
+            const userQuery = `Create ${QUIZ_QUESTION_COUNT} quiz questions on the topic: ${levelTitle}. Each question must have only one correct answer.`;
             
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
 
@@ -422,15 +424,14 @@
                      dispatch({ type: 'SET_QUESTIONS', payload: { levelId, questions: newQuestions } });
                      return true;
                 } else {
-                     throw new Error(`Generovaný počet otázek není ${QUIZ_QUESTION_COUNT} nebo formát je neplatný. Obsah: ${jsonText}`);
+                     throw new Error(`Generated question count is not ${QUIZ_QUESTION_COUNT} or format is invalid. Content: ${jsonText}`);
                 }
               }
             } catch (error) {
-              console.error("Chyba při generování otázek:", error);
-              dispatch({ type: 'API_ERROR', payload: 'Generování selhalo. Zkuste to prosím znovu.' });
+              console.error("Error generating questions:", error);
+              dispatch({ type: 'API_ERROR', payload: 'Generation failed. Please try again.' });
             } finally {
-              dispatch({ type: 'SET_VIEW', payload: 'LESSON' }); // Vždy se vrať na lekci nebo domů po pokusu
-              dispatch({ type: 'SET_VIEW', payload: 'HOME' }); // Vždy se vrať na lekci nebo domů po pokusu
+              dispatch({ type: 'SET_VIEW', payload: 'HOME' }); // Always return home after a generation attempt
             }
             return false;
 
@@ -440,10 +441,10 @@
             const levelInfo = state.courseData.flatMap(u => u.levels).find(l => l.id === id);
             if (levelInfo.status === 'locked') return;
 
-            // Kontrola, zda otázky již existují
+            // Check if questions already exist
             if (!state.levelQuestions[id] || state.levelQuestions[id].length !== QUIZ_QUESTION_COUNT) {
                 const success = await fetchQuizData(id, title);
-                if (!success) return; // Pokud generování selže, zůstaň doma
+                if (!success) return; // If generation fails, stay home
             }
             
             dispatch({ type: 'START_LEVEL', payload: { id } });
@@ -477,13 +478,13 @@
         );
     };
 
-    // Hook pro použití kontextu
+    // Hook to use the context
     const useAppContext = () => useContext(AppContext);
 
 
-    // --- RENDER COMPONENTS ---
+    // --- RENDER COMPONENTS (Translated to English) ---
 
-    // Komponenta pro Modal výběru země
+    // Component for Country Selection Modal
     const CountrySelector = () => {
         const { state, dispatch } = useAppContext();
         
@@ -491,10 +492,10 @@
           <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm">
               <h3 className="text-xl font-bold mb-4 flex items-center text-green-700">
-                <IconGlobe className="w-6 h-6 mr-2" /> Vyberte Kontext Učení
+                <IconGlobe className="w-6 h-6 mr-2" /> Select Learning Context
               </h3>
               <p className="text-sm text-gray-500 mb-6">
-                Tím přizpůsobíte kvízové otázky specifickým zemědělským výzvám regionu.
+                This will tailor quiz questions to the specific agricultural challenges of the region.
               </p>
               <div className="space-y-3">
                 {COUNTRY_OPTIONS.map(country => (
@@ -517,14 +518,14 @@
                 onClick={() => dispatch({ type: 'TOGGLE_COUNTRY_SELECTOR', payload: false })}
                 className="mt-6 w-full py-3 text-sm font-semibold text-gray-600 border-t pt-4"
               >
-                Zavřít
+                Close
               </button>
             </div>
           </div>
         );
       };
 
-    // 1. DOMOVSKÁ OBRAZOVKA (Učební cesta)
+    // 1. HOME SCREEN (Learning Path)
     const HomeView = () => {
         const { state, dispatch, startLevel } = useAppContext();
         
@@ -547,7 +548,7 @@
                         <button 
                             onClick={() => dispatch({ type: 'TOGGLE_COUNTRY_SELECTOR', payload: true })}
                             className="p-1 rounded-full text-green-600 hover:bg-gray-100 transition-colors"
-                            title={`Aktuální kontext: ${state.targetCountry.name}`}
+                            title={`Current Context: ${state.targetCountry.name}`}
                         >
                             <IconGlobe className="w-6 h-6" />
                         </button>
@@ -556,7 +557,7 @@
 
                 <main className="flex-1 overflow-y-auto p-6 space-y-8 pb-24">
                     <h1 className="text-xl font-extrabold text-gray-800 text-center mb-4">
-                        Učební Cesta: <span className="text-green-600">{state.targetCountry.name}</span>
+                        Learning Path: <span className="text-green-600">{state.targetCountry.name}</span>
                     </h1>
                     {state.courseData.map((unit) => (
                         <div key={unit.id} className="flex flex-col items-center animate-fadeIn">
@@ -569,7 +570,7 @@
                                     const isUnlocked = level.status !== 'locked';
                                     const isCompleted = level.status === 'completed';
                                     const offset = idx % 2 === 0 ? 'translate-x-0' : (idx % 4 === 1 ? 'translate-x-8' : '-translate-x-8');
-                                    const LevelIcon = level.icon; // Ikonu teď předáváme jako komponentu
+                                    const LevelIcon = level.icon; // Icon passed as a component
 
                                     return (
                                         <button
@@ -589,7 +590,7 @@
                                         >
                                             {isUnlocked ? <LevelIcon className="w-10 h-10" stroke={isCompleted ? '#B45309' : 'white'} /> : <div className="bg-gray-300/50 rounded-full p-2">🔒</div>}
                                             
-                                            {/* Indikátor stavu/skóre */}
+                                            {/* Status/Score Indicator */}
                                             {isUnlocked && (
                                                 <div className="absolute -top-2 -right-2 bg-yellow-400 text-yellow-900 text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
                                                     {isCompleted ? 
@@ -619,29 +620,29 @@
         );
     };
 
-    // 2. NAČÍTÁNÍ OBRAZOVKA (Generování LLM)
+    // 2. LOADING SCREEN (LLM Generation)
     const LoadingView = () => {
         const { state } = useAppContext();
         return (
             <div className="h-full flex flex-col items-center justify-center bg-gray-900 text-white p-6 text-center">
                 <IconLoader2 className="w-16 h-16 text-yellow-400 animate-spin mb-6" />
-                <h2 className="text-2xl font-bold mb-3">Generování obsahu LLM</h2>
+                <h2 className="text-2xl font-bold mb-3">Generating LLM Content</h2>
                 <p className="text-gray-400">{state.loadingMessage}</p>
                 <p className="mt-4 text-sm text-gray-500">
-                    Prosím, počkejte. Vytváříme nové kvízové otázky šité na míru pro {state.targetCountry.name}...
+                    Please wait. We are creating new, tailored quiz questions for {state.targetCountry.name}...
                 </p>
             </div>
         );
     };
 
-    // 3. LEKCE OBRAZOVKA
+    // 3. LESSON SCREEN
     const LessonView = () => {
         const { state, dispatch, handleCheck, nextQuestion } = useAppContext();
         
         const currentQuestions = state.levelQuestions[state.activeLevelId];
         if (!currentQuestions || !currentQuestions[state.qIndex]) {
             setTimeout(() => dispatch({ type: 'RESET_HOME' }), 0); 
-            return <div className="p-8 text-center">Chyba: Otázky se nepodařilo načíst. Přecházím zpět...</div>;
+            return <div className="p-8 text-center">Error: Failed to load questions. Returning home...</div>;
         } 
 
         const currentQ = currentQuestions[state.qIndex];
@@ -653,7 +654,7 @@
 
         return (
           <div className="flex flex-col h-full bg-white">
-            {/* Hlava */}
+            {/* Header */}
             <div className="px-4 py-4 flex items-center space-x-4 max-w-2xl mx-auto w-full">
               <button onClick={() => dispatch({ type: 'RESET_HOME' })} className="text-gray-400 hover:bg-gray-100 p-2 rounded-full">
                 <IconX className="w-6 h-6" />
@@ -666,18 +667,18 @@
               </div>
             </div>
 
-            {/* Obsah */}
+            {/* Content */}
             <div className="flex-1 overflow-y-auto px-6 pb-40 max-w-md mx-auto w-full">
               <h2 key={state.qIndex} className="text-2xl font-bold text-gray-800 mt-2 mb-6 animate-slideDown">
                 {currentQ.question}
               </h2>
 
-              {/* Avatar Interakce */}
+              {/* Avatar Interaction */}
               <div className="mb-6 flex justify-center">
                  <TeacherAvatar mood={avatarMood} size="small" />
               </div>
 
-              {/* Možnosti */}
+              {/* Options */}
               <div className={`grid gap-4 ${currentQ.type === 'select_image' ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 {currentQ.options.map((opt, index) => {
                   const optionId = opt.id || `${state.activeLevelId}-${state.qIndex}-${index}`;
@@ -720,7 +721,7 @@
               </div>
             </div>
 
-            {/* Patička / Prekryv spätnej väzby */}
+            {/* Footer / Feedback Overlay */}
             <div className={`
               fixed bottom-0 left-0 right-0 border-t p-4 z-30 transition-all duration-300
               ${state.checkResult === 'correct' ? 'bg-green-100 border-green-200' : ''}
@@ -734,7 +735,7 @@
                     </div>
                     <div>
                       <h3 className={`font-bold text-xl ${state.checkResult === 'correct' ? 'text-green-800' : 'text-red-800'}`}>
-                        {state.checkResult === 'correct' ? 'Skvělá práce!' : 'Správná odpověď:'}
+                        {state.checkResult === 'correct' ? 'Great Job!' : 'Correct Answer:'}
                       </h3>
                       <p className={`${state.checkResult === 'correct' ? 'text-green-700' : 'text-red-700'} text-sm mt-1`}>
                         {currentQ.explanation}
@@ -753,7 +754,7 @@
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                       }`}
                   >
-                    Zkontrolovat
+                    Check
                   </button>
                 ) : (
                   <button
@@ -765,7 +766,7 @@
                        }
                     `}
                   >
-                    Pokračovat
+                    Continue
                   </button>
                 )}
               </div>
@@ -774,7 +775,7 @@
         );
       };
 
-    // 4. VÍTĚZNÁ OBRAZOVKA
+    // 4. VICTORY SCREEN
     const VictoryView = () => {
         const { state, dispatch } = useAppContext();
 
@@ -795,8 +796,8 @@
                     <TeacherAvatar mood="happy" />
                 </div>
                 
-                <h2 className="text-4xl font-extrabold text-green-700 mb-2">Úroveň Dokončena!</h2>
-                <p className="text-green-600 mb-8 font-medium text-lg">Jste mistr farmář. Získali jste {levelScore} hvězdiček!</p>
+                <h2 className="text-4xl font-extrabold text-green-700 mb-2">Level Completed!</h2>
+                <p className="text-green-600 mb-8 font-medium text-lg">You are a Master Farmer. You earned {levelScore} stars!</p>
                 
                 <div className="flex space-x-2 mb-8">
                     {[...Array(3)].map((_, i) => (
@@ -809,13 +810,13 @@
                 
                 <div className="grid grid-cols-2 gap-4 w-full max-w-xs mb-10">
                     <div className="bg-white p-4 rounded-2xl shadow-lg border-b-4 border-gray-100 flex flex-col items-center">
-                        <span className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">XP Zisk</span>
+                        <span className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">XP Gained</span>
                         <span className="text-blue-500 text-3xl font-black flex items-center">
                             <IconZap className="fill-blue-500 w-6 h-6 mr-1" fill="blue" /> +25
                         </span>
                     </div>
                     <div className="bg-white p-4 rounded-2xl shadow-lg border-b-4 border-gray-100 flex flex-col items-center">
-                        <span className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Přesnost (1. pokus)</span>
+                        <span className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Accuracy (1st Try)</span>
                         <span className="text-green-500 text-3xl font-black flex items-center">
                             <IconShieldCheck className="w-6 h-6 mr-1" /> {accuracy}%
                         </span>
@@ -826,7 +827,7 @@
                     onClick={() => dispatch({ type: 'RESET_HOME' })}
                     className="w-full max-w-xs bg-green-600 text-white font-bold py-4 rounded-xl text-xl shadow-xl border-b-4 border-green-800 hover:bg-green-500 active:translate-y-1 active:border-b-0 transition-all"
                 >
-                    Pokračovat v Učení
+                    Continue Learning
                 </button>
             </div>
         );
@@ -855,7 +856,7 @@
         return (
             <AppProvider>
                 <div className="font-sans antialiased text-gray-900 bg-gray-100 h-screen flex justify-center items-center">
-                    {/* Mobilní Rám */}
+                    {/* Mobile Frame */}
                     <div className="w-full h-full sm:h-[90vh] sm:w-[400px] sm:rounded-3xl bg-white shadow-2xl overflow-hidden relative">
                         <AppRenderer />
                     </div>
@@ -864,7 +865,7 @@
         );
     }
     
-    // Spustit aplikaci
+    // Launch the application
     const rootElement = document.getElementById('root');
     ReactDOM.createRoot(rootElement).render(<AgriLingoApp />);
     
