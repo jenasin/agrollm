@@ -1,1136 +1,145 @@
-// Modul 7: Živočišná Výroba - 100 otázek (10 levelů x 10 otázek)
+// Module 7: Livestock - 100 questions (10 levels x 10 questions)
 const MODULE7_QUESTIONS = {
-    // Level 1 - Základy chovu
+    // Level 1 - Livestock Basics
     module7_level1: [
-        {
-            question: "Které zvíře je přežvýkavec?",
-            type: "multiple_choice",
-            options: [
-                { text: "Kráva", icon: "🐄", isCorrect: true },
-                { text: "Prase", icon: "🐷", isCorrect: false },
-                { text: "Slepice", icon: "🐔", isCorrect: false },
-                { text: "Kůň", icon: "🐴", isCorrect: false }
-            ],
-            explanation: "Kráva je přežvýkavec s čtyřkomorovým žaludkem, který umožňuje trávit travní porosty."
-        },
-        {
-            question: "Kolik žaludkových komor má kráva?",
-            type: "multiple_choice",
-            options: [
-                { text: "1", icon: "1️⃣", isCorrect: false },
-                { text: "2", icon: "2️⃣", isCorrect: false },
-                { text: "4", icon: "4️⃣", isCorrect: true },
-                { text: "3", icon: "3️⃣", isCorrect: false }
-            ],
-            explanation: "Kráva má 4 žaludeční komory: bachor, čepec, kniha a slez."
-        },
-        {
-            question: "Co je hlavní produkt dojnic?",
-            type: "multiple_choice",
-            options: [
-                { text: "Mléko", icon: "🥛", isCorrect: true },
-                { text: "Vejce", icon: "🥚", isCorrect: false },
-                { text: "Vlna", icon: "🧶", isCorrect: false },
-                { text: "Med", icon: "🍯", isCorrect: false }
-            ],
-            explanation: "Dojnice jsou krávy chované primárně pro produkci mléka."
-        },
-        {
-            question: "Které zvíře snáší vejce?",
-            type: "multiple_choice",
-            options: [
-                { text: "Slepice", icon: "🐔", isCorrect: true },
-                { text: "Kráva", icon: "🐄", isCorrect: false },
-                { text: "Prase", icon: "🐷", isCorrect: false },
-                { text: "Ovce", icon: "🐑", isCorrect: false }
-            ],
-            explanation: "Slepice jsou drůbež chovaná pro produkci vajec a masa."
-        },
-        {
-            question: "Co je selátko?",
-            type: "multiple_choice",
-            options: [
-                { text: "Mládě prasete", icon: "🐷", isCorrect: true },
-                { text: "Mládě krávy", icon: "🐄", isCorrect: false },
-                { text: "Mládě ovce", icon: "🐑", isCorrect: false },
-                { text: "Mládě kozy", icon: "🐐", isCorrect: false }
-            ],
-            explanation: "Selátko je mládě prasete, jehož matka se nazývá prasnice."
-        },
-        {
-            question: "Z čeho se vyrábí vlna?",
-            type: "multiple_choice",
-            options: [
-                { text: "Ze srsti ovcí", icon: "🐑", isCorrect: true },
-                { text: "Z kravské kůže", icon: "🐄", isCorrect: false },
-                { text: "Z prasečí štětiny", icon: "🐷", isCorrect: false },
-                { text: "Ze slepičího peří", icon: "🐔", isCorrect: false }
-            ],
-            explanation: "Vlna se získává stříháním srsti ovcí, obvykle na jaře."
-        },
-        {
-            question: "Jak se nazývá mládě krávy?",
-            type: "multiple_choice",
-            options: [
-                { text: "Tele", icon: "🐄", isCorrect: true },
-                { text: "Hříbě", icon: "🐴", isCorrect: false },
-                { text: "Jehně", icon: "🐑", isCorrect: false },
-                { text: "Kůzle", icon: "🐐", isCorrect: false }
-            ],
-            explanation: "Tele je mládě krávy do věku přibližně jednoho roku."
-        },
-        {
-            question: "Co produkují včely?",
-            type: "multiple_choice",
-            options: [
-                { text: "Med", icon: "🍯", isCorrect: true },
-                { text: "Mléko", icon: "🥛", isCorrect: false },
-                { text: "Vejce", icon: "🥚", isCorrect: false },
-                { text: "Vlnu", icon: "🧶", isCorrect: false }
-            ],
-            explanation: "Včely produkují med z nektaru květin a také vosk a propolis."
-        },
-        {
-            question: "Které zvíře dává kozí mléko?",
-            type: "multiple_choice",
-            options: [
-                { text: "Koza", icon: "🐐", isCorrect: true },
-                { text: "Ovce", icon: "🐑", isCorrect: false },
-                { text: "Kráva", icon: "🐄", isCorrect: false },
-                { text: "Kůň", icon: "🐴", isCorrect: false }
-            ],
-            explanation: "Koza produkuje kozí mléko, které je lehce stravitelné a vhodné pro alergiky."
-        },
-        {
-            question: "Co je kurník?",
-            type: "multiple_choice",
-            options: [
-                { text: "Příbytek pro slepice", icon: "🏠", isCorrect: true },
-                { text: "Místo pro krávy", icon: "🐄", isCorrect: false },
-                { text: "Domov pro prasata", icon: "🐷", isCorrect: false },
-                { text: "Úl pro včely", icon: "🐝", isCorrect: false }
-            ],
-            explanation: "Kurník je stavba určená pro chov drůbeže, především slepic."
-        }
+        { question: "Which animal is a ruminant?", type: "multiple_choice", options: [{ text: "Cow", icon: "🐄", isCorrect: true }, { text: "Pig", icon: "🐷", isCorrect: false }, { text: "Chicken", icon: "🐔", isCorrect: false }, { text: "Horse", icon: "🐴", isCorrect: false }], explanation: "A cow is a ruminant with a four-compartment stomach that allows it to digest grass." },
+        { question: "How many stomach compartments does a cow have?", type: "multiple_choice", options: [{ text: "1", icon: "1️⃣", isCorrect: false }, { text: "2", icon: "2️⃣", isCorrect: false }, { text: "4", icon: "4️⃣", isCorrect: true }, { text: "3", icon: "3️⃣", isCorrect: false }], explanation: "A cow has 4 stomach compartments: rumen, reticulum, omasum, and abomasum." },
+        { question: "What is the main product of dairy cows?", type: "multiple_choice", options: [{ text: "Milk", icon: "🥛", isCorrect: true }, { text: "Eggs", icon: "🥚", isCorrect: false }, { text: "Wool", icon: "🧶", isCorrect: false }, { text: "Honey", icon: "🍯", isCorrect: false }], explanation: "Dairy cows are cattle raised primarily for milk production." },
+        { question: "Which animal lays eggs?", type: "multiple_choice", options: [{ text: "Chicken", icon: "🐔", isCorrect: true }, { text: "Cow", icon: "🐄", isCorrect: false }, { text: "Pig", icon: "🐷", isCorrect: false }, { text: "Sheep", icon: "🐑", isCorrect: false }], explanation: "Chickens are poultry raised for egg and meat production." },
+        { question: "What is a piglet?", type: "multiple_choice", options: [{ text: "A baby pig", icon: "🐷", isCorrect: true }, { text: "A baby cow", icon: "🐄", isCorrect: false }, { text: "A baby sheep", icon: "🐑", isCorrect: false }, { text: "A baby goat", icon: "🐐", isCorrect: false }], explanation: "A piglet is a young pig whose mother is called a sow." },
+        { question: "What is wool made from?", type: "multiple_choice", options: [{ text: "Sheep's fleece", icon: "🐑", isCorrect: true }, { text: "Cow's hide", icon: "🐄", isCorrect: false }, { text: "Pig's bristles", icon: "🐷", isCorrect: false }, { text: "Chicken feathers", icon: "🐔", isCorrect: false }], explanation: "Wool is obtained by shearing sheep, usually in spring." },
+        { question: "What is a baby cow called?", type: "multiple_choice", options: [{ text: "Calf", icon: "🐄", isCorrect: true }, { text: "Foal", icon: "🐴", isCorrect: false }, { text: "Lamb", icon: "🐑", isCorrect: false }, { text: "Kid", icon: "🐐", isCorrect: false }], explanation: "A calf is a young cow up to approximately one year of age." },
+        { question: "What do bees produce?", type: "multiple_choice", options: [{ text: "Honey", icon: "🍯", isCorrect: true }, { text: "Milk", icon: "🥛", isCorrect: false }, { text: "Eggs", icon: "🥚", isCorrect: false }, { text: "Wool", icon: "🧶", isCorrect: false }], explanation: "Bees produce honey from flower nectar, as well as wax and propolis." },
+        { question: "Which animal gives goat's milk?", type: "multiple_choice", options: [{ text: "Goat", icon: "🐐", isCorrect: true }, { text: "Sheep", icon: "🐑", isCorrect: false }, { text: "Cow", icon: "🐄", isCorrect: false }, { text: "Horse", icon: "🐴", isCorrect: false }], explanation: "Goats produce goat's milk, which is easily digestible and suitable for allergy sufferers." },
+        { question: "What is a chicken coop?", type: "multiple_choice", options: [{ text: "Housing for chickens", icon: "🏠", isCorrect: true }, { text: "Place for cows", icon: "🐄", isCorrect: false }, { text: "Home for pigs", icon: "🐷", isCorrect: false }, { text: "Hive for bees", icon: "🐝", isCorrect: false }], explanation: "A chicken coop is a building designed for raising poultry, mainly chickens." }
     ],
-    // Level 2 - Krmení zvířat
+
+    // Level 2 - Animal Feeding
     module7_level2: [
-        {
-            question: "Co je základní krmivo pro krávy?",
-            type: "multiple_choice",
-            options: [
-                { text: "Seno a tráva", icon: "🌾", isCorrect: true },
-                { text: "Maso", icon: "🥩", isCorrect: false },
-                { text: "Ryby", icon: "🐟", isCorrect: false },
-                { text: "Ovoce", icon: "🍎", isCorrect: false }
-            ],
-            explanation: "Krávy jsou býložravci a jejich základem potravy je seno, tráva a siláž."
-        },
-        {
-            question: "Co je siláž?",
-            type: "multiple_choice",
-            options: [
-                { text: "Kvašená zelená píce", icon: "🌿", isCorrect: true },
-                { text: "Sušené maso", icon: "🥩", isCorrect: false },
-                { text: "Zmražené ovoce", icon: "🍇", isCorrect: false },
-                { text: "Uzené seno", icon: "🌾", isCorrect: false }
-            ],
-            explanation: "Siláž je konzervovaná zelená píce pomocí mléčného kvašení bez přístupu vzduchu."
-        },
-        {
-            question: "Čím krmíme slepice pro lepší snášku?",
-            type: "multiple_choice",
-            options: [
-                { text: "Obilím a vápníkem", icon: "🌾", isCorrect: true },
-                { text: "Jen vodou", icon: "💧", isCorrect: false },
-                { text: "Masem", icon: "🥩", isCorrect: false },
-                { text: "Cukrem", icon: "🍬", isCorrect: false }
-            ],
-            explanation: "Slepice potřebují obiloviny pro energii a vápník pro tvorbu vaječných skořápek."
-        },
-        {
-            question: "Proč prasata potřebují bílkoviny?",
-            type: "multiple_choice",
-            options: [
-                { text: "Pro růst svalů", icon: "💪", isCorrect: true },
-                { text: "Pro barvu kůže", icon: "🎨", isCorrect: false },
-                { text: "Pro lepší sluch", icon: "👂", isCorrect: false },
-                { text: "Pro delší ocas", icon: "🐷", isCorrect: false }
-            ],
-            explanation: "Bílkoviny jsou nezbytné pro růst svalové hmoty a celkový vývoj prasat."
-        },
-        {
-            question: "Co je koncentrované krmivo?",
-            type: "multiple_choice",
-            options: [
-                { text: "Krmivo bohaté na živiny", icon: "🥣", isCorrect: true },
-                { text: "Zředěná voda", icon: "💧", isCorrect: false },
-                { text: "Pouze seno", icon: "🌾", isCorrect: false },
-                { text: "Prázdná sláma", icon: "🥀", isCorrect: false }
-            ],
-            explanation: "Koncentráty jsou krmiva s vysokým obsahem energie a bílkovin (obilí, šroty)."
-        },
-        {
-            question: "Kolikrát denně by měla být krmena prasata?",
-            type: "multiple_choice",
-            options: [
-                { text: "2-3x denně", icon: "🕐", isCorrect: true },
-                { text: "1x týdně", icon: "📅", isCorrect: false },
-                { text: "10x denně", icon: "🔟", isCorrect: false },
-                { text: "1x měsíčně", icon: "📆", isCorrect: false }
-            ],
-            explanation: "Prasata by měla být krmena pravidelně 2-3x denně pro optimální růst."
-        },
-        {
-            question: "Proč je důležitá čerstvá voda pro zvířata?",
-            type: "multiple_choice",
-            options: [
-                { text: "Pro trávení a zdraví", icon: "💧", isCorrect: true },
-                { text: "Pro lepší barvu srsti", icon: "🎨", isCorrect: false },
-                { text: "Není důležitá", icon: "❌", isCorrect: false },
-                { text: "Pouze pro koupání", icon: "🛁", isCorrect: false }
-            ],
-            explanation: "Čerstvá voda je nezbytná pro trávení, termoregulaci a všechny životní funkce."
-        },
-        {
-            question: "Co je minerální liz?",
-            type: "multiple_choice",
-            options: [
-                { text: "Blok s minerály pro zvířata", icon: "🧂", isCorrect: true },
-                { text: "Sladkost pro děti", icon: "🍭", isCorrect: false },
-                { text: "Druh houby", icon: "🍄", isCorrect: false },
-                { text: "Zemědělský stroj", icon: "🚜", isCorrect: false }
-            ],
-            explanation: "Minerální liz je blok obsahující sůl a minerály, který si zvířata olizují."
-        },
-        {
-            question: "Jaké krmivo potřebují jehňata po odstavu?",
-            type: "multiple_choice",
-            options: [
-                { text: "Kvalitní seno a koncentráty", icon: "🌾", isCorrect: true },
-                { text: "Pouze vodu", icon: "💧", isCorrect: false },
-                { text: "Maso", icon: "🥩", isCorrect: false },
-                { text: "Zmrzlinu", icon: "🍦", isCorrect: false }
-            ],
-            explanation: "Po odstavu jehňata potřebují kvalitní seno a postupně koncentráty pro správný růst."
-        },
-        {
-            question: "Co je TMR krmení?",
-            type: "multiple_choice",
-            options: [
-                { text: "Celková směsná krmná dávka", icon: "🥗", isCorrect: true },
-                { text: "Typ traktoru", icon: "🚜", isCorrect: false },
-                { text: "Veterinární lék", icon: "💊", isCorrect: false },
-                { text: "Druh obilí", icon: "🌾", isCorrect: false }
-            ],
-            explanation: "TMR (Total Mixed Ration) je kompletní směs všech krmiv v jedné dávce."
-        }
+        { question: "What is the basic feed for cows?", type: "multiple_choice", options: [{ text: "Hay and grass", icon: "🌾", isCorrect: true }, { text: "Meat", icon: "🥩", isCorrect: false }, { text: "Fish", icon: "🐟", isCorrect: false }, { text: "Fruit", icon: "🍎", isCorrect: false }], explanation: "Cows are herbivores and their diet consists mainly of hay, grass, and silage." },
+        { question: "What is silage?", type: "multiple_choice", options: [{ text: "Fermented green forage", icon: "🌿", isCorrect: true }, { text: "Dried meat", icon: "🥩", isCorrect: false }, { text: "Frozen fruit", icon: "🍇", isCorrect: false }, { text: "Smoked hay", icon: "🌾", isCorrect: false }], explanation: "Silage is preserved green forage through anaerobic lactic acid fermentation." },
+        { question: "What do we feed chickens for better egg production?", type: "multiple_choice", options: [{ text: "Grain and calcium", icon: "🌾", isCorrect: true }, { text: "Only water", icon: "💧", isCorrect: false }, { text: "Meat", icon: "🥩", isCorrect: false }, { text: "Sugar", icon: "🍬", isCorrect: false }], explanation: "Chickens need grains for energy and calcium for forming eggshells." },
+        { question: "Why do pigs need protein?", type: "multiple_choice", options: [{ text: "For muscle growth", icon: "💪", isCorrect: true }, { text: "For skin color", icon: "🎨", isCorrect: false }, { text: "For better hearing", icon: "👂", isCorrect: false }, { text: "For longer tail", icon: "🐷", isCorrect: false }], explanation: "Proteins are essential for muscle growth and overall pig development." },
+        { question: "What is concentrate feed?", type: "multiple_choice", options: [{ text: "Feed rich in nutrients", icon: "🥣", isCorrect: true }, { text: "Diluted water", icon: "💧", isCorrect: false }, { text: "Only hay", icon: "🌾", isCorrect: false }, { text: "Empty straw", icon: "🥀", isCorrect: false }], explanation: "Concentrates are feeds high in energy and protein (grains, meals)." },
+        { question: "How many times a day should pigs be fed?", type: "multiple_choice", options: [{ text: "2-3 times daily", icon: "🕐", isCorrect: true }, { text: "Once a week", icon: "📅", isCorrect: false }, { text: "10 times daily", icon: "🔟", isCorrect: false }, { text: "Once a month", icon: "📆", isCorrect: false }], explanation: "Pigs should be fed regularly 2-3 times daily for optimal growth." },
+        { question: "Why is fresh water important for animals?", type: "multiple_choice", options: [{ text: "For digestion and health", icon: "💧", isCorrect: true }, { text: "For better coat color", icon: "🎨", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }, { text: "Only for bathing", icon: "🛁", isCorrect: false }], explanation: "Fresh water is essential for digestion, thermoregulation, and all vital functions." },
+        { question: "What is a mineral lick?", type: "multiple_choice", options: [{ text: "Block of minerals for animals", icon: "🧂", isCorrect: true }, { text: "Candy for children", icon: "🍭", isCorrect: false }, { text: "Type of mushroom", icon: "🍄", isCorrect: false }, { text: "Farm machinery", icon: "🚜", isCorrect: false }], explanation: "A mineral lick is a block containing salt and minerals that animals lick." },
+        { question: "What feed do lambs need after weaning?", type: "multiple_choice", options: [{ text: "Quality hay and concentrates", icon: "🌾", isCorrect: true }, { text: "Only water", icon: "💧", isCorrect: false }, { text: "Meat", icon: "🥩", isCorrect: false }, { text: "Ice cream", icon: "🍦", isCorrect: false }], explanation: "After weaning, lambs need quality hay and gradually concentrates for proper growth." },
+        { question: "What is TMR feeding?", type: "multiple_choice", options: [{ text: "Total Mixed Ration", icon: "🥗", isCorrect: true }, { text: "Type of tractor", icon: "🚜", isCorrect: false }, { text: "Veterinary medicine", icon: "💊", isCorrect: false }, { text: "Type of grain", icon: "🌾", isCorrect: false }], explanation: "TMR (Total Mixed Ration) is a complete mixture of all feeds in one serving." }
     ],
-    // Level 3 - Zdraví zvířat
+
+    // Level 3 - Animal Health
     module7_level3: [
-        {
-            question: "Co je vakcinace zvířat?",
-            type: "multiple_choice",
-            options: [
-                { text: "Očkování proti nemocem", icon: "💉", isCorrect: true },
-                { text: "Krmení vitamíny", icon: "💊", isCorrect: false },
-                { text: "Stříhání srsti", icon: "✂️", isCorrect: false },
-                { text: "Čištění stáje", icon: "🧹", isCorrect: false }
-            ],
-            explanation: "Vakcinace je preventivní očkování, které chrání zvířata před infekčními nemocemi."
-        },
-        {
-            question: "Proč je důležitá karanténa nových zvířat?",
-            type: "multiple_choice",
-            options: [
-                { text: "Prevence šíření nemocí", icon: "🔒", isCorrect: true },
-                { text: "Aby se naučila nové triky", icon: "🎪", isCorrect: false },
-                { text: "Pro lepší chuť masa", icon: "🥩", isCorrect: false },
-                { text: "Není důležitá", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Karanténa zabraňuje zavlečení nemocí do stáda od nově přijatých zvířat."
-        },
-        {
-            question: "Co je odčervení?",
-            type: "multiple_choice",
-            options: [
-                { text: "Odstranění parazitů", icon: "🐛", isCorrect: true },
-                { text: "Přidávání červů do krmiva", icon: "🪱", isCorrect: false },
-                { text: "Barvení srsti", icon: "🎨", isCorrect: false },
-                { text: "Trénink zvířat", icon: "🏋️", isCorrect: false }
-            ],
-            explanation: "Odčervení je léčba proti vnitřním parazitům (červům) pomocí antiparazitik."
-        },
-        {
-            question: "Jaký je normální tělesná teplota krávy?",
-            type: "multiple_choice",
-            options: [
-                { text: "38-39°C", icon: "🌡️", isCorrect: true },
-                { text: "20-25°C", icon: "❄️", isCorrect: false },
-                { text: "45-50°C", icon: "🔥", isCorrect: false },
-                { text: "10-15°C", icon: "🥶", isCorrect: false }
-            ],
-            explanation: "Normální tělesná teplota krávy je 38-39°C, vyšší teplota značí horečku."
-        },
-        {
-            question: "Co je mastitis?",
-            type: "multiple_choice",
-            options: [
-                { text: "Zánět mléčné žlázy", icon: "🐄", isCorrect: true },
-                { text: "Druh krmiva", icon: "🌾", isCorrect: false },
-                { text: "Plemeno krávy", icon: "🏷️", isCorrect: false },
-                { text: "Typ stáje", icon: "🏠", isCorrect: false }
-            ],
-            explanation: "Mastitis je bolestivý zánět vemene, který snižuje kvalitu i množství mléka."
-        },
-        {
-            question: "Jak poznáme zdravou slepici?",
-            type: "multiple_choice",
-            options: [
-                { text: "Červený hřebínek, lesklé peří", icon: "🐔", isCorrect: true },
-                { text: "Bledý hřebínek, ospalost", icon: "😴", isCorrect: false },
-                { text: "Nechce jíst", icon: "🚫", isCorrect: false },
-                { text: "Neklade vejce", icon: "🥚", isCorrect: false }
-            ],
-            explanation: "Zdravá slepice má jasně červený hřebínek, lesklé peří a je aktivní."
-        },
-        {
-            question: "Co je kulhání u skotu?",
-            type: "multiple_choice",
-            options: [
-                { text: "Problém s končetinami", icon: "🦶", isCorrect: true },
-                { text: "Druh tance", icon: "💃", isCorrect: false },
-                { text: "Způsob krmení", icon: "🍽️", isCorrect: false },
-                { text: "Typ dojení", icon: "🥛", isCorrect: false }
-            ],
-            explanation: "Kulhání je bolestivý problém paznehtů nebo končetin vyžadující veterinární péči."
-        },
-        {
-            question: "Proč jsou důležité pravidelné prohlídky veterinářem?",
-            type: "multiple_choice",
-            options: [
-                { text: "Včasné odhalení nemocí", icon: "👨‍⚕️", isCorrect: true },
-                { text: "Jsou zbytečné", icon: "❌", isCorrect: false },
-                { text: "Jen kvůli papírům", icon: "📄", isCorrect: false },
-                { text: "Pro zábavu", icon: "🎉", isCorrect: false }
-            ],
-            explanation: "Pravidelné veterinární prohlídky umožňují včas odhalit a léčit zdravotní problémy."
-        },
-        {
-            question: "Co je biosekurita na farmě?",
-            type: "multiple_choice",
-            options: [
-                { text: "Ochrana před nákazami", icon: "🛡️", isCorrect: true },
-                { text: "Typ pojištění", icon: "📋", isCorrect: false },
-                { text: "Značka krmiva", icon: "🏷️", isCorrect: false },
-                { text: "Druh traktoru", icon: "🚜", isCorrect: false }
-            ],
-            explanation: "Biosekurita zahrnuje opatření zabraňující zavlečení a šíření nemocí na farmě."
-        },
-        {
-            question: "Jak často by se měly čistit stáje?",
-            type: "multiple_choice",
-            options: [
-                { text: "Denně", icon: "📅", isCorrect: true },
-                { text: "Jednou ročně", icon: "📆", isCorrect: false },
-                { text: "Nikdy", icon: "❌", isCorrect: false },
-                { text: "Pouze před inspekcí", icon: "👀", isCorrect: false }
-            ],
-            explanation: "Denní čištění stájí je nezbytné pro zdraví zvířat a prevenci nemocí."
-        }
+        { question: "What is animal vaccination?", type: "multiple_choice", options: [{ text: "Immunization against diseases", icon: "💉", isCorrect: true }, { text: "Feeding vitamins", icon: "💊", isCorrect: false }, { text: "Shearing fur", icon: "✂️", isCorrect: false }, { text: "Cleaning the barn", icon: "🧹", isCorrect: false }], explanation: "Vaccination is preventive immunization that protects animals from infectious diseases." },
+        { question: "Why is quarantine of new animals important?", type: "multiple_choice", options: [{ text: "Prevention of disease spread", icon: "🔒", isCorrect: true }, { text: "So they learn new tricks", icon: "🎪", isCorrect: false }, { text: "For better meat taste", icon: "🥩", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }], explanation: "Quarantine prevents introduction of diseases from newly received animals into the herd." },
+        { question: "What is deworming?", type: "multiple_choice", options: [{ text: "Removal of parasites", icon: "🐛", isCorrect: true }, { text: "Adding worms to feed", icon: "🪱", isCorrect: false }, { text: "Dyeing fur", icon: "🎨", isCorrect: false }, { text: "Training animals", icon: "🏋️", isCorrect: false }], explanation: "Deworming is treatment against internal parasites (worms) using antiparasitics." },
+        { question: "What is the normal body temperature of a cow?", type: "multiple_choice", options: [{ text: "38-39°C", icon: "🌡️", isCorrect: true }, { text: "20-25°C", icon: "❄️", isCorrect: false }, { text: "45-50°C", icon: "🔥", isCorrect: false }, { text: "10-15°C", icon: "🥶", isCorrect: false }], explanation: "Normal body temperature for a cow is 38-39°C; higher indicates fever." },
+        { question: "What is mastitis?", type: "multiple_choice", options: [{ text: "Udder infection", icon: "🐄", isCorrect: true }, { text: "Type of feed", icon: "🌾", isCorrect: false }, { text: "Cattle breed", icon: "🏷️", isCorrect: false }, { text: "Type of barn", icon: "🏠", isCorrect: false }], explanation: "Mastitis is a painful udder inflammation that reduces milk quality and quantity." },
+        { question: "How do we recognize a healthy chicken?", type: "multiple_choice", options: [{ text: "Red comb, shiny feathers", icon: "🐔", isCorrect: true }, { text: "Pale comb, sleepy", icon: "😴", isCorrect: false }, { text: "Won't eat", icon: "🚫", isCorrect: false }, { text: "Doesn't lay eggs", icon: "🥚", isCorrect: false }], explanation: "A healthy chicken has a bright red comb, shiny feathers, and is active." },
+        { question: "What is lameness in cattle?", type: "multiple_choice", options: [{ text: "Problem with legs", icon: "🦶", isCorrect: true }, { text: "Type of dance", icon: "💃", isCorrect: false }, { text: "Feeding method", icon: "🍽️", isCorrect: false }, { text: "Type of milking", icon: "🥛", isCorrect: false }], explanation: "Lameness is a painful hoof or leg problem requiring veterinary care." },
+        { question: "Why are regular veterinary checkups important?", type: "multiple_choice", options: [{ text: "Early disease detection", icon: "👨‍⚕️", isCorrect: true }, { text: "They're unnecessary", icon: "❌", isCorrect: false }, { text: "Only for paperwork", icon: "📄", isCorrect: false }, { text: "For fun", icon: "🎉", isCorrect: false }], explanation: "Regular veterinary checkups allow early detection and treatment of health problems." },
+        { question: "What is farm biosecurity?", type: "multiple_choice", options: [{ text: "Protection against disease outbreaks", icon: "🛡️", isCorrect: true }, { text: "Type of insurance", icon: "📋", isCorrect: false }, { text: "Feed brand", icon: "🏷️", isCorrect: false }, { text: "Type of tractor", icon: "🚜", isCorrect: false }], explanation: "Biosecurity includes measures to prevent disease introduction and spread on farm." },
+        { question: "How often should barns be cleaned?", type: "multiple_choice", options: [{ text: "Daily", icon: "📅", isCorrect: true }, { text: "Once a year", icon: "📆", isCorrect: false }, { text: "Never", icon: "❌", isCorrect: false }, { text: "Only before inspections", icon: "👀", isCorrect: false }], explanation: "Daily barn cleaning is essential for animal health and disease prevention." }
     ],
-    // Level 4 - Reprodukce
+
+    // Level 4 - Reproduction
     module7_level4: [
-        {
-            question: "Jak dlouho trvá březost krávy?",
-            type: "multiple_choice",
-            options: [
-                { text: "Přibližně 9 měsíců (283 dní)", icon: "📅", isCorrect: true },
-                { text: "3 měsíce", icon: "🗓️", isCorrect: false },
-                { text: "1 rok", icon: "📆", isCorrect: false },
-                { text: "2 týdny", icon: "⏰", isCorrect: false }
-            ],
-            explanation: "Březost krávy trvá přibližně 283 dní, tedy asi 9 měsíců."
-        },
-        {
-            question: "Co je inseminace?",
-            type: "multiple_choice",
-            options: [
-                { text: "Umělé oplodnění", icon: "💉", isCorrect: true },
-                { text: "Krmení zvířat", icon: "🍽️", isCorrect: false },
-                { text: "Léčba nemoci", icon: "💊", isCorrect: false },
-                { text: "Stříhání srsti", icon: "✂️", isCorrect: false }
-            ],
-            explanation: "Inseminace je umělé oplodnění samice spermatem vybraného samce."
-        },
-        {
-            question: "Kolik selat může mít prasnice v jednom vrhu?",
-            type: "multiple_choice",
-            options: [
-                { text: "8-14 selat", icon: "🐷", isCorrect: true },
-                { text: "1-2 selata", icon: "1️⃣", isCorrect: false },
-                { text: "50 selat", icon: "5️⃣0️⃣", isCorrect: false },
-                { text: "100 selat", icon: "💯", isCorrect: false }
-            ],
-            explanation: "Prasnice obvykle rodí 8-14 selat, někdy i více."
-        },
-        {
-            question: "Co je říje u krávy?",
-            type: "multiple_choice",
-            options: [
-                { text: "Období plodnosti", icon: "💕", isCorrect: true },
-                { text: "Nemoc", icon: "🤒", isCorrect: false },
-                { text: "Druh krmiva", icon: "🌾", isCorrect: false },
-                { text: "Typ stáje", icon: "🏠", isCorrect: false }
-            ],
-            explanation: "Říje je období, kdy je kráva plodná a připravená k oplodnění."
-        },
-        {
-            question: "Jak dlouho slepice sedí na vejcích?",
-            type: "multiple_choice",
-            options: [
-                { text: "21 dní", icon: "🥚", isCorrect: true },
-                { text: "3 dny", icon: "3️⃣", isCorrect: false },
-                { text: "6 měsíců", icon: "📅", isCorrect: false },
-                { text: "1 rok", icon: "📆", isCorrect: false }
-            ],
-            explanation: "Inkubace kuřecích vajec trvá 21 dní, než se vylíhnou kuřata."
-        },
-        {
-            question: "Co je odchov mláďat?",
-            type: "multiple_choice",
-            options: [
-                { text: "Péče o mladá zvířata", icon: "👶", isCorrect: true },
-                { text: "Prodej zvířat", icon: "💰", isCorrect: false },
-                { text: "Porážka zvířat", icon: "🔪", isCorrect: false },
-                { text: "Transport zvířat", icon: "🚛", isCorrect: false }
-            ],
-            explanation: "Odchov je komplexní péče o mláďata od narození do dospělosti."
-        },
-        {
-            question: "Proč je důležité mlezivo pro telata?",
-            type: "multiple_choice",
-            options: [
-                { text: "Obsahuje protilátky", icon: "🛡️", isCorrect: true },
-                { text: "Je levné", icon: "💰", isCorrect: false },
-                { text: "Má hezkou barvu", icon: "🎨", isCorrect: false },
-                { text: "Není důležité", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Mlezivo je první mléko matky bohaté na protilátky nezbytné pro imunitu telete."
-        },
-        {
-            question: "Co je odstav?",
-            type: "multiple_choice",
-            options: [
-                { text: "Oddělení mláděte od matky", icon: "👋", isCorrect: true },
-                { text: "Druh nemoci", icon: "🤒", isCorrect: false },
-                { text: "Typ krmiva", icon: "🌾", isCorrect: false },
-                { text: "Veterinární zákrok", icon: "💉", isCorrect: false }
-            ],
-            explanation: "Odstav je proces, kdy se mládě přestane kojit a začne přijímat pevnou stravu."
-        },
-        {
-            question: "V jakém věku začínají slepice snášet vejce?",
-            type: "multiple_choice",
-            options: [
-                { text: "18-22 týdnů", icon: "🐔", isCorrect: true },
-                { text: "1 týden", icon: "1️⃣", isCorrect: false },
-                { text: "5 let", icon: "5️⃣", isCorrect: false },
-                { text: "Hned po vylíhnutí", icon: "🐣", isCorrect: false }
-            ],
-            explanation: "Slepice začínají snášet první vejce obvykle ve věku 18-22 týdnů."
-        },
-        {
-            question: "Co je plemenná kniha?",
-            type: "multiple_choice",
-            options: [
-                { text: "Evidence původu zvířat", icon: "📚", isCorrect: true },
-                { text: "Kuchařka", icon: "👨‍🍳", isCorrect: false },
-                { text: "Veterinární příručka", icon: "📖", isCorrect: false },
-                { text: "Účetní kniha", icon: "📒", isCorrect: false }
-            ],
-            explanation: "Plemenná kniha je oficiální evidence plemenných zvířat a jejich původu."
-        }
+        { question: "How long is a cow's pregnancy?", type: "multiple_choice", options: [{ text: "Approximately 9 months (283 days)", icon: "📅", isCorrect: true }, { text: "3 months", icon: "🗓️", isCorrect: false }, { text: "1 year", icon: "📆", isCorrect: false }, { text: "2 weeks", icon: "⏰", isCorrect: false }], explanation: "Cow pregnancy lasts approximately 283 days, about 9 months." },
+        { question: "What is insemination?", type: "multiple_choice", options: [{ text: "Artificial fertilization", icon: "💉", isCorrect: true }, { text: "Feeding animals", icon: "🍽️", isCorrect: false }, { text: "Disease treatment", icon: "💊", isCorrect: false }, { text: "Shearing fur", icon: "✂️", isCorrect: false }], explanation: "Insemination is artificial fertilization of a female with sperm from a selected male." },
+        { question: "How many piglets can a sow have in one litter?", type: "multiple_choice", options: [{ text: "8-14 piglets", icon: "🐷", isCorrect: true }, { text: "1-2 piglets", icon: "1️⃣", isCorrect: false }, { text: "50 piglets", icon: "5️⃣0️⃣", isCorrect: false }, { text: "100 piglets", icon: "💯", isCorrect: false }], explanation: "Sows typically give birth to 8-14 piglets, sometimes more." },
+        { question: "What is estrus in a cow?", type: "multiple_choice", options: [{ text: "Fertile period", icon: "💕", isCorrect: true }, { text: "Disease", icon: "🤒", isCorrect: false }, { text: "Type of feed", icon: "🌾", isCorrect: false }, { text: "Type of barn", icon: "🏠", isCorrect: false }], explanation: "Estrus is the period when a cow is fertile and ready for fertilization." },
+        { question: "How long does a chicken sit on eggs?", type: "multiple_choice", options: [{ text: "21 days", icon: "🥚", isCorrect: true }, { text: "3 days", icon: "3️⃣", isCorrect: false }, { text: "6 months", icon: "📅", isCorrect: false }, { text: "1 year", icon: "📆", isCorrect: false }], explanation: "Incubation of chicken eggs takes 21 days before chicks hatch." },
+        { question: "What is raising young animals?", type: "multiple_choice", options: [{ text: "Care for young animals", icon: "👶", isCorrect: true }, { text: "Selling animals", icon: "💰", isCorrect: false }, { text: "Slaughtering animals", icon: "🔪", isCorrect: false }, { text: "Transporting animals", icon: "🚛", isCorrect: false }], explanation: "Rearing is comprehensive care for young animals from birth to adulthood." },
+        { question: "Why is colostrum important for calves?", type: "multiple_choice", options: [{ text: "Contains antibodies", icon: "🛡️", isCorrect: true }, { text: "It's cheap", icon: "💰", isCorrect: false }, { text: "Has nice color", icon: "🎨", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }], explanation: "Colostrum is the first milk rich in antibodies essential for calf immunity." },
+        { question: "What is weaning?", type: "multiple_choice", options: [{ text: "Separating young from mother", icon: "👋", isCorrect: true }, { text: "Type of disease", icon: "🤒", isCorrect: false }, { text: "Type of feed", icon: "🌾", isCorrect: false }, { text: "Veterinary procedure", icon: "💉", isCorrect: false }], explanation: "Weaning is when a young animal stops nursing and starts eating solid food." },
+        { question: "At what age do hens start laying eggs?", type: "multiple_choice", options: [{ text: "18-22 weeks", icon: "🐔", isCorrect: true }, { text: "1 week", icon: "1️⃣", isCorrect: false }, { text: "5 years", icon: "5️⃣", isCorrect: false }, { text: "Right after hatching", icon: "🐣", isCorrect: false }], explanation: "Hens typically start laying their first eggs at 18-22 weeks of age." },
+        { question: "What is a herd book?", type: "multiple_choice", options: [{ text: "Record of animal ancestry", icon: "📚", isCorrect: true }, { text: "Cookbook", icon: "👨‍🍳", isCorrect: false }, { text: "Veterinary manual", icon: "📖", isCorrect: false }, { text: "Accounting book", icon: "📒", isCorrect: false }], explanation: "A herd book is an official record of breeding animals and their ancestry." }
     ],
-    // Level 5 - Ustájení
+
+    // Level 5 - Housing
     module7_level5: [
-        {
-            question: "Co je volné ustájení?",
-            type: "multiple_choice",
-            options: [
-                { text: "Zvířata se volně pohybují", icon: "🐄", isCorrect: true },
-                { text: "Zvířata jsou uvázaná", icon: "⛓️", isCorrect: false },
-                { text: "Zvířata jsou v klecích", icon: "🗄️", isCorrect: false },
-                { text: "Venkovní chov", icon: "🌳", isCorrect: false }
-            ],
-            explanation: "Ve volném ustájení se zvířata mohou volně pohybovat v prostoru stáje."
-        },
-        {
-            question: "Proč je důležité větrání stáje?",
-            type: "multiple_choice",
-            options: [
-                { text: "Čerstvý vzduch a odvod plynů", icon: "💨", isCorrect: true },
-                { text: "Pro lepší osvětlení", icon: "💡", isCorrect: false },
-                { text: "Pro hluk", icon: "🔊", isCorrect: false },
-                { text: "Není důležité", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Správné větrání zajišťuje přísun čerstvého vzduchu a odvádí škodlivé plyny."
-        },
-        {
-            question: "Co je podestýlka?",
-            type: "multiple_choice",
-            options: [
-                { text: "Materiál na podlaze pro zvířata", icon: "🌾", isCorrect: true },
-                { text: "Typ krmiva", icon: "🍽️", isCorrect: false },
-                { text: "Veterinární přípravek", icon: "💊", isCorrect: false },
-                { text: "Druh ohrady", icon: "🏗️", isCorrect: false }
-            ],
-            explanation: "Podestýlka (sláma, piliny) poskytuje zvířatům měkké a suché lože."
-        },
-        {
-            question: "Jaká je ideální teplota v prasečáku?",
-            type: "multiple_choice",
-            options: [
-                { text: "18-22°C pro dospělá prasata", icon: "🌡️", isCorrect: true },
-                { text: "0°C", icon: "❄️", isCorrect: false },
-                { text: "40°C", icon: "🔥", isCorrect: false },
-                { text: "-10°C", icon: "🥶", isCorrect: false }
-            ],
-            explanation: "Dospělá prasata potřebují teplotu 18-22°C, selata pak vyšší (28-32°C)."
-        },
-        {
-            question: "Co je napáječka?",
-            type: "multiple_choice",
-            options: [
-                { text: "Zařízení pro přísun vody", icon: "💧", isCorrect: true },
-                { text: "Krmný automat", icon: "🍽️", isCorrect: false },
-                { text: "Typ ohrady", icon: "🏗️", isCorrect: false },
-                { text: "Veterinární nástroj", icon: "🔧", isCorrect: false }
-            ],
-            explanation: "Napáječka je zařízení umožňující zvířatům přístup k čerstvé vodě."
-        },
-        {
-            question: "Proč potřebují slepice hřady?",
-            type: "multiple_choice",
-            options: [
-                { text: "Pro odpočinek a spaní", icon: "😴", isCorrect: true },
-                { text: "Pro snášení vajec", icon: "🥚", isCorrect: false },
-                { text: "Pro krmení", icon: "🍽️", isCorrect: false },
-                { text: "Nepotřebují je", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Slepice přirozeně odpočívají na vyvýšených místech - hřadech."
-        },
-        {
-            question: "Co je boxové ustájení?",
-            type: "multiple_choice",
-            options: [
-                { text: "Individuální boxy pro zvířata", icon: "📦", isCorrect: true },
-                { text: "Volný výběh", icon: "🌳", isCorrect: false },
-                { text: "Společná ohrada", icon: "🏟️", isCorrect: false },
-                { text: "Transportní klec", icon: "🚛", isCorrect: false }
-            ],
-            explanation: "V boxovém ustájení má každé zvíře vlastní oddělený prostor."
-        },
-        {
-            question: "Proč je důležité osvětlení v kurníku?",
-            type: "multiple_choice",
-            options: [
-                { text: "Ovlivňuje snášku vajec", icon: "💡", isCorrect: true },
-                { text: "Pro krásu", icon: "✨", isCorrect: false },
-                { text: "Není důležité", icon: "❌", isCorrect: false },
-                { text: "Pouze pro lidi", icon: "👁️", isCorrect: false }
-            ],
-            explanation: "Délka osvětlení (16 hodin) stimuluje slepice k vyšší produkci vajec."
-        },
-        {
-            question: "Co je výběh?",
-            type: "multiple_choice",
-            options: [
-                { text: "Venkovní ohrazený prostor", icon: "🌳", isCorrect: true },
-                { text: "Vnitřek stáje", icon: "🏠", isCorrect: false },
-                { text: "Krmné korýtko", icon: "🍽️", isCorrect: false },
-                { text: "Dopravní prostředek", icon: "🚛", isCorrect: false }
-            ],
-            explanation: "Výběh je oplocená venkovní plocha, kde se zvířata mohou pohybovat."
-        },
-        {
-            question: "Jaké jsou požadavky na prostor pro dojnice?",
-            type: "multiple_choice",
-            options: [
-                { text: "Minimálně 6-8 m² na krávu", icon: "📐", isCorrect: true },
-                { text: "0,5 m² na krávu", icon: "📏", isCorrect: false },
-                { text: "100 m² na krávu", icon: "🏟️", isCorrect: false },
-                { text: "Prostor není důležitý", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Dojnice potřebují dostatečný prostor (6-8 m²) pro pohyb a welfare."
-        }
+        { question: "What is loose housing?", type: "multiple_choice", options: [{ text: "Animals move freely", icon: "🐄", isCorrect: true }, { text: "Animals are tied", icon: "⛓️", isCorrect: false }, { text: "Animals are in cages", icon: "🗄️", isCorrect: false }, { text: "Outdoor keeping", icon: "🌳", isCorrect: false }], explanation: "In loose housing, animals can move freely within the barn space." },
+        { question: "Why is barn ventilation important?", type: "multiple_choice", options: [{ text: "Fresh air and gas removal", icon: "💨", isCorrect: true }, { text: "For better lighting", icon: "💡", isCorrect: false }, { text: "For noise", icon: "🔊", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }], explanation: "Proper ventilation ensures fresh air supply and removes harmful gases." },
+        { question: "What is bedding?", type: "multiple_choice", options: [{ text: "Floor material for animals", icon: "🌾", isCorrect: true }, { text: "Type of feed", icon: "🍽️", isCorrect: false }, { text: "Veterinary product", icon: "💊", isCorrect: false }, { text: "Type of fence", icon: "🏗️", isCorrect: false }], explanation: "Bedding (straw, sawdust) provides animals with a soft and dry lying area." },
+        { question: "What is the ideal temperature in a pig barn?", type: "multiple_choice", options: [{ text: "18-22°C for adult pigs", icon: "🌡️", isCorrect: true }, { text: "0°C", icon: "❄️", isCorrect: false }, { text: "40°C", icon: "🔥", isCorrect: false }, { text: "-10°C", icon: "🥶", isCorrect: false }], explanation: "Adult pigs need 18-22°C, piglets need higher (28-32°C)." },
+        { question: "What is a water drinker?", type: "multiple_choice", options: [{ text: "Device for water supply", icon: "💧", isCorrect: true }, { text: "Feed dispenser", icon: "🍽️", isCorrect: false }, { text: "Type of fence", icon: "🏗️", isCorrect: false }, { text: "Veterinary tool", icon: "🔧", isCorrect: false }], explanation: "A water drinker is a device allowing animals access to fresh water." },
+        { question: "Why do chickens need perches?", type: "multiple_choice", options: [{ text: "For resting and sleeping", icon: "😴", isCorrect: true }, { text: "For laying eggs", icon: "🥚", isCorrect: false }, { text: "For feeding", icon: "🍽️", isCorrect: false }, { text: "They don't need them", icon: "❌", isCorrect: false }], explanation: "Chickens naturally rest on elevated places - perches." },
+        { question: "What is individual housing?", type: "multiple_choice", options: [{ text: "Individual pens for animals", icon: "📦", isCorrect: true }, { text: "Free range", icon: "🌳", isCorrect: false }, { text: "Common pen", icon: "🏟️", isCorrect: false }, { text: "Transport crate", icon: "🚛", isCorrect: false }], explanation: "In individual housing, each animal has its own separate space." },
+        { question: "Why is lighting important in a chicken coop?", type: "multiple_choice", options: [{ text: "Affects egg production", icon: "💡", isCorrect: true }, { text: "For beauty", icon: "✨", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }, { text: "Only for humans", icon: "👁️", isCorrect: false }], explanation: "Light duration (16 hours) stimulates hens to produce more eggs." },
+        { question: "What is an outdoor run?", type: "multiple_choice", options: [{ text: "Fenced outdoor space", icon: "🌳", isCorrect: true }, { text: "Inside the barn", icon: "🏠", isCorrect: false }, { text: "Feed trough", icon: "🍽️", isCorrect: false }, { text: "Transport vehicle", icon: "🚛", isCorrect: false }], explanation: "An outdoor run is a fenced outdoor area where animals can move around." },
+        { question: "What are the space requirements for dairy cows?", type: "multiple_choice", options: [{ text: "Minimum 6-8 m² per cow", icon: "📐", isCorrect: true }, { text: "0.5 m² per cow", icon: "📏", isCorrect: false }, { text: "100 m² per cow", icon: "🏟️", isCorrect: false }, { text: "Space doesn't matter", icon: "❌", isCorrect: false }], explanation: "Dairy cows need adequate space (6-8 m²) for movement and welfare." }
     ],
-    // Level 6 - Dojení
+
+    // Level 6 - Dairy/Milking
     module7_level6: [
-        {
-            question: "Kolikrát denně se obvykle dojí krávy?",
-            type: "multiple_choice",
-            options: [
-                { text: "2x denně", icon: "2️⃣", isCorrect: true },
-                { text: "1x týdně", icon: "📅", isCorrect: false },
-                { text: "10x denně", icon: "🔟", isCorrect: false },
-                { text: "1x měsíčně", icon: "📆", isCorrect: false }
-            ],
-            explanation: "Krávy se standardně dojí 2x denně, některé vysoce produkční i 3x."
-        },
-        {
-            question: "Co je dojírna?",
-            type: "multiple_choice",
-            options: [
-                { text: "Místo pro strojní dojení", icon: "🏭", isCorrect: true },
-                { text: "Sklad mléka", icon: "🥛", isCorrect: false },
-                { text: "Krmírna", icon: "🍽️", isCorrect: false },
-                { text: "Porodna", icon: "👶", isCorrect: false }
-            ],
-            explanation: "Dojírna je speciální prostor vybavený pro hygienické a efektivní dojení."
-        },
-        {
-            question: "Proč je hygiena při dojení důležitá?",
-            type: "multiple_choice",
-            options: [
-                { text: "Prevence mastitidy a kvalita mléka", icon: "🧼", isCorrect: true },
-                { text: "Pouze pro vzhled", icon: "✨", isCorrect: false },
-                { text: "Není důležitá", icon: "❌", isCorrect: false },
-                { text: "Kvůli zápachu", icon: "👃", isCorrect: false }
-            ],
-            explanation: "Čistota při dojení zabraňuje infekci vemene a kontaminaci mléka."
-        },
-        {
-            question: "Co je laktace?",
-            type: "multiple_choice",
-            options: [
-                { text: "Období produkce mléka", icon: "🥛", isCorrect: true },
-                { text: "Druh krmiva", icon: "🌾", isCorrect: false },
-                { text: "Nemoc vemene", icon: "🤒", isCorrect: false },
-                { text: "Typ dojícího stroje", icon: "⚙️", isCorrect: false }
-            ],
-            explanation: "Laktace je období, kdy kráva produkuje mléko po otelení."
-        },
-        {
-            question: "Kolik litrů mléka dává dobrá dojnice denně?",
-            type: "multiple_choice",
-            options: [
-                { text: "25-40 litrů", icon: "🥛", isCorrect: true },
-                { text: "1-2 litry", icon: "🫗", isCorrect: false },
-                { text: "100-200 litrů", icon: "🛢️", isCorrect: false },
-                { text: "0,5 litru", icon: "💧", isCorrect: false }
-            ],
-            explanation: "Moderní dojnice produkují průměrně 25-40 litrů mléka denně."
-        },
-        {
-            question: "Co je zasušení krávy?",
-            type: "multiple_choice",
-            options: [
-                { text: "Ukončení dojení před porodem", icon: "⏸️", isCorrect: true },
-                { text: "Dehydratace krávy", icon: "💧", isCorrect: false },
-                { text: "Sušení sena", icon: "🌾", isCorrect: false },
-                { text: "Léčba nemoci", icon: "💊", isCorrect: false }
-            ],
-            explanation: "Zasušení je období před porodem, kdy se kráva přestane dojit pro regeneraci."
-        },
-        {
-            question: "Co je mléčný tank?",
-            type: "multiple_choice",
-            options: [
-                { text: "Nádrž na chlazení mléka", icon: "🧊", isCorrect: true },
-                { text: "Vojenské vozidlo", icon: "🪖", isCorrect: false },
-                { text: "Krmné korýtko", icon: "🍽️", isCorrect: false },
-                { text: "Dopravní prostředek", icon: "🚛", isCorrect: false }
-            ],
-            explanation: "Mléčný tank je chladicí nádrž, která uchovává mléko při 4°C."
-        },
-        {
-            question: "Na jakou teplotu se chladí mléko?",
-            type: "multiple_choice",
-            options: [
-                { text: "4°C", icon: "🌡️", isCorrect: true },
-                { text: "20°C", icon: "🌞", isCorrect: false },
-                { text: "-20°C", icon: "❄️", isCorrect: false },
-                { text: "37°C", icon: "🔥", isCorrect: false }
-            ],
-            explanation: "Mléko se ihned po nadojení chladí na 4°C pro zachování kvality."
-        },
-        {
-            question: "Co je robotické dojení?",
-            type: "multiple_choice",
-            options: [
-                { text: "Automatické dojení bez obsluhy", icon: "🤖", isCorrect: true },
-                { text: "Ruční dojení", icon: "✋", isCorrect: false },
-                { text: "Dojení do kbelíku", icon: "🪣", isCorrect: false },
-                { text: "Dojení v noci", icon: "🌙", isCorrect: false }
-            ],
-            explanation: "Dojící robot umožňuje krávám nechat se podojit kdykoliv samy."
-        },
-        {
-            question: "Co je podmáslí?",
-            type: "multiple_choice",
-            options: [
-                { text: "Vedlejší produkt výroby másla", icon: "🧈", isCorrect: true },
-                { text: "Smetana", icon: "🥛", isCorrect: false },
-                { text: "Plnotučné mléko", icon: "🍼", isCorrect: false },
-                { text: "Sýr", icon: "🧀", isCorrect: false }
-            ],
-            explanation: "Podmáslí je tekutina zbylá po stloukání másla, bohatá na bílkoviny."
-        }
+        { question: "How many times a day are cows usually milked?", type: "multiple_choice", options: [{ text: "2 times daily", icon: "2️⃣", isCorrect: true }, { text: "Once a week", icon: "📅", isCorrect: false }, { text: "10 times daily", icon: "🔟", isCorrect: false }, { text: "Once a month", icon: "📆", isCorrect: false }], explanation: "Cows are typically milked 2 times daily, some high-producing cows even 3 times." },
+        { question: "What is a milking parlor?", type: "multiple_choice", options: [{ text: "Place for machine milking", icon: "🏭", isCorrect: true }, { text: "Milk storage", icon: "🥛", isCorrect: false }, { text: "Feeding area", icon: "🍽️", isCorrect: false }, { text: "Calving area", icon: "👶", isCorrect: false }], explanation: "A milking parlor is a special area equipped for hygienic and efficient milking." },
+        { question: "Why is milking hygiene important?", type: "multiple_choice", options: [{ text: "Mastitis prevention and milk quality", icon: "🧼", isCorrect: true }, { text: "Only for appearance", icon: "✨", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }, { text: "For smell", icon: "👃", isCorrect: false }], explanation: "Cleanliness during milking prevents udder infection and milk contamination." },
+        { question: "What is lactation?", type: "multiple_choice", options: [{ text: "Milk production period", icon: "🥛", isCorrect: true }, { text: "Type of feed", icon: "🌾", isCorrect: false }, { text: "Udder disease", icon: "🤒", isCorrect: false }, { text: "Type of milking machine", icon: "⚙️", isCorrect: false }], explanation: "Lactation is the period when a cow produces milk after calving." },
+        { question: "How much milk does a good dairy cow give daily?", type: "multiple_choice", options: [{ text: "25-40 liters", icon: "🥛", isCorrect: true }, { text: "1-2 liters", icon: "🫗", isCorrect: false }, { text: "100-200 liters", icon: "🛢️", isCorrect: false }, { text: "0.5 liters", icon: "💧", isCorrect: false }], explanation: "Modern dairy cows produce an average of 25-40 liters of milk daily." },
+        { question: "What is drying off a cow?", type: "multiple_choice", options: [{ text: "Stopping milking before calving", icon: "⏸️", isCorrect: true }, { text: "Dehydrating the cow", icon: "💧", isCorrect: false }, { text: "Drying hay", icon: "🌾", isCorrect: false }, { text: "Disease treatment", icon: "💊", isCorrect: false }], explanation: "Drying off is a period before calving when milking stops for udder recovery." },
+        { question: "What is a milk tank?", type: "multiple_choice", options: [{ text: "Cooling tank for milk", icon: "🧊", isCorrect: true }, { text: "Military vehicle", icon: "🪖", isCorrect: false }, { text: "Feed trough", icon: "🍽️", isCorrect: false }, { text: "Transport vehicle", icon: "🚛", isCorrect: false }], explanation: "A milk tank is a cooling container that keeps milk at 4°C." },
+        { question: "What temperature is milk cooled to?", type: "multiple_choice", options: [{ text: "4°C", icon: "🌡️", isCorrect: true }, { text: "20°C", icon: "🌞", isCorrect: false }, { text: "-20°C", icon: "❄️", isCorrect: false }, { text: "37°C", icon: "🔥", isCorrect: false }], explanation: "Milk is cooled to 4°C immediately after milking to preserve quality." },
+        { question: "What is robotic milking?", type: "multiple_choice", options: [{ text: "Automatic milking without operator", icon: "🤖", isCorrect: true }, { text: "Hand milking", icon: "✋", isCorrect: false }, { text: "Milking into bucket", icon: "🪣", isCorrect: false }, { text: "Night milking", icon: "🌙", isCorrect: false }], explanation: "A milking robot allows cows to be milked automatically whenever they want." },
+        { question: "What is buttermilk?", type: "multiple_choice", options: [{ text: "Byproduct of butter making", icon: "🧈", isCorrect: true }, { text: "Cream", icon: "🥛", isCorrect: false }, { text: "Whole milk", icon: "🍼", isCorrect: false }, { text: "Cheese", icon: "🧀", isCorrect: false }], explanation: "Buttermilk is the liquid remaining after churning butter, rich in protein." }
     ],
-    // Level 7 - Drůbež
+
+    // Level 7 - Poultry
     module7_level7: [
-        {
-            question: "Co je nosnice?",
-            type: "multiple_choice",
-            options: [
-                { text: "Slepice chovaná pro vejce", icon: "🥚", isCorrect: true },
-                { text: "Slepice na maso", icon: "🍗", isCorrect: false },
-                { text: "Kohout", icon: "🐓", isCorrect: false },
-                { text: "Kuře", icon: "🐣", isCorrect: false }
-            ],
-            explanation: "Nosnice jsou slepice specializovaných plemen pro produkci vajec."
-        },
-        {
-            question: "Kolik vajec snese dobrá nosnice za rok?",
-            type: "multiple_choice",
-            options: [
-                { text: "280-320 vajec", icon: "🥚", isCorrect: true },
-                { text: "10-20 vajec", icon: "🔟", isCorrect: false },
-                { text: "1000 vajec", icon: "💯", isCorrect: false },
-                { text: "1 vejce", icon: "1️⃣", isCorrect: false }
-            ],
-            explanation: "Moderní nosnice snášejí 280-320 vajec ročně."
-        },
-        {
-            question: "Co je brojler?",
-            type: "multiple_choice",
-            options: [
-                { text: "Kuře na maso", icon: "🍗", isCorrect: true },
-                { text: "Nosná slepice", icon: "🥚", isCorrect: false },
-                { text: "Kohout", icon: "🐓", isCorrect: false },
-                { text: "Kachna", icon: "🦆", isCorrect: false }
-            ],
-            explanation: "Brojler je kuře rychle rostoucího plemene chované pro produkci masa."
-        },
-        {
-            question: "Za jak dlouho je brojler připraven k porážce?",
-            type: "multiple_choice",
-            options: [
-                { text: "5-7 týdnů", icon: "📅", isCorrect: true },
-                { text: "1 rok", icon: "📆", isCorrect: false },
-                { text: "1 den", icon: "☀️", isCorrect: false },
-                { text: "5 let", icon: "🗓️", isCorrect: false }
-            ],
-            explanation: "Brojleři dosahují porážkové hmotnosti (2-2,5 kg) za 5-7 týdnů."
-        },
-        {
-            question: "Co je snášková špička?",
-            type: "multiple_choice",
-            options: [
-                { text: "Období nejvyšší produkce vajec", icon: "📈", isCorrect: true },
-                { text: "Konec snášky", icon: "📉", isCorrect: false },
-                { text: "Druh krmiva", icon: "🌾", isCorrect: false },
-                { text: "Nemoc slepic", icon: "🤒", isCorrect: false }
-            ],
-            explanation: "Snášková špička je období, kdy nosnice snášejí nejvíce vajec."
-        },
-        {
-            question: "Proč potřebují slepice snášková hnízda?",
-            type: "multiple_choice",
-            options: [
-                { text: "Pro klid při snášení", icon: "🪺", isCorrect: true },
-                { text: "Pro spaní", icon: "😴", isCorrect: false },
-                { text: "Pro krmení", icon: "🍽️", isCorrect: false },
-                { text: "Nepotřebují je", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Snášková hnízda poskytují slepicím klid a soukromí pro snášení vajec."
-        },
-        {
-            question: "Co je pelichání?",
-            type: "multiple_choice",
-            options: [
-                { text: "Výměna peří", icon: "🪶", isCorrect: true },
-                { text: "Nemoc", icon: "🤒", isCorrect: false },
-                { text: "Typ krmiva", icon: "🌾", isCorrect: false },
-                { text: "Způsob chovu", icon: "🏠", isCorrect: false }
-            ],
-            explanation: "Pelichání je přirozená roční výměna peří, během které slepice méně snášejí."
-        },
-        {
-            question: "Co je líheň?",
-            type: "multiple_choice",
-            options: [
-                { text: "Zařízení pro líhnutí vajec", icon: "🐣", isCorrect: true },
-                { text: "Sklad vajec", icon: "📦", isCorrect: false },
-                { text: "Kurník", icon: "🏠", isCorrect: false },
-                { text: "Krmítko", icon: "🍽️", isCorrect: false }
-            ],
-            explanation: "Líheň je zařízení s kontrolovanou teplotou a vlhkostí pro umělý odchov kuřat."
-        },
-        {
-            question: "Jaká je ideální teplota v líhni?",
-            type: "multiple_choice",
-            options: [
-                { text: "37,5-37,8°C", icon: "🌡️", isCorrect: true },
-                { text: "20°C", icon: "❄️", isCorrect: false },
-                { text: "50°C", icon: "🔥", isCorrect: false },
-                { text: "0°C", icon: "🥶", isCorrect: false }
-            ],
-            explanation: "Pro úspěšné líhnutí je potřeba udržovat teplotu 37,5-37,8°C."
-        },
-        {
-            question: "Co je klecový chov nosnic?",
-            type: "multiple_choice",
-            options: [
-                { text: "Chov v obohacených klecích", icon: "🗄️", isCorrect: true },
-                { text: "Volný výběh", icon: "🌳", isCorrect: false },
-                { text: "Podlahový chov", icon: "🏠", isCorrect: false },
-                { text: "Bio chov", icon: "🌿", isCorrect: false }
-            ],
-            explanation: "Klecový chov využívá obohacené klece s hřady a hnízdy pro nosnice."
-        }
+        { question: "What is a layer hen?", type: "multiple_choice", options: [{ text: "Chicken raised for eggs", icon: "🥚", isCorrect: true }, { text: "Chicken for meat", icon: "🍗", isCorrect: false }, { text: "Rooster", icon: "🐓", isCorrect: false }, { text: "Chick", icon: "🐣", isCorrect: false }], explanation: "Layer hens are chickens of specialized breeds for egg production." },
+        { question: "How many eggs does a good layer hen produce per year?", type: "multiple_choice", options: [{ text: "280-320 eggs", icon: "🥚", isCorrect: true }, { text: "10-20 eggs", icon: "🔟", isCorrect: false }, { text: "1000 eggs", icon: "💯", isCorrect: false }, { text: "1 egg", icon: "1️⃣", isCorrect: false }], explanation: "Modern layer hens produce 280-320 eggs per year." },
+        { question: "What is a broiler?", type: "multiple_choice", options: [{ text: "Chicken for meat", icon: "🍗", isCorrect: true }, { text: "Layer hen", icon: "🥚", isCorrect: false }, { text: "Rooster", icon: "🐓", isCorrect: false }, { text: "Duck", icon: "🦆", isCorrect: false }], explanation: "A broiler is a fast-growing chicken raised for meat production." },
+        { question: "How long until a broiler is ready for slaughter?", type: "multiple_choice", options: [{ text: "5-7 weeks", icon: "📅", isCorrect: true }, { text: "1 year", icon: "📆", isCorrect: false }, { text: "1 day", icon: "☀️", isCorrect: false }, { text: "5 years", icon: "🗓️", isCorrect: false }], explanation: "Broilers reach slaughter weight (2-2.5 kg) in 5-7 weeks." },
+        { question: "What is peak egg production?", type: "multiple_choice", options: [{ text: "Period of highest egg production", icon: "📈", isCorrect: true }, { text: "End of laying", icon: "📉", isCorrect: false }, { text: "Type of feed", icon: "🌾", isCorrect: false }, { text: "Chicken disease", icon: "🤒", isCorrect: false }], explanation: "Peak production is the period when layers produce the most eggs." },
+        { question: "Why do hens need nest boxes?", type: "multiple_choice", options: [{ text: "For privacy while laying", icon: "🪺", isCorrect: true }, { text: "For sleeping", icon: "😴", isCorrect: false }, { text: "For feeding", icon: "🍽️", isCorrect: false }, { text: "They don't need them", icon: "❌", isCorrect: false }], explanation: "Nest boxes provide hens with peace and privacy for laying eggs." },
+        { question: "What is molting?", type: "multiple_choice", options: [{ text: "Feather shedding", icon: "🪶", isCorrect: true }, { text: "Disease", icon: "🤒", isCorrect: false }, { text: "Type of feed", icon: "🌾", isCorrect: false }, { text: "Housing method", icon: "🏠", isCorrect: false }], explanation: "Molting is natural annual feather replacement, during which hens lay fewer eggs." },
+        { question: "What is a hatchery?", type: "multiple_choice", options: [{ text: "Equipment for hatching eggs", icon: "🐣", isCorrect: true }, { text: "Egg storage", icon: "📦", isCorrect: false }, { text: "Chicken coop", icon: "🏠", isCorrect: false }, { text: "Feeder", icon: "🍽️", isCorrect: false }], explanation: "A hatchery is equipment with controlled temperature and humidity for artificial chick rearing." },
+        { question: "What is the ideal hatchery temperature?", type: "multiple_choice", options: [{ text: "37.5-37.8°C", icon: "🌡️", isCorrect: true }, { text: "20°C", icon: "❄️", isCorrect: false }, { text: "50°C", icon: "🔥", isCorrect: false }, { text: "0°C", icon: "🥶", isCorrect: false }], explanation: "Successful hatching requires maintaining temperature of 37.5-37.8°C." },
+        { question: "What is cage housing for layers?", type: "multiple_choice", options: [{ text: "Keeping in enriched cages", icon: "🗄️", isCorrect: true }, { text: "Free range", icon: "🌳", isCorrect: false }, { text: "Floor housing", icon: "🏠", isCorrect: false }, { text: "Organic housing", icon: "🌿", isCorrect: false }], explanation: "Cage housing uses enriched cages with perches and nests for layers." }
     ],
-    // Level 8 - Prasata
+
+    // Level 8 - Pigs
     module7_level8: [
-        {
-            question: "Co je vepřín?",
-            type: "multiple_choice",
-            options: [
-                { text: "Stáj pro prasata", icon: "🐷", isCorrect: true },
-                { text: "Kravín", icon: "🐄", isCorrect: false },
-                { text: "Kurník", icon: "🐔", isCorrect: false },
-                { text: "Ovčín", icon: "🐑", isCorrect: false }
-            ],
-            explanation: "Vepřín je specializovaná stáj pro chov prasat."
-        },
-        {
-            question: "Jak dlouho trvá březost prasnice?",
-            type: "multiple_choice",
-            options: [
-                { text: "114 dní (3 měsíce, 3 týdny, 3 dny)", icon: "📅", isCorrect: true },
-                { text: "30 dní", icon: "📆", isCorrect: false },
-                { text: "1 rok", icon: "🗓️", isCorrect: false },
-                { text: "2 týdny", icon: "⏰", isCorrect: false }
-            ],
-            explanation: "Březost prasnice trvá přibližně 114 dní - snadno zapamatovatelné jako 3-3-3."
-        },
-        {
-            question: "Co je kastrace selat?",
-            type: "multiple_choice",
-            options: [
-                { text: "Odstranění pohlavních žláz", icon: "✂️", isCorrect: true },
-                { text: "Očkování", icon: "💉", isCorrect: false },
-                { text: "Označení", icon: "🏷️", isCorrect: false },
-                { text: "Vážení", icon: "⚖️", isCorrect: false }
-            ],
-            explanation: "Kastrace samčích selat se provádí pro zabránění zápachu masa."
-        },
-        {
-            question: "Co je porodní kotec?",
-            type: "multiple_choice",
-            options: [
-                { text: "Speciální box pro porod prasnice", icon: "👶", isCorrect: true },
-                { text: "Krmítko", icon: "🍽️", isCorrect: false },
-                { text: "Transportní klec", icon: "🚛", isCorrect: false },
-                { text: "Veterinární ordinace", icon: "🏥", isCorrect: false }
-            ],
-            explanation: "Porodní kotec chrání selata před zalehlnutím prasnicí."
-        },
-        {
-            question: "Co je odchovna selat?",
-            type: "multiple_choice",
-            options: [
-                { text: "Prostor pro selata po odstavu", icon: "🐷", isCorrect: true },
-                { text: "Porodna", icon: "👶", isCorrect: false },
-                { text: "Výkrmna", icon: "🍖", isCorrect: false },
-                { text: "Jatka", icon: "🔪", isCorrect: false }
-            ],
-            explanation: "V odchovně jsou selata od odstavu (28 dní) do přesunu do výkrmu."
-        },
-        {
-            question: "Jaká je ideální porážková hmotnost prasete?",
-            type: "multiple_choice",
-            options: [
-                { text: "110-120 kg", icon: "⚖️", isCorrect: true },
-                { text: "10-20 kg", icon: "🔟", isCorrect: false },
-                { text: "500 kg", icon: "🐘", isCorrect: false },
-                { text: "5 kg", icon: "5️⃣", isCorrect: false }
-            ],
-            explanation: "Optimální jateční hmotnost prasete je 110-120 kg živé váhy."
-        },
-        {
-            question: "Co je kanec?",
-            type: "multiple_choice",
-            options: [
-                { text: "Samec prasete", icon: "🐗", isCorrect: true },
-                { text: "Samice prasete", icon: "🐷", isCorrect: false },
-                { text: "Mládě prasete", icon: "🐽", isCorrect: false },
-                { text: "Kastrovaný samec", icon: "✂️", isCorrect: false }
-            ],
-            explanation: "Kanec je nekastrovaný dospělý samec prasete používaný k plemenitbě."
-        },
-        {
-            question: "Proč prasata potřebují bahniště?",
-            type: "multiple_choice",
-            options: [
-                { text: "Pro ochlazení těla", icon: "🌊", isCorrect: true },
-                { text: "Pro pití", icon: "💧", isCorrect: false },
-                { text: "Pro zábavu", icon: "🎉", isCorrect: false },
-                { text: "Nepotřebují", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Prasata nemají potní žlázy, proto se válí v blátě k ochlazení."
-        },
-        {
-            question: "Co je výkrm prasat?",
-            type: "multiple_choice",
-            options: [
-                { text: "Období intenzivního růstu před porážkou", icon: "📈", isCorrect: true },
-                { text: "Léčba nemoci", icon: "💊", isCorrect: false },
-                { text: "Reprodukce", icon: "💕", isCorrect: false },
-                { text: "Transport", icon: "🚛", isCorrect: false }
-            ],
-            explanation: "Výkrm je období od 25-30 kg do jateční hmotnosti 110-120 kg."
-        },
-        {
-            question: "Jaká plemena prasat znáte?",
-            type: "multiple_choice",
-            options: [
-                { text: "Bílé ušlechtilé, Landrace", icon: "🐷", isCorrect: true },
-                { text: "Holstein, Jersey", icon: "🐄", isCorrect: false },
-                { text: "Leghorn, Rhode Island", icon: "🐔", isCorrect: false },
-                { text: "Suffolk, Merino", icon: "🐑", isCorrect: false }
-            ],
-            explanation: "Bílé ušlechtilé a Landrace jsou nejrozšířenější masná plemena prasat."
-        }
+        { question: "What is a piggery?", type: "multiple_choice", options: [{ text: "Barn for pigs", icon: "🐷", isCorrect: true }, { text: "Cow barn", icon: "🐄", isCorrect: false }, { text: "Chicken coop", icon: "🐔", isCorrect: false }, { text: "Sheep barn", icon: "🐑", isCorrect: false }], explanation: "A piggery is a specialized barn for raising pigs." },
+        { question: "How long is a sow's pregnancy?", type: "multiple_choice", options: [{ text: "114 days (3 months, 3 weeks, 3 days)", icon: "📅", isCorrect: true }, { text: "30 days", icon: "📆", isCorrect: false }, { text: "1 year", icon: "🗓️", isCorrect: false }, { text: "2 weeks", icon: "⏰", isCorrect: false }], explanation: "Sow pregnancy lasts approximately 114 days - easy to remember as 3-3-3." },
+        { question: "What is piglet castration?", type: "multiple_choice", options: [{ text: "Removal of reproductive glands", icon: "✂️", isCorrect: true }, { text: "Vaccination", icon: "💉", isCorrect: false }, { text: "Tagging", icon: "🏷️", isCorrect: false }, { text: "Weighing", icon: "⚖️", isCorrect: false }], explanation: "Castration of male piglets is done to prevent meat odor (boar taint)." },
+        { question: "What is a farrowing crate?", type: "multiple_choice", options: [{ text: "Special pen for sow giving birth", icon: "👶", isCorrect: true }, { text: "Feeder", icon: "🍽️", isCorrect: false }, { text: "Transport crate", icon: "🚛", isCorrect: false }, { text: "Veterinary clinic", icon: "🏥", isCorrect: false }], explanation: "A farrowing crate protects piglets from being crushed by the sow." },
+        { question: "What is a nursery for piglets?", type: "multiple_choice", options: [{ text: "Space for piglets after weaning", icon: "🐷", isCorrect: true }, { text: "Farrowing area", icon: "👶", isCorrect: false }, { text: "Finishing barn", icon: "🍖", isCorrect: false }, { text: "Slaughterhouse", icon: "🔪", isCorrect: false }], explanation: "In the nursery, piglets stay from weaning (28 days) until moving to finishing." },
+        { question: "What is the ideal slaughter weight for pigs?", type: "multiple_choice", options: [{ text: "110-120 kg", icon: "⚖️", isCorrect: true }, { text: "10-20 kg", icon: "🔟", isCorrect: false }, { text: "500 kg", icon: "🐘", isCorrect: false }, { text: "5 kg", icon: "5️⃣", isCorrect: false }], explanation: "Optimal slaughter weight for pigs is 110-120 kg live weight." },
+        { question: "What is a boar?", type: "multiple_choice", options: [{ text: "Male pig", icon: "🐗", isCorrect: true }, { text: "Female pig", icon: "🐷", isCorrect: false }, { text: "Young pig", icon: "🐽", isCorrect: false }, { text: "Castrated male", icon: "✂️", isCorrect: false }], explanation: "A boar is an uncastrated adult male pig used for breeding." },
+        { question: "Why do pigs need a wallow?", type: "multiple_choice", options: [{ text: "For body cooling", icon: "🌊", isCorrect: true }, { text: "For drinking", icon: "💧", isCorrect: false }, { text: "For fun", icon: "🎉", isCorrect: false }, { text: "They don't need it", icon: "❌", isCorrect: false }], explanation: "Pigs don't have sweat glands, so they wallow in mud to cool down." },
+        { question: "What is pig finishing?", type: "multiple_choice", options: [{ text: "Intensive growth period before slaughter", icon: "📈", isCorrect: true }, { text: "Disease treatment", icon: "💊", isCorrect: false }, { text: "Reproduction", icon: "💕", isCorrect: false }, { text: "Transport", icon: "🚛", isCorrect: false }], explanation: "Finishing is the period from 25-30 kg to slaughter weight of 110-120 kg." },
+        { question: "What pig breeds do you know?", type: "multiple_choice", options: [{ text: "Large White, Landrace", icon: "🐷", isCorrect: true }, { text: "Holstein, Jersey", icon: "🐄", isCorrect: false }, { text: "Leghorn, Rhode Island", icon: "🐔", isCorrect: false }, { text: "Suffolk, Merino", icon: "🐑", isCorrect: false }], explanation: "Large White and Landrace are the most common meat pig breeds." }
     ],
-    // Level 9 - Ovce a kozy
+
+    // Level 9 - Sheep and Goats
     module7_level9: [
-        {
-            question: "Co je stříž ovcí?",
-            type: "multiple_choice",
-            options: [
-                { text: "Stříhání vlny", icon: "✂️", isCorrect: true },
-                { text: "Dojení", icon: "🥛", isCorrect: false },
-                { text: "Krmení", icon: "🍽️", isCorrect: false },
-                { text: "Léčení", icon: "💊", isCorrect: false }
-            ],
-            explanation: "Stříž je pravidelné stříhání vlny z ovcí, obvykle na jaře."
-        },
-        {
-            question: "Kolik vlny dává ovce ročně?",
-            type: "multiple_choice",
-            options: [
-                { text: "4-8 kg", icon: "🧶", isCorrect: true },
-                { text: "100 kg", icon: "💯", isCorrect: false },
-                { text: "0,1 kg", icon: "🔢", isCorrect: false },
-                { text: "50 kg", icon: "5️⃣0️⃣", isCorrect: false }
-            ],
-            explanation: "Průměrná ovce dává 4-8 kg vlny ročně v závislosti na plemeni."
-        },
-        {
-            question: "Co je jehně?",
-            type: "multiple_choice",
-            options: [
-                { text: "Mládě ovce", icon: "🐑", isCorrect: true },
-                { text: "Mládě kozy", icon: "🐐", isCorrect: false },
-                { text: "Dospělá ovce", icon: "🐏", isCorrect: false },
-                { text: "Samec ovce", icon: "🐏", isCorrect: false }
-            ],
-            explanation: "Jehně je mládě ovce do věku přibližně jednoho roku."
-        },
-        {
-            question: "Co je beran?",
-            type: "multiple_choice",
-            options: [
-                { text: "Samec ovce", icon: "🐏", isCorrect: true },
-                { text: "Samice ovce", icon: "🐑", isCorrect: false },
-                { text: "Mládě ovce", icon: "🐑", isCorrect: false },
-                { text: "Druh kozy", icon: "🐐", isCorrect: false }
-            ],
-            explanation: "Beran je dospělý samec ovce používaný k rozmnožování."
-        },
-        {
-            question: "Proč jsou kozy dobré pro údržbu krajiny?",
-            type: "multiple_choice",
-            options: [
-                { text: "Spásají i keře a plevele", icon: "🌿", isCorrect: true },
-                { text: "Produkují hodně mléka", icon: "🥛", isCorrect: false },
-                { text: "Jsou hezké", icon: "✨", isCorrect: false },
-                { text: "Nejsou dobré", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Kozy jsou nenáročné a spásají i rostliny, které jiná zvířata odmítají."
-        },
-        {
-            question: "Co je kůzle?",
-            type: "multiple_choice",
-            options: [
-                { text: "Mládě kozy", icon: "🐐", isCorrect: true },
-                { text: "Mládě ovce", icon: "🐑", isCorrect: false },
-                { text: "Dospělá koza", icon: "🐐", isCorrect: false },
-                { text: "Samec kozy", icon: "🐐", isCorrect: false }
-            ],
-            explanation: "Kůzle je mládě kozy, velmi oblíbené pro jemné maso."
-        },
-        {
-            question: "Jak dlouho trvá březost ovce?",
-            type: "multiple_choice",
-            options: [
-                { text: "Přibližně 5 měsíců (150 dní)", icon: "📅", isCorrect: true },
-                { text: "1 měsíc", icon: "📆", isCorrect: false },
-                { text: "1 rok", icon: "🗓️", isCorrect: false },
-                { text: "2 týdny", icon: "⏰", isCorrect: false }
-            ],
-            explanation: "Březost ovce trvá přibližně 150 dní, tedy asi 5 měsíců."
-        },
-        {
-            question: "Co je ovčí sýr?",
-            type: "multiple_choice",
-            options: [
-                { text: "Sýr z ovčího mléka", icon: "🧀", isCorrect: true },
-                { text: "Sýr z kravského mléka", icon: "🥛", isCorrect: false },
-                { text: "Sýr z kozího mléka", icon: "🐐", isCorrect: false },
-                { text: "Rostlinný sýr", icon: "🌿", isCorrect: false }
-            ],
-            explanation: "Ovčí sýr (např. brynza, pecorino) se vyrábí z ovčího mléka."
-        },
-        {
-            question: "Co je pastevectví?",
-            type: "multiple_choice",
-            options: [
-                { text: "Chov zvířat na pastvě", icon: "🌳", isCorrect: true },
-                { text: "Chov v hale", icon: "🏭", isCorrect: false },
-                { text: "Chov v klecích", icon: "🗄️", isCorrect: false },
-                { text: "Vodní chov", icon: "💧", isCorrect: false }
-            ],
-            explanation: "Pastevectví je způsob chovu, kdy se zvířata pasou na volných plochách."
-        },
-        {
-            question: "Která plemena ovcí jsou v ČR nejrozšířenější?",
-            type: "multiple_choice",
-            options: [
-                { text: "Suffolk, Šumavka", icon: "🐑", isCorrect: true },
-                { text: "Holstein, Jersey", icon: "🐄", isCorrect: false },
-                { text: "Landrace, Duroc", icon: "🐷", isCorrect: false },
-                { text: "Leghorn, Plymouth", icon: "🐔", isCorrect: false }
-            ],
-            explanation: "V ČR se chovají především Suffolk a česká Šumavka."
-        }
+        { question: "What is shearing sheep?", type: "multiple_choice", options: [{ text: "Cutting wool", icon: "✂️", isCorrect: true }, { text: "Milking", icon: "🥛", isCorrect: false }, { text: "Feeding", icon: "🍽️", isCorrect: false }, { text: "Treating", icon: "💊", isCorrect: false }], explanation: "Shearing is regular cutting of wool from sheep, usually in spring." },
+        { question: "How much wool does a sheep give per year?", type: "multiple_choice", options: [{ text: "4-8 kg", icon: "🧶", isCorrect: true }, { text: "100 kg", icon: "💯", isCorrect: false }, { text: "0.1 kg", icon: "🔢", isCorrect: false }, { text: "50 kg", icon: "5️⃣0️⃣", isCorrect: false }], explanation: "An average sheep gives 4-8 kg of wool per year depending on breed." },
+        { question: "What is a lamb?", type: "multiple_choice", options: [{ text: "Young sheep", icon: "🐑", isCorrect: true }, { text: "Young goat", icon: "🐐", isCorrect: false }, { text: "Adult sheep", icon: "🐏", isCorrect: false }, { text: "Male sheep", icon: "🐏", isCorrect: false }], explanation: "A lamb is a young sheep up to approximately one year of age." },
+        { question: "What is a ram?", type: "multiple_choice", options: [{ text: "Male sheep", icon: "🐏", isCorrect: true }, { text: "Female sheep", icon: "🐑", isCorrect: false }, { text: "Young sheep", icon: "🐑", isCorrect: false }, { text: "Type of goat", icon: "🐐", isCorrect: false }], explanation: "A ram is an adult male sheep used for breeding." },
+        { question: "Why are goats good for landscape maintenance?", type: "multiple_choice", options: [{ text: "They graze even shrubs and weeds", icon: "🌿", isCorrect: true }, { text: "They produce a lot of milk", icon: "🥛", isCorrect: false }, { text: "They're beautiful", icon: "✨", isCorrect: false }, { text: "They're not good", icon: "❌", isCorrect: false }], explanation: "Goats are hardy and graze plants that other animals refuse." },
+        { question: "What is a kid?", type: "multiple_choice", options: [{ text: "Young goat", icon: "🐐", isCorrect: true }, { text: "Young sheep", icon: "🐑", isCorrect: false }, { text: "Adult goat", icon: "🐐", isCorrect: false }, { text: "Male goat", icon: "🐐", isCorrect: false }], explanation: "A kid is a young goat, prized for its tender meat." },
+        { question: "How long is a sheep's pregnancy?", type: "multiple_choice", options: [{ text: "Approximately 5 months (150 days)", icon: "📅", isCorrect: true }, { text: "1 month", icon: "📆", isCorrect: false }, { text: "1 year", icon: "🗓️", isCorrect: false }, { text: "2 weeks", icon: "⏰", isCorrect: false }], explanation: "Sheep pregnancy lasts approximately 150 days, about 5 months." },
+        { question: "What is sheep's cheese?", type: "multiple_choice", options: [{ text: "Cheese from sheep's milk", icon: "🧀", isCorrect: true }, { text: "Cheese from cow's milk", icon: "🥛", isCorrect: false }, { text: "Cheese from goat's milk", icon: "🐐", isCorrect: false }, { text: "Plant-based cheese", icon: "🌿", isCorrect: false }], explanation: "Sheep's cheese (e.g., feta, pecorino) is made from sheep's milk." },
+        { question: "What is pastoralism?", type: "multiple_choice", options: [{ text: "Raising animals on pasture", icon: "🌳", isCorrect: true }, { text: "Raising in barns", icon: "🏭", isCorrect: false }, { text: "Raising in cages", icon: "🗄️", isCorrect: false }, { text: "Aquaculture", icon: "💧", isCorrect: false }], explanation: "Pastoralism is a way of raising animals where they graze on open areas." },
+        { question: "Which sheep breeds are most common?", type: "multiple_choice", options: [{ text: "Suffolk, Merino", icon: "🐑", isCorrect: true }, { text: "Holstein, Jersey", icon: "🐄", isCorrect: false }, { text: "Landrace, Duroc", icon: "🐷", isCorrect: false }, { text: "Leghorn, Plymouth", icon: "🐔", isCorrect: false }], explanation: "Suffolk for meat and Merino for wool are popular sheep breeds." }
     ],
-    // Level 10 - Welfare a etika
+
+    // Level 10 - Welfare and Ethics
     module7_level10: [
-        {
-            question: "Co je welfare zvířat?",
-            type: "multiple_choice",
-            options: [
-                { text: "Pohoda a kvalita života zvířat", icon: "😊", isCorrect: true },
-                { text: "Produkce masa", icon: "🥩", isCorrect: false },
-                { text: "Ekonomika chovu", icon: "💰", isCorrect: false },
-                { text: "Druh krmiva", icon: "🌾", isCorrect: false }
-            ],
-            explanation: "Welfare znamená zajištění dobrých životních podmínek a pohody zvířat."
-        },
-        {
-            question: "Kolik svobod má zvíře podle welfare?",
-            type: "multiple_choice",
-            options: [
-                { text: "5 svobod", icon: "5️⃣", isCorrect: true },
-                { text: "1 svoboda", icon: "1️⃣", isCorrect: false },
-                { text: "100 svobod", icon: "💯", isCorrect: false },
-                { text: "Žádné", icon: "0️⃣", isCorrect: false }
-            ],
-            explanation: "5 svobod: bez hladu, bez nepohodlí, bez bolesti, přirozené chování, bez strachu."
-        },
-        {
-            question: "Co je bio chov?",
-            type: "multiple_choice",
-            options: [
-                { text: "Ekologický chov dle předpisů", icon: "🌿", isCorrect: true },
-                { text: "Intenzivní velkovýroba", icon: "🏭", isCorrect: false },
-                { text: "Chov v laboratoři", icon: "🔬", isCorrect: false },
-                { text: "Geneticky modifikovaná zvířata", icon: "🧬", isCorrect: false }
-            ],
-            explanation: "Bio chov dodržuje přísná pravidla pro welfare, krmení a ustájení."
-        },
-        {
-            question: "Proč je důležitý volný výběh?",
-            type: "multiple_choice",
-            options: [
-                { text: "Přirozené chování zvířat", icon: "🌳", isCorrect: true },
-                { text: "Levnější chov", icon: "💰", isCorrect: false },
-                { text: "Rychlejší růst", icon: "📈", isCorrect: false },
-                { text: "Není důležitý", icon: "❌", isCorrect: false }
-            ],
-            explanation: "Volný výběh umožňuje zvířatům přirozený pohyb a chování."
-        },
-        {
-            question: "Co je humánní porážka?",
-            type: "multiple_choice",
-            options: [
-                { text: "Porážka minimalizující stres a bolest", icon: "💚", isCorrect: true },
-                { text: "Rychlá porážka", icon: "⚡", isCorrect: false },
-                { text: "Levná porážka", icon: "💰", isCorrect: false },
-                { text: "Domácí porážka", icon: "🏠", isCorrect: false }
-            ],
-            explanation: "Humánní porážka zajišťuje rychlé a bezbolestné usmrcení zvířete."
-        },
-        {
-            question: "Co je omračování před porážkou?",
-            type: "multiple_choice",
-            options: [
-                { text: "Uvedení do bezvědomí", icon: "😵", isCorrect: true },
-                { text: "Uspání", icon: "😴", isCorrect: false },
-                { text: "Krmení", icon: "🍽️", isCorrect: false },
-                { text: "Transport", icon: "🚛", isCorrect: false }
-            ],
-            explanation: "Omračování zajišťuje, že zvíře necítí bolest při porážce."
-        },
-        {
-            question: "Proč je sociální kontakt důležitý pro zvířata?",
-            type: "multiple_choice",
-            options: [
-                { text: "Jsou to stádová zvířata", icon: "👥", isCorrect: true },
-                { text: "Kvůli rychlejšímu růstu", icon: "📈", isCorrect: false },
-                { text: "Není důležitý", icon: "❌", isCorrect: false },
-                { text: "Pro lepší chuť masa", icon: "🥩", isCorrect: false }
-            ],
-            explanation: "Většina hospodářských zvířat je stádových a potřebuje sociální kontakt."
-        },
-        {
-            question: "Co je obohacení prostředí?",
-            type: "multiple_choice",
-            options: [
-                { text: "Prvky pro přirozené chování", icon: "🎯", isCorrect: true },
-                { text: "Více krmiva", icon: "🍽️", isCorrect: false },
-                { text: "Teplejší stáj", icon: "🔥", isCorrect: false },
-                { text: "Více zvířat", icon: "📈", isCorrect: false }
-            ],
-            explanation: "Obohacení prostředí zahrnuje hračky, podestýlku k hrabání apod."
-        },
-        {
-            question: "Co je trackovatelnost masa?",
-            type: "multiple_choice",
-            options: [
-                { text: "Sledování původu produktu", icon: "🔍", isCorrect: true },
-                { text: "Sledování hmotnosti", icon: "⚖️", isCorrect: false },
-                { text: "Sledování barvy", icon: "🎨", isCorrect: false },
-                { text: "Sledování ceny", icon: "💰", isCorrect: false }
-            ],
-            explanation: "Trackovatelnost umožňuje dohledat původ masa od farmy až k spotřebiteli."
-        },
-        {
-            question: "Proč je důležité vzdělávání chovatelů o welfare?",
-            type: "multiple_choice",
-            options: [
-                { text: "Lepší péče o zvířata", icon: "📚", isCorrect: true },
-                { text: "Není důležité", icon: "❌", isCorrect: false },
-                { text: "Pouze pro certifikaci", icon: "📜", isCorrect: false },
-                { text: "Pro vyšší dotace", icon: "💶", isCorrect: false }
-            ],
-            explanation: "Vzdělaní chovatelé lépe rozumí potřebám zvířat a poskytují lepší péči."
-        }
+        { question: "What is animal welfare?", type: "multiple_choice", options: [{ text: "Well-being and quality of life", icon: "😊", isCorrect: true }, { text: "Meat production", icon: "🥩", isCorrect: false }, { text: "Economics of farming", icon: "💰", isCorrect: false }, { text: "Type of feed", icon: "🌾", isCorrect: false }], explanation: "Welfare means ensuring good living conditions and well-being for animals." },
+        { question: "How many freedoms do animals have according to welfare?", type: "multiple_choice", options: [{ text: "5 freedoms", icon: "5️⃣", isCorrect: true }, { text: "1 freedom", icon: "1️⃣", isCorrect: false }, { text: "100 freedoms", icon: "💯", isCorrect: false }, { text: "None", icon: "0️⃣", isCorrect: false }], explanation: "5 freedoms: from hunger, discomfort, pain, to express behavior, from fear." },
+        { question: "What is organic farming?", type: "multiple_choice", options: [{ text: "Ecological farming following regulations", icon: "🌿", isCorrect: true }, { text: "Intensive factory farming", icon: "🏭", isCorrect: false }, { text: "Laboratory farming", icon: "🔬", isCorrect: false }, { text: "Genetically modified animals", icon: "🧬", isCorrect: false }], explanation: "Organic farming follows strict rules for welfare, feeding, and housing." },
+        { question: "Why is free range important?", type: "multiple_choice", options: [{ text: "Natural animal behavior", icon: "🌳", isCorrect: true }, { text: "Cheaper farming", icon: "💰", isCorrect: false }, { text: "Faster growth", icon: "📈", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }], explanation: "Free range allows animals natural movement and behavior." },
+        { question: "What is humane slaughter?", type: "multiple_choice", options: [{ text: "Slaughter minimizing stress and pain", icon: "💚", isCorrect: true }, { text: "Fast slaughter", icon: "⚡", isCorrect: false }, { text: "Cheap slaughter", icon: "💰", isCorrect: false }, { text: "Home slaughter", icon: "🏠", isCorrect: false }], explanation: "Humane slaughter ensures quick and painless death of the animal." },
+        { question: "What is stunning before slaughter?", type: "multiple_choice", options: [{ text: "Rendering unconscious", icon: "😵", isCorrect: true }, { text: "Putting to sleep", icon: "😴", isCorrect: false }, { text: "Feeding", icon: "🍽️", isCorrect: false }, { text: "Transport", icon: "🚛", isCorrect: false }], explanation: "Stunning ensures the animal doesn't feel pain during slaughter." },
+        { question: "Why is social contact important for animals?", type: "multiple_choice", options: [{ text: "They are herd animals", icon: "👥", isCorrect: true }, { text: "For faster growth", icon: "📈", isCorrect: false }, { text: "Not important", icon: "❌", isCorrect: false }, { text: "For better meat taste", icon: "🥩", isCorrect: false }], explanation: "Most farm animals are social and need contact with others." },
+        { question: "What is environmental enrichment?", type: "multiple_choice", options: [{ text: "Elements for natural behavior", icon: "🎯", isCorrect: true }, { text: "More feed", icon: "🍽️", isCorrect: false }, { text: "Warmer barn", icon: "🔥", isCorrect: false }, { text: "More animals", icon: "📈", isCorrect: false }], explanation: "Environmental enrichment includes toys, bedding for scratching, etc." },
+        { question: "What is meat traceability?", type: "multiple_choice", options: [{ text: "Tracking product origin", icon: "🔍", isCorrect: true }, { text: "Tracking weight", icon: "⚖️", isCorrect: false }, { text: "Tracking color", icon: "🎨", isCorrect: false }, { text: "Tracking price", icon: "💰", isCorrect: false }], explanation: "Traceability allows tracking meat origin from farm to consumer." },
+        { question: "Why is farmer education about welfare important?", type: "multiple_choice", options: [{ text: "Better care for animals", icon: "📚", isCorrect: true }, { text: "Not important", icon: "❌", isCorrect: false }, { text: "Only for certification", icon: "📜", isCorrect: false }, { text: "For higher subsidies", icon: "💶", isCorrect: false }], explanation: "Educated farmers better understand animal needs and provide better care." }
     ]
 };
 
-// Export do window
+// Export to window
 window.MODULE7_QUESTIONS = MODULE7_QUESTIONS;

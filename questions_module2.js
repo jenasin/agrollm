@@ -1,1145 +1,1145 @@
-// Modul 2: Ochrana Rostlin - 100 otázek (10 levelů x 10 otázek)
+// Module 2: Plant Protection - 100 questions (10 levels x 10 questions)
 const MODULE2_QUESTIONS = {
-    // Level 1 - Základy ochrany rostlin
+    // Level 1 - Plant Protection Basics
     module2_level1: [
         {
-            question: "Co je škůdce?",
+            question: "What is a pest?",
             type: "multiple_choice",
             options: [
-                { text: "Organismus poškozující rostliny", icon: "🐛", isCorrect: true },
-                { text: "Užitečný hmyz", icon: "🐝", isCorrect: false },
-                { text: "Hnojivo", icon: "🧪", isCorrect: false },
-                { text: "Plevel", icon: "🌿", isCorrect: false }
+                { text: "Organism that damages plants", icon: "🐛", isCorrect: true },
+                { text: "Beneficial insect", icon: "🐝", isCorrect: false },
+                { text: "Fertilizer", icon: "🧪", isCorrect: false },
+                { text: "Weed", icon: "🌿", isCorrect: false }
             ],
-            explanation: "Škůdci jsou organismy (hmyz, hlodavci, roztoči), které poškozují plodiny."
+            explanation: "Pests are organisms (insects, rodents, mites) that damage crops."
         },
         {
-            question: "Co je choroba rostlin?",
+            question: "What is a plant disease?",
             type: "multiple_choice",
             options: [
-                { text: "Porucha způsobená patogenem", icon: "🦠", isCorrect: true },
-                { text: "Nedostatek vody", icon: "💧", isCorrect: false },
-                { text: "Příliš mnoho slunce", icon: "☀️", isCorrect: false },
-                { text: "Nedostatek prostoru", icon: "📏", isCorrect: false }
+                { text: "Disorder caused by a pathogen", icon: "🦠", isCorrect: true },
+                { text: "Lack of water", icon: "💧", isCorrect: false },
+                { text: "Too much sun", icon: "☀️", isCorrect: false },
+                { text: "Lack of space", icon: "📏", isCorrect: false }
             ],
-            explanation: "Choroby jsou způsobeny houbami, bakteriemi, viry nebo fytoplazmami."
+            explanation: "Diseases are caused by fungi, bacteria, viruses, or phytoplasmas."
         },
         {
-            question: "Co je pesticid?",
+            question: "What is a pesticide?",
             type: "multiple_choice",
             options: [
-                { text: "Přípravek na ochranu rostlin", icon: "🧪", isCorrect: true },
-                { text: "Hnojivo", icon: "🌱", isCorrect: false },
-                { text: "Osivo", icon: "🌰", isCorrect: false },
-                { text: "Krmivo", icon: "🥬", isCorrect: false }
+                { text: "Plant protection product", icon: "🧪", isCorrect: true },
+                { text: "Fertilizer", icon: "🌱", isCorrect: false },
+                { text: "Seed", icon: "🌰", isCorrect: false },
+                { text: "Feed", icon: "🥬", isCorrect: false }
             ],
-            explanation: "Pesticidy jsou chemické nebo biologické přípravky k hubení škodlivých organismů."
+            explanation: "Pesticides are chemical or biological products for killing harmful organisms."
         },
         {
-            question: "Insekticid slouží k hubení:",
+            question: "Insecticide is used to kill:",
             type: "multiple_choice",
             options: [
-                { text: "Hmyzu", icon: "🐛", isCorrect: true },
-                { text: "Plevelů", icon: "🌿", isCorrect: false },
-                { text: "Hub", icon: "🍄", isCorrect: false },
-                { text: "Hlodavců", icon: "🐀", isCorrect: false }
+                { text: "Insects", icon: "🐛", isCorrect: true },
+                { text: "Weeds", icon: "🌿", isCorrect: false },
+                { text: "Fungi", icon: "🍄", isCorrect: false },
+                { text: "Rodents", icon: "🐀", isCorrect: false }
             ],
-            explanation: "Insekticidy jsou přípravky určené k hubení hmyzích škůdců."
+            explanation: "Insecticides are products designed to kill insect pests."
         },
         {
-            question: "Fungicid se používá proti:",
+            question: "Fungicide is used against:",
             type: "multiple_choice",
             options: [
-                { text: "Houbovým chorobám", icon: "🍄", isCorrect: true },
-                { text: "Hmyzu", icon: "🐛", isCorrect: false },
-                { text: "Plevelům", icon: "🌿", isCorrect: false },
-                { text: "Ptákům", icon: "🐦", isCorrect: false }
+                { text: "Fungal diseases", icon: "🍄", isCorrect: true },
+                { text: "Insects", icon: "🐛", isCorrect: false },
+                { text: "Weeds", icon: "🌿", isCorrect: false },
+                { text: "Birds", icon: "🐦", isCorrect: false }
             ],
-            explanation: "Fungicidy potlačují houbové patogeny způsobující choroby rostlin."
+            explanation: "Fungicides suppress fungal pathogens causing plant diseases."
         },
         {
-            question: "Co je preventivní ochrana?",
+            question: "What is preventive protection?",
             type: "multiple_choice",
             options: [
-                { text: "Opatření před výskytem problému", icon: "🛡️", isCorrect: true },
-                { text: "Léčba již napadených rostlin", icon: "💊", isCorrect: false },
-                { text: "Sklizeň nemocných rostlin", icon: "🌾", isCorrect: false },
-                { text: "Nic nedělat", icon: "😴", isCorrect: false }
+                { text: "Measures before problem occurs", icon: "🛡️", isCorrect: true },
+                { text: "Treatment of infected plants", icon: "💊", isCorrect: false },
+                { text: "Harvesting sick plants", icon: "🌾", isCorrect: false },
+                { text: "Do nothing", icon: "😴", isCorrect: false }
             ],
-            explanation: "Prevence zahrnuje opatření, která brání vzniku problému - střídání plodin, hygiena."
+            explanation: "Prevention includes measures that prevent problems - crop rotation, hygiene."
         },
         {
-            question: "Co je práh škodlivosti?",
+            question: "What is economic threshold?",
             type: "multiple_choice",
             options: [
-                { text: "Míra napadení, kdy se vyplatí zásah", icon: "📊", isCorrect: true },
-                { text: "Práh do pole", icon: "🚪", isCorrect: false },
-                { text: "Maximální výnos", icon: "📈", isCorrect: false },
-                { text: "Minimální dávka pesticidu", icon: "💧", isCorrect: false }
+                { text: "Infestation level when treatment pays off", icon: "📊", isCorrect: true },
+                { text: "Field entrance", icon: "🚪", isCorrect: false },
+                { text: "Maximum yield", icon: "📈", isCorrect: false },
+                { text: "Minimum pesticide dose", icon: "💧", isCorrect: false }
             ],
-            explanation: "Práh škodlivosti určuje, kdy ekonomické ztráty překročí náklady na ošetření."
+            explanation: "Economic threshold determines when economic losses exceed treatment costs."
         },
         {
-            question: "Co je karanténní škůdce?",
+            question: "What is a quarantine pest?",
             type: "multiple_choice",
             options: [
-                { text: "Nebezpečný škůdce podléhající regulaci", icon: "⚠️", isCorrect: true },
-                { text: "Škůdce v karanténě", icon: "🏥", isCorrect: false },
-                { text: "Běžný škůdce", icon: "🐛", isCorrect: false },
-                { text: "Vymřelý škůdce", icon: "☠️", isCorrect: false }
+                { text: "Dangerous pest subject to regulation", icon: "⚠️", isCorrect: true },
+                { text: "Pest in quarantine", icon: "🏥", isCorrect: false },
+                { text: "Common pest", icon: "🐛", isCorrect: false },
+                { text: "Extinct pest", icon: "☠️", isCorrect: false }
             ],
-            explanation: "Karanténní organismy jsou regulované a jejich výskyt se hlásí rostlinolékařské správě."
+            explanation: "Quarantine organisms are regulated and their occurrence must be reported."
         },
         {
-            question: "Příznaky choroby mohou být:",
+            question: "Disease symptoms can include:",
             type: "multiple_choice",
             options: [
-                { text: "Skvrny, vadnutí, deformace", icon: "🍂", isCorrect: true },
-                { text: "Pouze žluté listy", icon: "🟡", isCorrect: false },
-                { text: "Rychlý růst", icon: "📈", isCorrect: false },
-                { text: "Větší plody", icon: "🍎", isCorrect: false }
+                { text: "Spots, wilting, deformations", icon: "🍂", isCorrect: true },
+                { text: "Only yellow leaves", icon: "🟡", isCorrect: false },
+                { text: "Fast growth", icon: "📈", isCorrect: false },
+                { text: "Larger fruits", icon: "🍎", isCorrect: false }
             ],
-            explanation: "Choroby se projevují různě - skvrnami, hnilobou, vadnutím, deformacemi, zakrslostí."
+            explanation: "Diseases manifest in various ways - spots, rot, wilting, deformations, stunting."
         },
         {
-            question: "Nejdůležitější v ochraně rostlin je:",
+            question: "Most important in plant protection is:",
             type: "multiple_choice",
             options: [
-                { text: "Prevence a včasná diagnostika", icon: "✅", isCorrect: true },
-                { text: "Co nejvíce pesticidů", icon: "🧪", isCorrect: false },
-                { text: "Ignorovat problémy", icon: "🙈", isCorrect: false },
-                { text: "Chemie za každou cenu", icon: "💰", isCorrect: false }
+                { text: "Prevention and early diagnosis", icon: "✅", isCorrect: true },
+                { text: "As many pesticides as possible", icon: "🧪", isCorrect: false },
+                { text: "Ignore problems", icon: "🙈", isCorrect: false },
+                { text: "Chemicals at any cost", icon: "💰", isCorrect: false }
             ],
-            explanation: "Prevence je levnější a účinnější než léčba již rozšířeného problému."
+            explanation: "Prevention is cheaper and more effective than treating widespread problems."
         }
     ],
 
-    // Level 2 - Hmyzí škůdci
+    // Level 2 - Insect Pests
     module2_level2: [
         {
-            question: "Mšice škodí rostlinám tím, že:",
+            question: "Aphids damage plants by:",
             type: "multiple_choice",
             options: [
-                { text: "Sají šťávu a přenášejí viry", icon: "🦟", isCorrect: true },
-                { text: "Okusují listy", icon: "🍃", isCorrect: false },
-                { text: "Vrtají do stonků", icon: "🕳️", isCorrect: false },
-                { text: "Jedí kořeny", icon: "🌱", isCorrect: false }
+                { text: "Sucking sap and transmitting viruses", icon: "🦟", isCorrect: true },
+                { text: "Chewing leaves", icon: "🍃", isCorrect: false },
+                { text: "Boring into stems", icon: "🕳️", isCorrect: false },
+                { text: "Eating roots", icon: "🌱", isCorrect: false }
             ],
-            explanation: "Mšice sají rostlinné šťávy a jsou významnými přenašeči virových chorob."
+            explanation: "Aphids suck plant sap and are significant vectors of viral diseases."
         },
         {
-            question: "Přirozeným nepřítelem mšic je:",
+            question: "Natural enemy of aphids is:",
             type: "multiple_choice",
             options: [
-                { text: "Slunéčko sedmitečné", icon: "🐞", isCorrect: true },
-                { text: "Včela", icon: "🐝", isCorrect: false },
-                { text: "Motýl", icon: "🦋", isCorrect: false },
-                { text: "Moucha", icon: "🪰", isCorrect: false }
+                { text: "Ladybug", icon: "🐞", isCorrect: true },
+                { text: "Bee", icon: "🐝", isCorrect: false },
+                { text: "Butterfly", icon: "🦋", isCorrect: false },
+                { text: "Fly", icon: "🪰", isCorrect: false }
             ],
-            explanation: "Slunéčka a jejich larvy jsou významní predátoři mšic."
+            explanation: "Ladybugs and their larvae are important predators of aphids."
         },
         {
-            question: "Mandelinka bramborová se pozná podle:",
+            question: "Colorado potato beetle is recognized by:",
             type: "multiple_choice",
             options: [
-                { text: "Žluto-černého pruhování", icon: "🟡", isCorrect: true },
-                { text: "Červené barvy", icon: "🔴", isCorrect: false },
-                { text: "Zelené barvy", icon: "🟢", isCorrect: false },
-                { text: "Modré barvy", icon: "🔵", isCorrect: false }
+                { text: "Yellow-black stripes", icon: "🟡", isCorrect: true },
+                { text: "Red color", icon: "🔴", isCorrect: false },
+                { text: "Green color", icon: "🟢", isCorrect: false },
+                { text: "Blue color", icon: "🔵", isCorrect: false }
             ],
-            explanation: "Mandelinka bramborová má charakteristické žluto-černé pruhy na krovkách."
+            explanation: "Colorado potato beetle has characteristic yellow-black stripes on wing covers."
         },
         {
-            question: "Housenky škodí:",
+            question: "Caterpillars damage by:",
             type: "multiple_choice",
             options: [
-                { text: "Okusováním listů a plodů", icon: "🐛", isCorrect: true },
-                { text: "Sáním šťávy", icon: "🥤", isCorrect: false },
-                { text: "Přenášením chorob", icon: "🦠", isCorrect: false },
-                { text: "Ničením kořenů", icon: "🌱", isCorrect: false }
+                { text: "Chewing leaves and fruits", icon: "🐛", isCorrect: true },
+                { text: "Sucking sap", icon: "🥤", isCorrect: false },
+                { text: "Transmitting diseases", icon: "🦠", isCorrect: false },
+                { text: "Destroying roots", icon: "🌱", isCorrect: false }
             ],
-            explanation: "Housenky motýlů mají kousací ústní ústrojí a žerou listovou hmotu."
+            explanation: "Caterpillars of butterflies have chewing mouthparts and eat leaf tissue."
         },
         {
-            question: "Zavíječ kukuřičný napadá:",
+            question: "European corn borer attacks:",
             type: "multiple_choice",
             options: [
-                { text: "Palice a stonky kukuřice", icon: "🌽", isCorrect: true },
-                { text: "Pouze kořeny", icon: "🌱", isCorrect: false },
-                { text: "Pouze listy", icon: "🍃", isCorrect: false },
-                { text: "Pouze květy", icon: "🌸", isCorrect: false }
+                { text: "Corn ears and stalks", icon: "🌽", isCorrect: true },
+                { text: "Only roots", icon: "🌱", isCorrect: false },
+                { text: "Only leaves", icon: "🍃", isCorrect: false },
+                { text: "Only flowers", icon: "🌸", isCorrect: false }
             ],
-            explanation: "Housenky zavíječe vrtají do palic a stonků kukuřice a způsobují velké škody."
+            explanation: "Corn borer larvae bore into ears and stalks of corn causing major damage."
         },
         {
-            question: "Drátovci jsou larvy:",
+            question: "Wireworms are larvae of:",
             type: "multiple_choice",
             options: [
-                { text: "Kovaříků", icon: "🪲", isCorrect: true },
-                { text: "Motýlů", icon: "🦋", isCorrect: false },
-                { text: "Much", icon: "🪰", isCorrect: false },
-                { text: "Včel", icon: "🐝", isCorrect: false }
+                { text: "Click beetles", icon: "🪲", isCorrect: true },
+                { text: "Butterflies", icon: "🦋", isCorrect: false },
+                { text: "Flies", icon: "🪰", isCorrect: false },
+                { text: "Bees", icon: "🐝", isCorrect: false }
             ],
-            explanation: "Drátovci jsou žluté, tuhé larvy kovaříků, které žerou kořeny a hlízy."
+            explanation: "Wireworms are yellow, hard larvae of click beetles that eat roots and tubers."
         },
         {
-            question: "Bejlomorka škodí především:",
+            question: "Hessian fly damages mainly:",
             type: "multiple_choice",
             options: [
-                { text: "Obilí tvorbou hálek", icon: "🌾", isCorrect: true },
-                { text: "Ovoci", icon: "🍎", isCorrect: false },
-                { text: "Zelenině", icon: "🥬", isCorrect: false },
-                { text: "Stromům", icon: "🌳", isCorrect: false }
+                { text: "Cereals by forming galls", icon: "🌾", isCorrect: true },
+                { text: "Fruits", icon: "🍎", isCorrect: false },
+                { text: "Vegetables", icon: "🥬", isCorrect: false },
+                { text: "Trees", icon: "🌳", isCorrect: false }
             ],
-            explanation: "Bejlomorky jsou drobné mušky, jejichž larvy tvoří na obilí hálky."
+            explanation: "Hessian flies are small midges whose larvae form galls on cereals."
         },
         {
-            question: "Třásněnky (trips) jsou:",
+            question: "Thrips are:",
             type: "multiple_choice",
             options: [
-                { text: "Drobný hmyz poškozující listy a květy", icon: "🐛", isCorrect: true },
-                { text: "Velcí brouci", icon: "🪲", isCorrect: false },
-                { text: "Motýli", icon: "🦋", isCorrect: false },
-                { text: "Pavouci", icon: "🕷️", isCorrect: false }
+                { text: "Tiny insects damaging leaves and flowers", icon: "🐛", isCorrect: true },
+                { text: "Large beetles", icon: "🪲", isCorrect: false },
+                { text: "Butterflies", icon: "🦋", isCorrect: false },
+                { text: "Spiders", icon: "🕷️", isCorrect: false }
             ],
-            explanation: "Třásněnky jsou drobný hmyz s třásnitými křídly, který saje na listech a květech."
+            explanation: "Thrips are tiny insects with fringed wings that feed on leaves and flowers."
         },
         {
-            question: "Svilušky jsou:",
+            question: "Spider mites are:",
             type: "multiple_choice",
             options: [
-                { text: "Roztoči sající na listech", icon: "🔴", isCorrect: true },
-                { text: "Hmyz", icon: "🐛", isCorrect: false },
-                { text: "Houby", icon: "🍄", isCorrect: false },
-                { text: "Bakterie", icon: "🦠", isCorrect: false }
+                { text: "Mites feeding on leaves", icon: "🔴", isCorrect: true },
+                { text: "Insects", icon: "🐛", isCorrect: false },
+                { text: "Fungi", icon: "🍄", isCorrect: false },
+                { text: "Bacteria", icon: "🦠", isCorrect: false }
             ],
-            explanation: "Svilušky jsou mikroskopičtí roztoči tvořící pavučinky na spodní straně listů."
+            explanation: "Spider mites are microscopic mites that form webs on leaf undersides."
         },
         {
-            question: "Jak se bránit škůdcům bez chemie?",
+            question: "How to control pests without chemicals?",
             type: "multiple_choice",
             options: [
-                { text: "Podporou přirozených nepřátel", icon: "🐞", isCorrect: true },
-                { text: "Ignorováním", icon: "🙈", isCorrect: false },
-                { text: "Více hnojením", icon: "🧪", isCorrect: false },
-                { text: "Méně zaléváním", icon: "💧", isCorrect: false }
+                { text: "By supporting natural enemies", icon: "🐞", isCorrect: true },
+                { text: "By ignoring them", icon: "🙈", isCorrect: false },
+                { text: "More fertilization", icon: "🧪", isCorrect: false },
+                { text: "Less watering", icon: "💧", isCorrect: false }
             ],
-            explanation: "Biologická ochrana využívá predátory, parazitoidy a patogeny škůdců."
+            explanation: "Biological control uses predators, parasitoids, and pathogens of pests."
         }
     ],
 
-    // Level 3 - Houbové choroby
+    // Level 3 - Fungal Diseases
     module2_level3: [
         {
-            question: "Padlí se projevuje:",
+            question: "Powdery mildew appears as:",
             type: "multiple_choice",
             options: [
-                { text: "Bílým povlakem na listech", icon: "⚪", isCorrect: true },
-                { text: "Žlutými skvrnami", icon: "🟡", isCorrect: false },
-                { text: "Černými tečkami", icon: "⚫", isCorrect: false },
-                { text: "Vadnutím", icon: "🥀", isCorrect: false }
+                { text: "White coating on leaves", icon: "⚪", isCorrect: true },
+                { text: "Yellow spots", icon: "🟡", isCorrect: false },
+                { text: "Black dots", icon: "⚫", isCorrect: false },
+                { text: "Wilting", icon: "🥀", isCorrect: false }
             ],
-            explanation: "Padlí tvoří charakteristický bílý moučnatý povlak na površích rostlin."
+            explanation: "Powdery mildew forms characteristic white powdery coating on plant surfaces."
         },
         {
-            question: "Plíseň bramborová způsobuje:",
+            question: "Late blight of potato causes:",
             type: "multiple_choice",
             options: [
-                { text: "Hnědé skvrny a hnilobu", icon: "🟤", isCorrect: true },
-                { text: "Bílý povlak", icon: "⚪", isCorrect: false },
-                { text: "Rychlejší růst", icon: "📈", isCorrect: false },
-                { text: "Větší hlízy", icon: "🥔", isCorrect: false }
+                { text: "Brown spots and rot", icon: "🟤", isCorrect: true },
+                { text: "White coating", icon: "⚪", isCorrect: false },
+                { text: "Faster growth", icon: "📈", isCorrect: false },
+                { text: "Larger tubers", icon: "🥔", isCorrect: false }
             ],
-            explanation: "Phytophthora infestans způsobuje devastující chorobu brambor a rajčat."
+            explanation: "Phytophthora infestans causes devastating disease of potatoes and tomatoes."
         },
         {
-            question: "Rez obilná se pozná podle:",
+            question: "Wheat rust is recognized by:",
             type: "multiple_choice",
             options: [
-                { text: "Oranžových až hnědých pustul", icon: "🟠", isCorrect: true },
-                { text: "Bílého povlaku", icon: "⚪", isCorrect: false },
-                { text: "Zelených skvrn", icon: "🟢", isCorrect: false },
-                { text: "Modrých pruhů", icon: "🔵", isCorrect: false }
+                { text: "Orange to brown pustules", icon: "🟠", isCorrect: true },
+                { text: "White coating", icon: "⚪", isCorrect: false },
+                { text: "Green spots", icon: "🟢", isCorrect: false },
+                { text: "Blue stripes", icon: "🔵", isCorrect: false }
             ],
-            explanation: "Rzi tvoří charakteristické rezavé výtrusnice (pustuly) na listech obilovin."
+            explanation: "Rusts form characteristic rust-colored spore pustules on cereal leaves."
         },
         {
-            question: "Sněť mazlavá napadá:",
+            question: "Smut attacks:",
             type: "multiple_choice",
             options: [
-                { text: "Zrna obilovin", icon: "🌾", isCorrect: true },
-                { text: "Kořeny", icon: "🌱", isCorrect: false },
-                { text: "Stonky", icon: "🌿", isCorrect: false },
-                { text: "Květy", icon: "🌸", isCorrect: false }
+                { text: "Cereal grains", icon: "🌾", isCorrect: true },
+                { text: "Roots", icon: "🌱", isCorrect: false },
+                { text: "Stems", icon: "🌿", isCorrect: false },
+                { text: "Flowers", icon: "🌸", isCorrect: false }
             ],
-            explanation: "Sněti přeměňují zrna obilovin na černou masu výtrusů."
+            explanation: "Smuts transform cereal grains into black masses of spores."
         },
         {
-            question: "Šedá hniloba (botrytis) postihuje:",
+            question: "Gray mold (Botrytis) affects:",
             type: "multiple_choice",
             options: [
-                { text: "Plody, květy, listy", icon: "🍇", isCorrect: true },
-                { text: "Pouze kořeny", icon: "🌱", isCorrect: false },
-                { text: "Pouze stonky", icon: "🌿", isCorrect: false },
-                { text: "Pouze semena", icon: "🌰", isCorrect: false }
+                { text: "Fruits, flowers, leaves", icon: "🍇", isCorrect: true },
+                { text: "Only roots", icon: "🌱", isCorrect: false },
+                { text: "Only stems", icon: "🌿", isCorrect: false },
+                { text: "Only seeds", icon: "🌰", isCorrect: false }
             ],
-            explanation: "Botrytis cinerea je polyfágní houba napadající mnoho plodin, zejména v podmínkách vysoké vlhkosti."
+            explanation: "Botrytis cinerea is a polyphagous fungus affecting many crops, especially in humid conditions."
         },
         {
-            question: "Fuzariózy způsobují:",
+            question: "Fusarium diseases cause:",
             type: "multiple_choice",
             options: [
-                { text: "Vadnutí a hniloby", icon: "🥀", isCorrect: true },
-                { text: "Bílý povlak", icon: "⚪", isCorrect: false },
-                { text: "Rychlejší růst", icon: "📈", isCorrect: false },
-                { text: "Větší plody", icon: "🍎", isCorrect: false }
+                { text: "Wilting and rot", icon: "🥀", isCorrect: true },
+                { text: "White coating", icon: "⚪", isCorrect: false },
+                { text: "Faster growth", icon: "📈", isCorrect: false },
+                { text: "Larger fruits", icon: "🍎", isCorrect: false }
             ],
-            explanation: "Fuzária způsobují vadnutí, hniloby kořenů a klasů, produkují nebezpečné mykotoxiny."
+            explanation: "Fusarium causes wilting, root and ear rots, and produces dangerous mycotoxins."
         },
         {
-            question: "Jak se šíří houbové choroby?",
+            question: "How do fungal diseases spread?",
             type: "multiple_choice",
             options: [
-                { text: "Výtrusy větrem, vodou, hmyzem", icon: "💨", isCorrect: true },
-                { text: "Pouze dotykem", icon: "✋", isCorrect: false },
-                { text: "Pouze půdou", icon: "🌍", isCorrect: false },
-                { text: "Nešíří se", icon: "⛔", isCorrect: false }
+                { text: "Spores by wind, water, insects", icon: "💨", isCorrect: true },
+                { text: "Only by touch", icon: "✋", isCorrect: false },
+                { text: "Only through soil", icon: "🌍", isCorrect: false },
+                { text: "They don't spread", icon: "⛔", isCorrect: false }
             ],
-            explanation: "Houbové výtrusy se šíří vzduchem, deštěm, zavlažováním i na nářadí."
+            explanation: "Fungal spores spread through air, rain, irrigation, and on tools."
         },
         {
-            question: "Prevence houbových chorob zahrnuje:",
+            question: "Prevention of fungal diseases includes:",
             type: "multiple_choice",
             options: [
-                { text: "Střídání plodin, odolné odrůdy", icon: "🔄", isCorrect: true },
-                { text: "Více zalévat", icon: "💧", isCorrect: false },
-                { text: "Hustší výsev", icon: "🌾", isCorrect: false },
-                { text: "Nic nedělat", icon: "😴", isCorrect: false }
+                { text: "Crop rotation, resistant varieties", icon: "🔄", isCorrect: true },
+                { text: "More watering", icon: "💧", isCorrect: false },
+                { text: "Denser seeding", icon: "🌾", isCorrect: false },
+                { text: "Do nothing", icon: "😴", isCorrect: false }
             ],
-            explanation: "Prevence je klíčová - zdravé osivo, střídání plodin, větrání porostů."
+            explanation: "Prevention is key - healthy seed, crop rotation, crop canopy ventilation."
         },
         {
-            question: "Moření osiva chrání proti:",
+            question: "Seed treatment protects against:",
             type: "multiple_choice",
             options: [
-                { text: "Chorobám přenosným osivem", icon: "🌰", isCorrect: true },
-                { text: "Suchu", icon: "🏜️", isCorrect: false },
-                { text: "Mrazu", icon: "❄️", isCorrect: false },
-                { text: "Plevelům", icon: "🌿", isCorrect: false }
+                { text: "Seed-borne diseases", icon: "🌰", isCorrect: true },
+                { text: "Drought", icon: "🏜️", isCorrect: false },
+                { text: "Frost", icon: "❄️", isCorrect: false },
+                { text: "Weeds", icon: "🌿", isCorrect: false }
             ],
-            explanation: "Moření osiva fungicidy chrání klíčící rostliny před chorobami z osiva i půdy."
+            explanation: "Fungicide seed treatment protects germinating plants from seed and soil-borne diseases."
         },
         {
-            question: "Ideální podmínky pro houby jsou:",
+            question: "Ideal conditions for fungi are:",
             type: "multiple_choice",
             options: [
-                { text: "Vlhko a teplo", icon: "🌡️", isCorrect: true },
-                { text: "Sucho a chlad", icon: "❄️", isCorrect: false },
-                { text: "Mráz", icon: "🥶", isCorrect: false },
-                { text: "Extrémní horko", icon: "🔥", isCorrect: false }
+                { text: "Warm and humid", icon: "🌡️", isCorrect: true },
+                { text: "Dry and cold", icon: "❄️", isCorrect: false },
+                { text: "Frost", icon: "🥶", isCorrect: false },
+                { text: "Extreme heat", icon: "🔥", isCorrect: false }
             ],
-            explanation: "Většina houbových patogenů potřebuje ke sporulaci a infekci vlhkost a teplo."
+            explanation: "Most fungal pathogens need moisture and warmth for sporulation and infection."
         }
     ],
 
-    // Level 4 - Virové a bakteriální choroby
+    // Level 4 - Viral and Bacterial Diseases
     module2_level4: [
         {
-            question: "Virové choroby se projevují:",
+            question: "Viral diseases appear as:",
             type: "multiple_choice",
             options: [
-                { text: "Mozaikou, zakrslostí, deformacemi", icon: "🦠", isCorrect: true },
-                { text: "Bílým povlakem", icon: "⚪", isCorrect: false },
-                { text: "Černými skvrnami", icon: "⚫", isCorrect: false },
-                { text: "Lepším růstem", icon: "📈", isCorrect: false }
+                { text: "Mosaic, stunting, deformations", icon: "🦠", isCorrect: true },
+                { text: "White coating", icon: "⚪", isCorrect: false },
+                { text: "Black spots", icon: "⚫", isCorrect: false },
+                { text: "Better growth", icon: "📈", isCorrect: false }
             ],
-            explanation: "Viry způsobují mozaikové zbarvení, zakrslost, zkadeření listů a deformace."
+            explanation: "Viruses cause mosaic patterns, stunting, leaf curling, and deformations."
         },
         {
-            question: "Viry se přenášejí hlavně:",
+            question: "Viruses are mainly transmitted by:",
             type: "multiple_choice",
             options: [
-                { text: "Mšicemi a dalším hmyzem", icon: "🦟", isCorrect: true },
-                { text: "Větrem", icon: "💨", isCorrect: false },
-                { text: "Deštěm", icon: "🌧️", isCorrect: false },
-                { text: "Sluncem", icon: "☀️", isCorrect: false }
+                { text: "Aphids and other insects", icon: "🦟", isCorrect: true },
+                { text: "Wind", icon: "💨", isCorrect: false },
+                { text: "Rain", icon: "🌧️", isCorrect: false },
+                { text: "Sun", icon: "☀️", isCorrect: false }
             ],
-            explanation: "Většina rostlinných virů je přenášena sáním hmyzem, zejména mšicemi."
+            explanation: "Most plant viruses are transmitted by sucking insects, especially aphids."
         },
         {
-            question: "Lze léčit virové choroby rostlin?",
+            question: "Can viral diseases be cured?",
             type: "multiple_choice",
             options: [
-                { text: "Ne, pouze prevence", icon: "⛔", isCorrect: true },
-                { text: "Ano, fungicidy", icon: "🧪", isCorrect: false },
-                { text: "Ano, antibiotiky", icon: "💊", isCorrect: false },
-                { text: "Ano, více vody", icon: "💧", isCorrect: false }
+                { text: "No, only prevention", icon: "⛔", isCorrect: true },
+                { text: "Yes, with fungicides", icon: "🧪", isCorrect: false },
+                { text: "Yes, with antibiotics", icon: "💊", isCorrect: false },
+                { text: "Yes, with more water", icon: "💧", isCorrect: false }
             ],
-            explanation: "Virové choroby nelze léčit, důležitá je prevence - zdravý materiál, hubení přenašečů."
+            explanation: "Viral diseases cannot be cured, prevention is important - healthy material, vector control."
         },
         {
-            question: "Bakteriální choroby způsobují:",
+            question: "Bacterial diseases cause:",
             type: "multiple_choice",
             options: [
-                { text: "Hniloby, nádory, vadnutí", icon: "🦠", isCorrect: true },
-                { text: "Pouze barevné skvrny", icon: "🎨", isCorrect: false },
-                { text: "Zrychlený růst", icon: "📈", isCorrect: false },
-                { text: "Větší plody", icon: "🍎", isCorrect: false }
+                { text: "Rots, tumors, wilting", icon: "🦠", isCorrect: true },
+                { text: "Only colored spots", icon: "🎨", isCorrect: false },
+                { text: "Faster growth", icon: "📈", isCorrect: false },
+                { text: "Larger fruits", icon: "🍎", isCorrect: false }
             ],
-            explanation: "Bakterie způsobují měkké hniloby, nádory, vadnutí a nekrotické skvrny."
+            explanation: "Bacteria cause soft rots, tumors, wilting, and necrotic spots."
         },
         {
-            question: "Bakteriální kroužkovitost brambor se pozná:",
+            question: "Bacterial ring rot of potato is recognized by:",
             type: "multiple_choice",
             options: [
-                { text: "Vadnutí a hnědnutí cévních svazků", icon: "🥔", isCorrect: true },
-                { text: "Bílý povlak", icon: "⚪", isCorrect: false },
-                { text: "Zelené skvrny", icon: "🟢", isCorrect: false },
-                { text: "Zvětšení hlíz", icon: "📈", isCorrect: false }
+                { text: "Wilting and browning of vascular tissue", icon: "🥔", isCorrect: true },
+                { text: "White coating", icon: "⚪", isCorrect: false },
+                { text: "Green spots", icon: "🟢", isCorrect: false },
+                { text: "Tuber enlargement", icon: "📈", isCorrect: false }
             ],
-            explanation: "Při průřezu hlízy jsou viditelné zhnědlé cévní svazky v kruhovitém uspořádání."
+            explanation: "When cutting a tuber, brown vascular bundles in circular arrangement are visible."
         },
         {
-            question: "Bakteriální spála jabloní se projevuje:",
+            question: "Fire blight of apple appears as:",
             type: "multiple_choice",
             options: [
-                { text: "Černáním a usycháním výhonů", icon: "🍎", isCorrect: true },
-                { text: "Bílými květy", icon: "🌸", isCorrect: false },
-                { text: "Většími plody", icon: "📈", isCorrect: false },
-                { text: "Rychlejším růstem", icon: "⚡", isCorrect: false }
+                { text: "Blackening and drying of shoots", icon: "🍎", isCorrect: true },
+                { text: "White flowers", icon: "🌸", isCorrect: false },
+                { text: "Larger fruits", icon: "📈", isCorrect: false },
+                { text: "Faster growth", icon: "⚡", isCorrect: false }
             ],
-            explanation: "Erwinia amylovora způsobuje rychlé usychání květů a výhonů připomínající spálení."
+            explanation: "Erwinia amylovora causes rapid drying of flowers and shoots resembling fire damage."
         },
         {
-            question: "Fytoplazmové choroby se šíří:",
+            question: "Phytoplasma diseases are spread by:",
             type: "multiple_choice",
             options: [
-                { text: "Křísy a mery", icon: "🦗", isCorrect: true },
-                { text: "Větrem", icon: "💨", isCorrect: false },
-                { text: "Vodou", icon: "💧", isCorrect: false },
-                { text: "Ptáky", icon: "🐦", isCorrect: false }
+                { text: "Leafhoppers and psyllids", icon: "🦗", isCorrect: true },
+                { text: "Wind", icon: "💨", isCorrect: false },
+                { text: "Water", icon: "💧", isCorrect: false },
+                { text: "Birds", icon: "🐦", isCorrect: false }
             ],
-            explanation: "Fytoplazmy jsou přenášeny bodavě sajícím hmyzem, zejména křísami."
+            explanation: "Phytoplasmas are transmitted by piercing-sucking insects, especially leafhoppers."
         },
         {
-            question: "Stolbur rajčat způsobuje:",
+            question: "Stolbur of tomato causes:",
             type: "multiple_choice",
             options: [
-                { text: "Deformace a zakrslost", icon: "🍅", isCorrect: true },
-                { text: "Větší plody", icon: "📈", isCorrect: false },
-                { text: "Lepší chuť", icon: "😋", isCorrect: false },
-                { text: "Rychlejší zrání", icon: "⏰", isCorrect: false }
+                { text: "Deformations and stunting", icon: "🍅", isCorrect: true },
+                { text: "Larger fruits", icon: "📈", isCorrect: false },
+                { text: "Better taste", icon: "😋", isCorrect: false },
+                { text: "Faster ripening", icon: "⏰", isCorrect: false }
             ],
-            explanation: "Stolbur je fytoplazmová choroba způsobující zakrslost a deformace plodů."
+            explanation: "Stolbur is a phytoplasma disease causing stunting and fruit deformations."
         },
         {
-            question: "Prevence virových chorob zahrnuje:",
+            question: "Prevention of viral diseases includes:",
             type: "multiple_choice",
             options: [
-                { text: "Hubení přenašečů a zdravý sadební materiál", icon: "✅", isCorrect: true },
-                { text: "Více zalévat", icon: "💧", isCorrect: false },
-                { text: "Více hnojit", icon: "🧪", isCorrect: false },
-                { text: "Nic nedělat", icon: "😴", isCorrect: false }
+                { text: "Vector control and healthy planting material", icon: "✅", isCorrect: true },
+                { text: "More watering", icon: "💧", isCorrect: false },
+                { text: "More fertilizing", icon: "🧪", isCorrect: false },
+                { text: "Do nothing", icon: "😴", isCorrect: false }
             ],
-            explanation: "Klíčová je kontrola vektorů (mšice), certifikované bezvirózní materiály a hygiena."
+            explanation: "Key is vector control (aphids), certified virus-free materials, and hygiene."
         },
         {
-            question: "Virus žluté zakrslosti ječmene přenáší:",
+            question: "Barley yellow dwarf virus is transmitted by:",
             type: "multiple_choice",
             options: [
-                { text: "Mšice", icon: "🦟", isCorrect: true },
-                { text: "Roztoči", icon: "🕷️", isCorrect: false },
-                { text: "Houby", icon: "🍄", isCorrect: false },
-                { text: "Ptáci", icon: "🐦", isCorrect: false }
+                { text: "Aphids", icon: "🦟", isCorrect: true },
+                { text: "Mites", icon: "🕷️", isCorrect: false },
+                { text: "Fungi", icon: "🍄", isCorrect: false },
+                { text: "Birds", icon: "🐦", isCorrect: false }
             ],
-            explanation: "BYDV je jedním z nejškodlivějších virů obilovin, přenášený mšicemi."
+            explanation: "BYDV is one of the most damaging cereal viruses, transmitted by aphids."
         }
     ],
 
-    // Level 5 - Integrovaná ochrana
+    // Level 5 - Integrated Protection
     module2_level5: [
         {
-            question: "Co je integrovaná ochrana rostlin (IOR)?",
+            question: "What is Integrated Pest Management (IPM)?",
             type: "multiple_choice",
             options: [
-                { text: "Kombinace všech metod ochrany", icon: "🔄", isCorrect: true },
-                { text: "Pouze chemická ochrana", icon: "🧪", isCorrect: false },
-                { text: "Pouze biologická ochrana", icon: "🐞", isCorrect: false },
-                { text: "Žádná ochrana", icon: "⛔", isCorrect: false }
+                { text: "Combination of all protection methods", icon: "🔄", isCorrect: true },
+                { text: "Only chemical protection", icon: "🧪", isCorrect: false },
+                { text: "Only biological protection", icon: "🐞", isCorrect: false },
+                { text: "No protection", icon: "⛔", isCorrect: false }
             ],
-            explanation: "IOR kombinuje prevenci, biologickou, fyzikální a jako poslední chemickou ochranu."
+            explanation: "IPM combines prevention, biological, physical, and as last resort chemical protection."
         },
         {
-            question: "Biologická ochrana využívá:",
+            question: "Biological control uses:",
             type: "multiple_choice",
             options: [
-                { text: "Přirozené nepřátele škůdců", icon: "🐞", isCorrect: true },
-                { text: "Syntetické chemikálie", icon: "🧪", isCorrect: false },
-                { text: "Pouze vodu", icon: "💧", isCorrect: false },
-                { text: "Pouze teplo", icon: "🌡️", isCorrect: false }
+                { text: "Natural enemies of pests", icon: "🐞", isCorrect: true },
+                { text: "Synthetic chemicals", icon: "🧪", isCorrect: false },
+                { text: "Only water", icon: "💧", isCorrect: false },
+                { text: "Only heat", icon: "🌡️", isCorrect: false }
             ],
-            explanation: "Biologická ochrana používá predátory, parazitoidy, entomopatogenní houby aj."
+            explanation: "Biological control uses predators, parasitoids, entomopathogenic fungi, etc."
         },
         {
-            question: "Feromonové lapáky slouží k:",
+            question: "Pheromone traps are used for:",
             type: "multiple_choice",
             options: [
-                { text: "Monitoringu a odchytu hmyzu", icon: "🪤", isCorrect: true },
-                { text: "Hnojení", icon: "🧪", isCorrect: false },
-                { text: "Zavlažování", icon: "💧", isCorrect: false },
-                { text: "Osvětlení", icon: "💡", isCorrect: false }
+                { text: "Monitoring and catching insects", icon: "🪤", isCorrect: true },
+                { text: "Fertilizing", icon: "🧪", isCorrect: false },
+                { text: "Irrigation", icon: "💧", isCorrect: false },
+                { text: "Lighting", icon: "💡", isCorrect: false }
             ],
-            explanation: "Feromony jsou chemické signály hmyzu, lapáky je využívají k monitoringu a odchytu."
+            explanation: "Pheromones are insect chemical signals, traps use them for monitoring and capture."
         },
         {
-            question: "Entomopatogenní houby hubí:",
+            question: "Entomopathogenic fungi kill:",
             type: "multiple_choice",
             options: [
-                { text: "Hmyz pomocí infekce", icon: "🍄", isCorrect: true },
-                { text: "Plevele", icon: "🌿", isCorrect: false },
-                { text: "Rostlinné choroby", icon: "🦠", isCorrect: false },
-                { text: "Hlodavce", icon: "🐀", isCorrect: false }
+                { text: "Insects through infection", icon: "🍄", isCorrect: true },
+                { text: "Weeds", icon: "🌿", isCorrect: false },
+                { text: "Plant diseases", icon: "🦠", isCorrect: false },
+                { text: "Rodents", icon: "🐀", isCorrect: false }
             ],
-            explanation: "Houby jako Beauveria bassiana infikují a usmrcují hmyzí škůdce."
+            explanation: "Fungi like Beauveria bassiana infect and kill insect pests."
         },
         {
-            question: "Bacillus thuringiensis (Bt) je:",
+            question: "Bacillus thuringiensis (Bt) is:",
             type: "multiple_choice",
             options: [
-                { text: "Bakterie hubící housenky", icon: "🦠", isCorrect: true },
-                { text: "Chemický insekticid", icon: "🧪", isCorrect: false },
-                { text: "Hnojivo", icon: "🌱", isCorrect: false },
-                { text: "Plevel", icon: "🌿", isCorrect: false }
+                { text: "Bacteria that kills caterpillars", icon: "🦠", isCorrect: true },
+                { text: "Chemical insecticide", icon: "🧪", isCorrect: false },
+                { text: "Fertilizer", icon: "🌱", isCorrect: false },
+                { text: "Weed", icon: "🌿", isCorrect: false }
             ],
-            explanation: "Bt produkuje toxiny smrtelné pro housenky, ale bezpečné pro ostatní organismy."
+            explanation: "Bt produces toxins lethal to caterpillars but safe for other organisms."
         },
         {
-            question: "Trichogramma je:",
+            question: "Trichogramma is:",
             type: "multiple_choice",
             options: [
-                { text: "Parazitická vosička hubící vejíčka škůdců", icon: "🐝", isCorrect: true },
-                { text: "Druh pesticidu", icon: "🧪", isCorrect: false },
-                { text: "Plevel", icon: "🌿", isCorrect: false },
-                { text: "Houba", icon: "🍄", isCorrect: false }
+                { text: "Parasitic wasp killing pest eggs", icon: "🐝", isCorrect: true },
+                { text: "Type of pesticide", icon: "🧪", isCorrect: false },
+                { text: "Weed", icon: "🌿", isCorrect: false },
+                { text: "Fungus", icon: "🍄", isCorrect: false }
             ],
-            explanation: "Trichogramma jsou drobní parazitoidi, kteří kladou vajíčka do vajíček škůdců."
+            explanation: "Trichogramma are tiny parasitoids that lay eggs inside pest eggs."
         },
         {
-            question: "Mechanická ochrana zahrnuje:",
+            question: "Mechanical protection includes:",
             type: "multiple_choice",
             options: [
-                { text: "Sítě, pásky, ruční sběr", icon: "🔧", isCorrect: true },
-                { text: "Postřiky", icon: "💦", isCorrect: false },
-                { text: "Hnojení", icon: "🧪", isCorrect: false },
-                { text: "Genetickou modifikaci", icon: "🧬", isCorrect: false }
+                { text: "Nets, sticky traps, hand picking", icon: "🔧", isCorrect: true },
+                { text: "Spraying", icon: "💦", isCorrect: false },
+                { text: "Fertilizing", icon: "🧪", isCorrect: false },
+                { text: "Genetic modification", icon: "🧬", isCorrect: false }
             ],
-            explanation: "Mechanické metody fyzicky brání škůdcům v přístupu nebo je odstraňují."
+            explanation: "Mechanical methods physically prevent pest access or remove them."
         },
         {
-            question: "Agrotechnická ochrana je:",
+            question: "Cultural control is:",
             type: "multiple_choice",
             options: [
-                { text: "Úprava pěstitelských postupů", icon: "🌾", isCorrect: true },
-                { text: "Použití robotů", icon: "🤖", isCorrect: false },
-                { text: "Chemický postřik", icon: "🧪", isCorrect: false },
-                { text: "Nic nedělat", icon: "😴", isCorrect: false }
+                { text: "Adjusting cultivation practices", icon: "🌾", isCorrect: true },
+                { text: "Using robots", icon: "🤖", isCorrect: false },
+                { text: "Chemical spraying", icon: "🧪", isCorrect: false },
+                { text: "Do nothing", icon: "😴", isCorrect: false }
             ],
-            explanation: "Agrotechnika zahrnuje střídání plodin, termín setí, hustotu porostu aj."
+            explanation: "Cultural practices include crop rotation, sowing date, plant density, etc."
         },
         {
-            question: "Proč je IOR důležitá?",
+            question: "Why is IPM important?",
             type: "multiple_choice",
             options: [
-                { text: "Snižuje závislost na chemii a rezistenci", icon: "✅", isCorrect: true },
-                { text: "Je nejlevnější", icon: "💰", isCorrect: false },
-                { text: "Je nejjednodušší", icon: "😊", isCorrect: false },
-                { text: "Není důležitá", icon: "❌", isCorrect: false }
+                { text: "Reduces chemical dependence and resistance", icon: "✅", isCorrect: true },
+                { text: "It's cheapest", icon: "💰", isCorrect: false },
+                { text: "It's easiest", icon: "😊", isCorrect: false },
+                { text: "It's not important", icon: "❌", isCorrect: false }
             ],
-            explanation: "IOR zpomaluje vznik rezistence, chrání životní prostředí a je udržitelnější."
+            explanation: "IPM slows resistance development, protects environment, and is more sustainable."
         },
         {
-            question: "IOR v EU je:",
+            question: "IPM in EU is:",
             type: "multiple_choice",
             options: [
-                { text: "Povinná ze zákona", icon: "⚖️", isCorrect: true },
-                { text: "Dobrovolná", icon: "🤷", isCorrect: false },
-                { text: "Zakázaná", icon: "⛔", isCorrect: false },
-                { text: "Neexistuje", icon: "❌", isCorrect: false }
+                { text: "Mandatory by law", icon: "⚖️", isCorrect: true },
+                { text: "Voluntary", icon: "🤷", isCorrect: false },
+                { text: "Prohibited", icon: "⛔", isCorrect: false },
+                { text: "Doesn't exist", icon: "❌", isCorrect: false }
             ],
-            explanation: "Od roku 2014 je IOR povinná pro všechny profesionální uživatele pesticidů v EU."
+            explanation: "Since 2014, IPM is mandatory for all professional pesticide users in EU."
         }
     ],
 
-    // Level 6 - Bezpečné používání pesticidů
+    // Level 6 - Safe Pesticide Use
     module2_level6: [
         {
-            question: "Co je ochranná lhůta?",
+            question: "What is pre-harvest interval?",
             type: "multiple_choice",
             options: [
-                { text: "Doba od aplikace do sklizně", icon: "⏰", isCorrect: true },
-                { text: "Doba skladování pesticidu", icon: "📦", isCorrect: false },
-                { text: "Doba účinnosti", icon: "⚡", isCorrect: false },
-                { text: "Doba nákupu", icon: "🛒", isCorrect: false }
+                { text: "Time from application to harvest", icon: "⏰", isCorrect: true },
+                { text: "Pesticide storage time", icon: "📦", isCorrect: false },
+                { text: "Duration of effectiveness", icon: "⚡", isCorrect: false },
+                { text: "Purchase time", icon: "🛒", isCorrect: false }
             ],
-            explanation: "Ochranná lhůta zajišťuje, že rezidua pesticidu se rozloží před konzumací."
+            explanation: "Pre-harvest interval ensures pesticide residues decompose before consumption."
         },
         {
-            question: "OOP znamená:",
+            question: "PPE stands for:",
             type: "multiple_choice",
             options: [
-                { text: "Osobní ochranné prostředky", icon: "🧤", isCorrect: true },
-                { text: "Oficiální ochranný program", icon: "📋", isCorrect: false },
-                { text: "Optimální ochranný postup", icon: "✅", isCorrect: false },
-                { text: "Ořezávací ochranný přípravek", icon: "✂️", isCorrect: false }
+                { text: "Personal Protective Equipment", icon: "🧤", isCorrect: true },
+                { text: "Official Protection Program", icon: "📋", isCorrect: false },
+                { text: "Optimal Protection Procedure", icon: "✅", isCorrect: false },
+                { text: "Pruning Protection Product", icon: "✂️", isCorrect: false }
             ],
-            explanation: "OOP zahrnují rukavice, ochranný oděv, respirátor, brýle pro práci s pesticidy."
+            explanation: "PPE includes gloves, protective clothing, respirator, goggles for pesticide work."
         },
         {
-            question: "Při postřiku je nutné chránit:",
+            question: "When spraying, you must protect:",
             type: "multiple_choice",
             options: [
-                { text: "Kůži, oči, dýchací cesty", icon: "🛡️", isCorrect: true },
-                { text: "Pouze ruce", icon: "🤲", isCorrect: false },
-                { text: "Pouze oči", icon: "👀", isCorrect: false },
-                { text: "Nic", icon: "❌", isCorrect: false }
+                { text: "Skin, eyes, respiratory system", icon: "🛡️", isCorrect: true },
+                { text: "Only hands", icon: "🤲", isCorrect: false },
+                { text: "Only eyes", icon: "👀", isCorrect: false },
+                { text: "Nothing", icon: "❌", isCorrect: false }
             ],
-            explanation: "Pesticidy mohou vstupovat do těla kůží, vdechnutím i polknutím."
+            explanation: "Pesticides can enter the body through skin, inhalation, and ingestion."
         },
         {
-            question: "Prázdné obaly od pesticidů:",
+            question: "Empty pesticide containers:",
             type: "multiple_choice",
             options: [
-                { text: "Se odevzdávají k odborné likvidaci", icon: "♻️", isCorrect: true },
-                { text: "Se vyhazují do koše", icon: "🗑️", isCorrect: false },
-                { text: "Se pálí", icon: "🔥", isCorrect: false },
-                { text: "Se zakopávají", icon: "⬇️", isCorrect: false }
+                { text: "Must be properly disposed", icon: "♻️", isCorrect: true },
+                { text: "Go in regular trash", icon: "🗑️", isCorrect: false },
+                { text: "Are burned", icon: "🔥", isCorrect: false },
+                { text: "Are buried", icon: "⬇️", isCorrect: false }
             ],
-            explanation: "Obaly jsou nebezpečný odpad a musí se likvidovat specializovaně."
+            explanation: "Containers are hazardous waste and must be disposed of by specialists."
         },
         {
-            question: "Pesticidy se skladují:",
+            question: "Pesticides are stored in:",
             type: "multiple_choice",
             options: [
-                { text: "V uzamčeném, větraném skladu", icon: "🔒", isCorrect: true },
-                { text: "V kuchyni", icon: "🍳", isCorrect: false },
-                { text: "Ve skleníku", icon: "🏡", isCorrect: false },
-                { text: "Venku na slunci", icon: "☀️", isCorrect: false }
+                { text: "Locked, ventilated storage", icon: "🔒", isCorrect: true },
+                { text: "Kitchen", icon: "🍳", isCorrect: false },
+                { text: "Greenhouse", icon: "🏡", isCorrect: false },
+                { text: "Outside in sun", icon: "☀️", isCorrect: false }
             ],
-            explanation: "Sklad musí být zabezpečený, suchý, větraný a označený výstražnými symboly."
+            explanation: "Storage must be secure, dry, ventilated, and marked with warning symbols."
         },
         {
-            question: "Co znamená symbol lebky na pesticidu?",
+            question: "What does skull symbol on pesticide mean?",
             type: "multiple_choice",
             options: [
-                { text: "Toxický přípravek", icon: "☠️", isCorrect: true },
-                { text: "Pirátský přípravek", icon: "🏴‍☠️", isCorrect: false },
-                { text: "Přírodní přípravek", icon: "🌿", isCorrect: false },
-                { text: "Bezpečný přípravek", icon: "✅", isCorrect: false }
+                { text: "Toxic product", icon: "☠️", isCorrect: true },
+                { text: "Pirate product", icon: "🏴‍☠️", isCorrect: false },
+                { text: "Natural product", icon: "🌿", isCorrect: false },
+                { text: "Safe product", icon: "✅", isCorrect: false }
             ],
-            explanation: "Lebka s překříženými kostmi značí akutní toxicitu přípravku."
+            explanation: "Skull and crossbones indicates acute toxicity of the product."
         },
         {
-            question: "Kdy nepostřikovat?",
+            question: "When not to spray?",
             type: "multiple_choice",
             options: [
-                { text: "Za větru, deště, v poledním horku", icon: "🌪️", isCorrect: true },
-                { text: "Ráno", icon: "🌅", isCorrect: false },
-                { text: "Večer", icon: "🌆", isCorrect: false },
-                { text: "Za bezvětří", icon: "🍃", isCorrect: false }
+                { text: "In wind, rain, midday heat", icon: "🌪️", isCorrect: true },
+                { text: "In morning", icon: "🌅", isCorrect: false },
+                { text: "In evening", icon: "🌆", isCorrect: false },
+                { text: "In calm weather", icon: "🍃", isCorrect: false }
             ],
-            explanation: "Vítr způsobuje úlet, déšť smývá přípravek, horko může poškodit rostliny."
+            explanation: "Wind causes drift, rain washes off product, heat can damage plants."
         },
         {
-            question: "Maximální reziduální limit (MRL) je:",
+            question: "Maximum Residue Limit (MRL) is:",
             type: "multiple_choice",
             options: [
-                { text: "Maximální povolené množství pesticidu v potravině", icon: "📊", isCorrect: true },
-                { text: "Minimální dávka pesticidu", icon: "📉", isCorrect: false },
-                { text: "Maximální cena", icon: "💰", isCorrect: false },
-                { text: "Doba účinnosti", icon: "⏰", isCorrect: false }
+                { text: "Maximum allowed pesticide in food", icon: "📊", isCorrect: true },
+                { text: "Minimum pesticide dose", icon: "📉", isCorrect: false },
+                { text: "Maximum price", icon: "💰", isCorrect: false },
+                { text: "Duration of effectiveness", icon: "⏰", isCorrect: false }
             ],
-            explanation: "MRL určuje, kolik pesticidu smí být v potravinách - chrání zdraví spotřebitelů."
+            explanation: "MRL determines how much pesticide may be in food - protects consumer health."
         },
         {
-            question: "Rezistence škůdců znamená:",
+            question: "Pest resistance means:",
             type: "multiple_choice",
             options: [
-                { text: "Odolnost vůči pesticidu", icon: "💪", isCorrect: true },
-                { text: "Větší citlivost", icon: "😢", isCorrect: false },
-                { text: "Rychlejší úhyn", icon: "☠️", isCorrect: false },
-                { text: "Lepší zdraví", icon: "❤️", isCorrect: false }
+                { text: "Tolerance to pesticide", icon: "💪", isCorrect: true },
+                { text: "Greater sensitivity", icon: "😢", isCorrect: false },
+                { text: "Faster death", icon: "☠️", isCorrect: false },
+                { text: "Better health", icon: "❤️", isCorrect: false }
             ],
-            explanation: "Opakované používání stejných pesticidů vede k vývoji odolných populací."
+            explanation: "Repeated use of same pesticides leads to development of resistant populations."
         },
         {
-            question: "Jak předcházet rezistenci?",
+            question: "How to prevent resistance?",
             type: "multiple_choice",
             options: [
-                { text: "Střídat přípravky s různým mechanismem", icon: "🔄", isCorrect: true },
-                { text: "Používat více stejného přípravku", icon: "📈", isCorrect: false },
-                { text: "Nikdy nepostřikovat", icon: "⛔", isCorrect: false },
-                { text: "Střídat barvy přípravků", icon: "🎨", isCorrect: false }
+                { text: "Rotate products with different modes of action", icon: "🔄", isCorrect: true },
+                { text: "Use more of same product", icon: "📈", isCorrect: false },
+                { text: "Never spray", icon: "⛔", isCorrect: false },
+                { text: "Rotate product colors", icon: "🎨", isCorrect: false }
             ],
-            explanation: "Střídání účinných látek s různým mechanismem účinku zpomaluje vznik rezistence."
+            explanation: "Rotating active ingredients with different modes of action slows resistance."
         }
     ],
 
-    // Level 7 - Škůdci skladovaných plodin
+    // Level 7 - Stored Product Pests
     module2_level7: [
         {
-            question: "Pilous černý napadá:",
+            question: "Sawtoothed grain beetle attacks:",
             type: "multiple_choice",
             options: [
-                { text: "Skladované obilí", icon: "🌾", isCorrect: true },
-                { text: "Rostoucí obilí", icon: "🌱", isCorrect: false },
-                { text: "Ovoce na stromě", icon: "🍎", isCorrect: false },
-                { text: "Zeleninu na záhonu", icon: "🥬", isCorrect: false }
+                { text: "Stored grain", icon: "🌾", isCorrect: true },
+                { text: "Growing grain", icon: "🌱", isCorrect: false },
+                { text: "Fruit on tree", icon: "🍎", isCorrect: false },
+                { text: "Vegetables in field", icon: "🥬", isCorrect: false }
             ],
-            explanation: "Pilous černý je jeden z nejvýznamnějších škůdců skladovaného obilí."
+            explanation: "Sawtoothed grain beetle is one of the most important stored grain pests."
         },
         {
-            question: "Zavíječ moučný škodí v:",
+            question: "Mediterranean flour moth damages:",
             type: "multiple_choice",
             options: [
-                { text: "Mouce a obilí", icon: "🌾", isCorrect: true },
-                { text: "Ovoci", icon: "🍎", isCorrect: false },
-                { text: "Zelenině", icon: "🥬", isCorrect: false },
-                { text: "Mléčných výrobcích", icon: "🥛", isCorrect: false }
+                { text: "Flour and grain", icon: "🌾", isCorrect: true },
+                { text: "Fruit", icon: "🍎", isCorrect: false },
+                { text: "Vegetables", icon: "🥬", isCorrect: false },
+                { text: "Dairy products", icon: "🥛", isCorrect: false }
             ],
-            explanation: "Housenky zavíječe moučného znehodnocují mouku pavučinovými předivami."
+            explanation: "Flour moth larvae contaminate flour with webbing."
         },
         {
-            question: "Potkani a myši ve skladu způsobují:",
+            question: "Rats and mice in storage cause:",
             type: "multiple_choice",
             options: [
-                { text: "Kontaminaci a ztráty", icon: "🐀", isCorrect: true },
-                { text: "Pouze hluk", icon: "🔊", isCorrect: false },
-                { text: "Zlepšení kvality", icon: "📈", isCorrect: false },
-                { text: "Nic škodlivého", icon: "✅", isCorrect: false }
+                { text: "Contamination and losses", icon: "🐀", isCorrect: true },
+                { text: "Only noise", icon: "🔊", isCorrect: false },
+                { text: "Quality improvement", icon: "📈", isCorrect: false },
+                { text: "Nothing harmful", icon: "✅", isCorrect: false }
             ],
-            explanation: "Hlodavci konzumují zásoby a kontaminují je výkaly a močí."
+            explanation: "Rodents consume stores and contaminate them with droppings and urine."
         },
         {
-            question: "Prevence škůdců ve skladu zahrnuje:",
+            question: "Prevention of storage pests includes:",
             type: "multiple_choice",
             options: [
-                { text: "Čistotu, chlazení, kontrolu vlhkosti", icon: "✅", isCorrect: true },
-                { text: "Otevřená okna", icon: "🪟", isCorrect: false },
-                { text: "Vysokou teplotu", icon: "🌡️", isCorrect: false },
-                { text: "Vlhké prostředí", icon: "💧", isCorrect: false }
+                { text: "Cleanliness, cooling, humidity control", icon: "✅", isCorrect: true },
+                { text: "Open windows", icon: "🪟", isCorrect: false },
+                { text: "High temperature", icon: "🌡️", isCorrect: false },
+                { text: "Humid environment", icon: "💧", isCorrect: false }
             ],
-            explanation: "Čistý, suchý a chladný sklad minimalizuje riziko napadení škůdci."
+            explanation: "Clean, dry, and cool storage minimizes pest infestation risk."
         },
         {
-            question: "Fumigace je:",
+            question: "Fumigation is:",
             type: "multiple_choice",
             options: [
-                { text: "Ošetření plynem", icon: "💨", isCorrect: true },
-                { text: "Postřik vodou", icon: "💧", isCorrect: false },
-                { text: "Mechanické čištění", icon: "🔧", isCorrect: false },
-                { text: "Zahřívání", icon: "🔥", isCorrect: false }
+                { text: "Gas treatment", icon: "💨", isCorrect: true },
+                { text: "Water spraying", icon: "💧", isCorrect: false },
+                { text: "Mechanical cleaning", icon: "🔧", isCorrect: false },
+                { text: "Heating", icon: "🔥", isCorrect: false }
             ],
-            explanation: "Fumigace využívá plyny (např. fosforovodík) k hubení škůdců v uzavřených prostorách."
+            explanation: "Fumigation uses gases (e.g., phosphine) to kill pests in enclosed spaces."
         },
         {
-            question: "Ideální vlhkost pro skladování obilí je:",
+            question: "Ideal moisture for grain storage is:",
             type: "multiple_choice",
             options: [
-                { text: "Pod 14%", icon: "📊", isCorrect: true },
-                { text: "Nad 20%", icon: "💧", isCorrect: false },
-                { text: "Nad 30%", icon: "💦", isCorrect: false },
-                { text: "Nezáleží", icon: "🤷", isCorrect: false }
+                { text: "Below 14%", icon: "📊", isCorrect: true },
+                { text: "Above 20%", icon: "💧", isCorrect: false },
+                { text: "Above 30%", icon: "💦", isCorrect: false },
+                { text: "Doesn't matter", icon: "🤷", isCorrect: false }
             ],
-            explanation: "Nízká vlhkost brání rozvoji škůdců a plísní ve skladovaném obilí."
+            explanation: "Low moisture prevents pest and mold development in stored grain."
         },
         {
-            question: "Roztoč moučný je:",
+            question: "Flour mite is:",
             type: "multiple_choice",
             options: [
-                { text: "Mikroskopický škůdce mouky", icon: "🔬", isCorrect: true },
-                { text: "Velký brouk", icon: "🪲", isCorrect: false },
-                { text: "Motýl", icon: "🦋", isCorrect: false },
-                { text: "Houba", icon: "🍄", isCorrect: false }
+                { text: "Microscopic flour pest", icon: "🔬", isCorrect: true },
+                { text: "Large beetle", icon: "🪲", isCorrect: false },
+                { text: "Moth", icon: "🦋", isCorrect: false },
+                { text: "Fungus", icon: "🍄", isCorrect: false }
             ],
-            explanation: "Roztoči jsou drobní členovci, kteří znehodnocují mouku a obilí."
+            explanation: "Mites are tiny arthropods that contaminate flour and grain."
         },
         {
-            question: "Poškozené zrno ve skladu může:",
+            question: "Damaged grain in storage can:",
             type: "multiple_choice",
             options: [
-                { text: "Přitahovat další škůdce", icon: "🐛", isCorrect: true },
-                { text: "Odpuzovat škůdce", icon: "🛡️", isCorrect: false },
-                { text: "Se samo opravit", icon: "🔧", isCorrect: false },
-                { text: "Být kvalitnější", icon: "⭐", isCorrect: false }
+                { text: "Attract more pests", icon: "🐛", isCorrect: true },
+                { text: "Repel pests", icon: "🛡️", isCorrect: false },
+                { text: "Self-repair", icon: "🔧", isCorrect: false },
+                { text: "Be better quality", icon: "⭐", isCorrect: false }
             ],
-            explanation: "Poškozená zrna jsou vstupní branou pro sekundární škůdce a plísně."
+            explanation: "Damaged grains are entry points for secondary pests and molds."
         },
         {
-            question: "Světlušky se používají k:",
+            question: "Potato tuber moth is:",
             type: "multiple_choice",
             options: [
-                { text: "Ničemu - jsou to škůdci brambor", icon: "🥔", isCorrect: true },
-                { text: "Osvětlení skladu", icon: "💡", isCorrect: false },
-                { text: "Hubení myší", icon: "🐀", isCorrect: false },
-                { text: "Zlepšení kvality", icon: "📈", isCorrect: false }
+                { text: "Nothing good - it's a potato pest", icon: "🥔", isCorrect: true },
+                { text: "For storage lighting", icon: "💡", isCorrect: false },
+                { text: "For killing mice", icon: "🐀", isCorrect: false },
+                { text: "For quality improvement", icon: "📈", isCorrect: false }
             ],
-            explanation: "Světlušky jsou nebezpečnými škůdci skladovaných brambor."
+            explanation: "Potato tuber moth is a dangerous pest of stored potatoes."
         },
         {
-            question: "HACCP ve skladování znamená:",
+            question: "HACCP in storage means:",
             type: "multiple_choice",
             options: [
-                { text: "Systém kontroly kritických bodů", icon: "✅", isCorrect: true },
-                { text: "Druh pesticidu", icon: "🧪", isCorrect: false },
-                { text: "Typ skladu", icon: "🏭", isCorrect: false },
-                { text: "Značka obilí", icon: "🌾", isCorrect: false }
+                { text: "Critical control point system", icon: "✅", isCorrect: true },
+                { text: "Type of pesticide", icon: "🧪", isCorrect: false },
+                { text: "Type of storage", icon: "🏭", isCorrect: false },
+                { text: "Grain brand", icon: "🌾", isCorrect: false }
             ],
-            explanation: "HACCP je systém preventivní kontroly bezpečnosti potravin."
+            explanation: "HACCP is a preventive food safety control system."
         }
     ],
 
-    // Level 8 - Škůdci ovocných sadů
+    // Level 8 - Orchard Pests
     module2_level8: [
         {
-            question: "Obaleč jablečný způsobuje:",
+            question: "Codling moth causes:",
             type: "multiple_choice",
             options: [
-                { text: "Červivost jablek", icon: "🍎", isCorrect: true },
-                { text: "Žloutnutí listů", icon: "🍂", isCorrect: false },
-                { text: "Černání větví", icon: "⬛", isCorrect: false },
-                { text: "Zvětšení plodů", icon: "📈", isCorrect: false }
+                { text: "Wormy apples", icon: "🍎", isCorrect: true },
+                { text: "Leaf yellowing", icon: "🍂", isCorrect: false },
+                { text: "Branch blackening", icon: "⬛", isCorrect: false },
+                { text: "Fruit enlargement", icon: "📈", isCorrect: false }
             ],
-            explanation: "Housenky obaleče vrtají do jablek a způsobují typickou červivost."
+            explanation: "Codling moth larvae bore into apples causing typical worminess."
         },
         {
-            question: "Mšice jabloňová zelená:",
+            question: "Green apple aphid:",
             type: "multiple_choice",
             options: [
-                { text: "Zkrucuje listy a výhony", icon: "🌿", isCorrect: true },
-                { text: "Zvětšuje plody", icon: "🍎", isCorrect: false },
-                { text: "Zlepšuje chuť", icon: "😋", isCorrect: false },
-                { text: "Nezpůsobuje škody", icon: "✅", isCorrect: false }
+                { text: "Curls leaves and shoots", icon: "🌿", isCorrect: true },
+                { text: "Enlarges fruits", icon: "🍎", isCorrect: false },
+                { text: "Improves taste", icon: "😋", isCorrect: false },
+                { text: "Causes no damage", icon: "✅", isCorrect: false }
             ],
-            explanation: "Mšice sají na výhonech a způsobují deformace listů a růstové poruchy."
+            explanation: "Aphids feed on shoots and cause leaf deformations and growth disorders."
         },
         {
-            question: "Štítenka zhoubná je:",
+            question: "San Jose scale is:",
             type: "multiple_choice",
             options: [
-                { text: "Karanténní škůdce jabloní", icon: "⚠️", isCorrect: true },
-                { text: "Užitečný hmyz", icon: "🐝", isCorrect: false },
-                { text: "Druh hnojiva", icon: "🧪", isCorrect: false },
-                { text: "Choroba", icon: "🦠", isCorrect: false }
+                { text: "Quarantine apple pest", icon: "⚠️", isCorrect: true },
+                { text: "Beneficial insect", icon: "🐝", isCorrect: false },
+                { text: "Type of fertilizer", icon: "🧪", isCorrect: false },
+                { text: "Disease", icon: "🦠", isCorrect: false }
             ],
-            explanation: "Štítenka zhoubná je závažný karanténní škůdce původem ze Severní Ameriky."
+            explanation: "San Jose scale is a serious quarantine pest from North America."
         },
         {
-            question: "Pilatka jablečná škodí:",
+            question: "Apple sawfly damages by:",
             type: "multiple_choice",
             options: [
-                { text: "Vrtáním larev v mladých plodech", icon: "🍎", isCorrect: true },
-                { text: "Okusováním listů", icon: "🍃", isCorrect: false },
-                { text: "Poškozováním kořenů", icon: "🌱", isCorrect: false },
-                { text: "Ničením květů", icon: "🌸", isCorrect: false }
+                { text: "Larvae boring in young fruits", icon: "🍎", isCorrect: true },
+                { text: "Chewing leaves", icon: "🍃", isCorrect: false },
+                { text: "Damaging roots", icon: "🌱", isCorrect: false },
+                { text: "Destroying flowers", icon: "🌸", isCorrect: false }
             ],
-            explanation: "Larvy pilatky vrtají v mladých plůdcích, které pak opadávají."
+            explanation: "Sawfly larvae bore into young fruitlets which then drop."
         },
         {
-            question: "Sviluška ovocná způsobuje:",
+            question: "European red mite causes:",
             type: "multiple_choice",
             options: [
-                { text: "Bronzování a opad listů", icon: "🍂", isCorrect: true },
-                { text: "Zvětšení plodů", icon: "📈", isCorrect: false },
-                { text: "Lepší barvu", icon: "🎨", isCorrect: false },
-                { text: "Rychlejší růst", icon: "⚡", isCorrect: false }
+                { text: "Bronzing and leaf drop", icon: "🍂", isCorrect: true },
+                { text: "Fruit enlargement", icon: "📈", isCorrect: false },
+                { text: "Better color", icon: "🎨", isCorrect: false },
+                { text: "Faster growth", icon: "⚡", isCorrect: false }
             ],
-            explanation: "Svilušky sáním poškozují listy, které bronzovatí a předčasně opadávají."
+            explanation: "Mites feeding damages leaves which bronze and drop prematurely."
         },
         {
-            question: "Monilióza je:",
+            question: "Monilia is:",
             type: "multiple_choice",
             options: [
-                { text: "Houbová choroba plodů", icon: "🍄", isCorrect: true },
-                { text: "Hmyzí škůdce", icon: "🐛", isCorrect: false },
-                { text: "Virová choroba", icon: "🦠", isCorrect: false },
-                { text: "Hnojivo", icon: "🧪", isCorrect: false }
+                { text: "Fungal disease of fruit", icon: "🍄", isCorrect: true },
+                { text: "Insect pest", icon: "🐛", isCorrect: false },
+                { text: "Viral disease", icon: "🦠", isCorrect: false },
+                { text: "Fertilizer", icon: "🧪", isCorrect: false }
             ],
-            explanation: "Monilióza způsobuje hnědou hnilobu plodů s typickými bělavými polštářky."
+            explanation: "Monilia causes brown rot of fruit with typical whitish cushions."
         },
         {
-            question: "Strupovitost jabloně se projevuje:",
+            question: "Apple scab appears as:",
             type: "multiple_choice",
             options: [
-                { text: "Tmavými skvrnami na listech a plodech", icon: "🍎", isCorrect: true },
-                { text: "Bílým povlakem", icon: "⚪", isCorrect: false },
-                { text: "Červivostí", icon: "🐛", isCorrect: false },
-                { text: "Zvětšením plodů", icon: "📈", isCorrect: false }
+                { text: "Dark spots on leaves and fruit", icon: "🍎", isCorrect: true },
+                { text: "White coating", icon: "⚪", isCorrect: false },
+                { text: "Worminess", icon: "🐛", isCorrect: false },
+                { text: "Fruit enlargement", icon: "📈", isCorrect: false }
             ],
-            explanation: "Strupovitost tvoří olivově hnědé až černé skvrny, plody praskají."
+            explanation: "Scab forms olive-brown to black spots, fruits crack."
         },
         {
-            question: "Ochrana sadů v zimě zahrnuje:",
+            question: "Winter orchard protection includes:",
             type: "multiple_choice",
             options: [
-                { text: "Postřik olejem proti přezimujícím škůdcům", icon: "💧", isCorrect: true },
-                { text: "Nic se nedělá", icon: "😴", isCorrect: false },
-                { text: "Pouze hnojení", icon: "🧪", isCorrect: false },
-                { text: "Sklizeň", icon: "🍎", isCorrect: false }
+                { text: "Oil spray against overwintering pests", icon: "💧", isCorrect: true },
+                { text: "Nothing is done", icon: "😴", isCorrect: false },
+                { text: "Only fertilizing", icon: "🧪", isCorrect: false },
+                { text: "Harvesting", icon: "🍎", isCorrect: false }
             ],
-            explanation: "Zimní postřiky olejem likvidují přezimující vajíčka mšic a roztočů."
+            explanation: "Winter oil sprays kill overwintering eggs of aphids and mites."
         },
         {
-            question: "Hrušeň napadá především:",
+            question: "Pear is mainly attacked by:",
             type: "multiple_choice",
             options: [
-                { text: "Mera hrušňová", icon: "🐛", isCorrect: true },
-                { text: "Mandelinka", icon: "🪲", isCorrect: false },
-                { text: "Slimák", icon: "🐌", isCorrect: false },
-                { text: "Myš", icon: "🐀", isCorrect: false }
+                { text: "Pear psylla", icon: "🐛", isCorrect: true },
+                { text: "Colorado beetle", icon: "🪲", isCorrect: false },
+                { text: "Slug", icon: "🐌", isCorrect: false },
+                { text: "Mouse", icon: "🐀", isCorrect: false }
             ],
-            explanation: "Mera hrušňová je hlavní škůdce hrušní, přenáší fytoplazmovou chorobu."
+            explanation: "Pear psylla is the main pear pest, it transmits phytoplasma disease."
         },
         {
-            question: "Švestky trpí hlavně na:",
+            question: "Plums mainly suffer from:",
             type: "multiple_choice",
             options: [
-                { text: "Šárku švestky (virus)", icon: "🦠", isCorrect: true },
-                { text: "Pouze hmyz", icon: "🐛", isCorrect: false },
-                { text: "Pouze houby", icon: "🍄", isCorrect: false },
-                { text: "Nic", icon: "✅", isCorrect: false }
+                { text: "Plum pox (virus)", icon: "🦠", isCorrect: true },
+                { text: "Only insects", icon: "🐛", isCorrect: false },
+                { text: "Only fungi", icon: "🍄", isCorrect: false },
+                { text: "Nothing", icon: "✅", isCorrect: false }
             ],
-            explanation: "Šárka je závažná virová choroba švestek přenášená mšicemi."
+            explanation: "Plum pox is a serious viral disease of plums transmitted by aphids."
         }
     ],
 
-    // Level 9 - Škůdci zeleniny
+    // Level 9 - Vegetable Pests
     module2_level9: [
         {
-            question: "Dřepčíci škodí na:",
+            question: "Flea beetles damage:",
             type: "multiple_choice",
             options: [
-                { text: "Brukvovité zelenině (zelí, řepka)", icon: "🥬", isCorrect: true },
-                { text: "Pouze na ovoci", icon: "🍎", isCorrect: false },
-                { text: "Pouze na obilí", icon: "🌾", isCorrect: false },
-                { text: "Pouze na bramborách", icon: "🥔", isCorrect: false }
+                { text: "Brassicas (cabbage, rapeseed)", icon: "🥬", isCorrect: true },
+                { text: "Only fruit", icon: "🍎", isCorrect: false },
+                { text: "Only cereals", icon: "🌾", isCorrect: false },
+                { text: "Only potatoes", icon: "🥔", isCorrect: false }
             ],
-            explanation: "Dřepčíci okusují listy brukvovité zeleniny, typické jsou dírky v listech."
+            explanation: "Flea beetles chew brassica leaves, typical are small holes in leaves."
         },
         {
-            question: "Bělásek zelný je škůdce:",
+            question: "Cabbage white butterfly is pest of:",
             type: "multiple_choice",
             options: [
-                { text: "Zelí a příbuzné zeleniny", icon: "🥬", isCorrect: true },
-                { text: "Rajčat", icon: "🍅", isCorrect: false },
-                { text: "Mrkve", icon: "🥕", isCorrect: false },
-                { text: "Cibule", icon: "🧅", isCorrect: false }
+                { text: "Cabbage and related vegetables", icon: "🥬", isCorrect: true },
+                { text: "Tomatoes", icon: "🍅", isCorrect: false },
+                { text: "Carrots", icon: "🥕", isCorrect: false },
+                { text: "Onions", icon: "🧅", isCorrect: false }
             ],
-            explanation: "Housenky běláska zelného ožírají listy zelí, květáku a dalších brukvovitých."
+            explanation: "Cabbage white caterpillars eat leaves of cabbage, cauliflower, and other brassicas."
         },
         {
-            question: "Mšice zelná se vyskytuje na:",
+            question: "Cabbage aphid occurs on:",
             type: "multiple_choice",
             options: [
-                { text: "Spodní straně listů zelí", icon: "🥬", isCorrect: true },
-                { text: "Pouze na květech", icon: "🌸", isCorrect: false },
-                { text: "Pouze na kořenech", icon: "🌱", isCorrect: false },
-                { text: "Pouze na stonku", icon: "🌿", isCorrect: false }
+                { text: "Underside of cabbage leaves", icon: "🥬", isCorrect: true },
+                { text: "Only flowers", icon: "🌸", isCorrect: false },
+                { text: "Only roots", icon: "🌱", isCorrect: false },
+                { text: "Only stems", icon: "🌿", isCorrect: false }
             ],
-            explanation: "Mšice zelná tvoří kolonie na spodní straně listů a deformuje rostliny."
+            explanation: "Cabbage aphid forms colonies on leaf undersides and deforms plants."
         },
         {
-            question: "Háďátko bramborové způsobuje:",
+            question: "Potato cyst nematode causes:",
             type: "multiple_choice",
             options: [
-                { text: "Zakrslost a žloutnutí brambor", icon: "🥔", isCorrect: true },
-                { text: "Větší hlízy", icon: "📈", isCorrect: false },
-                { text: "Lepší chuť", icon: "😋", isCorrect: false },
-                { text: "Rychlejší růst", icon: "⚡", isCorrect: false }
+                { text: "Stunting and yellowing of potatoes", icon: "🥔", isCorrect: true },
+                { text: "Larger tubers", icon: "📈", isCorrect: false },
+                { text: "Better taste", icon: "😋", isCorrect: false },
+                { text: "Faster growth", icon: "⚡", isCorrect: false }
             ],
-            explanation: "Háďátka jsou mikroskopičtí červi napadající kořeny, karanténní škůdce."
+            explanation: "Nematodes are microscopic worms attacking roots, quarantine pest."
         },
         {
-            question: "Slimáci nejvíce škodí:",
+            question: "Slugs cause most damage:",
             type: "multiple_choice",
             options: [
-                { text: "Za vlhka v noci", icon: "🌙", isCorrect: true },
-                { text: "Za sucha ve dne", icon: "☀️", isCorrect: false },
-                { text: "V zimě", icon: "❄️", isCorrect: false },
-                { text: "Nikdy", icon: "⛔", isCorrect: false }
+                { text: "In wet weather at night", icon: "🌙", isCorrect: true },
+                { text: "In dry weather during day", icon: "☀️", isCorrect: false },
+                { text: "In winter", icon: "❄️", isCorrect: false },
+                { text: "Never", icon: "⛔", isCorrect: false }
             ],
-            explanation: "Slimáci jsou aktivní za vlhkého počasí, zejména v noci."
+            explanation: "Slugs are active in wet weather, especially at night."
         },
         {
-            question: "Jak bojovat se slimáky?",
+            question: "How to fight slugs?",
             type: "multiple_choice",
             options: [
-                { text: "Granule, pasti, sběr", icon: "🪤", isCorrect: true },
-                { text: "Postřik vodou", icon: "💧", isCorrect: false },
-                { text: "Více zalévat", icon: "💦", isCorrect: false },
-                { text: "Nic nedělat", icon: "😴", isCorrect: false }
+                { text: "Pellets, traps, hand picking", icon: "🪤", isCorrect: true },
+                { text: "Water spraying", icon: "💧", isCorrect: false },
+                { text: "More watering", icon: "💦", isCorrect: false },
+                { text: "Do nothing", icon: "😴", isCorrect: false }
             ],
-            explanation: "Účinné jsou granule (metaldehyd, železité fosfáty), pivní pasti, ruční sběr."
+            explanation: "Effective are pellets (metaldehyde, iron phosphate), beer traps, hand picking."
         },
         {
-            question: "Vrtalka pórkovou poznáme podle:",
+            question: "Leek moth is recognized by:",
             type: "multiple_choice",
             options: [
-                { text: "Min v listech (chodbiček)", icon: "〰️", isCorrect: true },
-                { text: "Velkých děr", icon: "⭕", isCorrect: false },
-                { text: "Černých skvrn", icon: "⚫", isCorrect: false },
-                { text: "Bílého povlaku", icon: "⚪", isCorrect: false }
+                { text: "Mines (tunnels) in leaves", icon: "〰️", isCorrect: true },
+                { text: "Large holes", icon: "⭕", isCorrect: false },
+                { text: "Black spots", icon: "⚫", isCorrect: false },
+                { text: "White coating", icon: "⚪", isCorrect: false }
             ],
-            explanation: "Larvy vrtalky vyžírají chodbiček (miny) uvnitř listů póru a cibule."
+            explanation: "Leek moth larvae eat tunnels (mines) inside leek and onion leaves."
         },
         {
-            question: "Mrkvová muška:",
+            question: "Carrot fly:",
             type: "multiple_choice",
             options: [
-                { text: "Její larvy poškozují kořeny mrkve", icon: "🥕", isCorrect: true },
-                { text: "Létá kolem mrkve", icon: "🪰", isCorrect: false },
-                { text: "Jí listy", icon: "🍃", isCorrect: false },
-                { text: "Nezpůsobuje škody", icon: "✅", isCorrect: false }
+                { text: "Its larvae damage carrot roots", icon: "🥕", isCorrect: true },
+                { text: "Flies around carrots", icon: "🪰", isCorrect: false },
+                { text: "Eats leaves", icon: "🍃", isCorrect: false },
+                { text: "Causes no damage", icon: "✅", isCorrect: false }
             ],
-            explanation: "Larvy mrkvové mušky vrtají chodby v kořenech mrkve a petržele."
+            explanation: "Carrot fly larvae bore tunnels in roots of carrots and parsley."
         },
         {
-            question: "Plíseň okurkových je:",
+            question: "Cucumber downy mildew is:",
             type: "multiple_choice",
             options: [
-                { text: "Houbová choroba tykvovitých", icon: "🥒", isCorrect: true },
-                { text: "Hmyzí škůdce", icon: "🐛", isCorrect: false },
-                { text: "Virová choroba", icon: "🦠", isCorrect: false },
-                { text: "Bakterie", icon: "🦠", isCorrect: false }
+                { text: "Fungal disease of cucurbits", icon: "🥒", isCorrect: true },
+                { text: "Insect pest", icon: "🐛", isCorrect: false },
+                { text: "Viral disease", icon: "🦠", isCorrect: false },
+                { text: "Bacteria", icon: "🦠", isCorrect: false }
             ],
-            explanation: "Plíseň okurková způsobuje žluté skvrny na listech okurek a dalších tykvovitých."
+            explanation: "Cucumber downy mildew causes yellow spots on leaves of cucumbers and other cucurbits."
         },
         {
-            question: "Mandelinka bramborová se hubí:",
+            question: "Colorado potato beetle is controlled by:",
             type: "multiple_choice",
             options: [
-                { text: "Insekticidy nebo ručním sběrem", icon: "🐛", isCorrect: true },
-                { text: "Fungicidy", icon: "🍄", isCorrect: false },
-                { text: "Herbicidy", icon: "🌿", isCorrect: false },
-                { text: "Více zaléváním", icon: "💧", isCorrect: false }
+                { text: "Insecticides or hand picking", icon: "🐛", isCorrect: true },
+                { text: "Fungicides", icon: "🍄", isCorrect: false },
+                { text: "Herbicides", icon: "🌿", isCorrect: false },
+                { text: "More watering", icon: "💧", isCorrect: false }
             ],
-            explanation: "Na malých plochách pomůže ruční sběr, jinak se používají insekticidy."
+            explanation: "On small areas hand picking helps, otherwise insecticides are used."
         }
     ],
 
-    // Level 10 - Pokročilá ochrana a nové trendy
+    // Level 10 - Advanced Protection and New Trends
     module2_level10: [
         {
-            question: "Precizní ochrana rostlin využívá:",
+            question: "Precision plant protection uses:",
             type: "multiple_choice",
             options: [
-                { text: "GPS, senzory, drony pro cílený zásah", icon: "🛸", isCorrect: true },
-                { text: "Pouze tradiční postřikovače", icon: "🚜", isCorrect: false },
-                { text: "Pouze ruční práci", icon: "✋", isCorrect: false },
-                { text: "Žádnou technologii", icon: "❌", isCorrect: false }
+                { text: "GPS, sensors, drones for targeted application", icon: "🛸", isCorrect: true },
+                { text: "Only traditional sprayers", icon: "🚜", isCorrect: false },
+                { text: "Only manual work", icon: "✋", isCorrect: false },
+                { text: "No technology", icon: "❌", isCorrect: false }
             ],
-            explanation: "Precizní zemědělství umožňuje aplikovat pesticidy pouze tam, kde je potřeba."
+            explanation: "Precision agriculture allows applying pesticides only where needed."
         },
         {
-            question: "RNA interference (RNAi) v ochraně rostlin:",
+            question: "RNA interference (RNAi) in plant protection:",
             type: "multiple_choice",
             options: [
-                { text: "Cíleně umlčuje geny škůdců", icon: "🧬", isCorrect: true },
-                { text: "Je typ pesticidu", icon: "🧪", isCorrect: false },
-                { text: "Je druh hnojiva", icon: "🌱", isCorrect: false },
-                { text: "Neexistuje", icon: "❌", isCorrect: false }
+                { text: "Specifically silences pest genes", icon: "🧬", isCorrect: true },
+                { text: "Is a type of pesticide", icon: "🧪", isCorrect: false },
+                { text: "Is a type of fertilizer", icon: "🌱", isCorrect: false },
+                { text: "Doesn't exist", icon: "❌", isCorrect: false }
             ],
-            explanation: "RNAi technologie umožňuje vývoj specifických biopesticidů působících na molekulární úrovni."
+            explanation: "RNAi technology allows development of specific biopesticides working at molecular level."
         },
         {
-            question: "CRISPR v zemědělství může:",
+            question: "CRISPR in agriculture can:",
             type: "multiple_choice",
             options: [
-                { text: "Vytvářet odolnější odrůdy", icon: "🧬", isCorrect: true },
-                { text: "Pouze hubit škůdce", icon: "🐛", isCorrect: false },
-                { text: "Pouze hnojit", icon: "🧪", isCorrect: false },
-                { text: "Nic", icon: "❌", isCorrect: false }
+                { text: "Create more resistant varieties", icon: "🧬", isCorrect: true },
+                { text: "Only kill pests", icon: "🐛", isCorrect: false },
+                { text: "Only fertilize", icon: "🧪", isCorrect: false },
+                { text: "Nothing", icon: "❌", isCorrect: false }
             ],
-            explanation: "Genové editace CRISPR umožňuje rychlý vývoj odrůd odolných vůči chorobám."
+            explanation: "CRISPR gene editing allows rapid development of disease-resistant varieties."
         },
         {
-            question: "Biopesticidy jsou:",
+            question: "Biopesticides are:",
             type: "multiple_choice",
             options: [
-                { text: "Přírodního původu (organismy, extrakty)", icon: "🌿", isCorrect: true },
-                { text: "Syntetické chemikálie", icon: "🧪", isCorrect: false },
-                { text: "Radioaktivní látky", icon: "☢️", isCorrect: false },
-                { text: "Neexistují", icon: "❌", isCorrect: false }
+                { text: "Natural origin (organisms, extracts)", icon: "🌿", isCorrect: true },
+                { text: "Synthetic chemicals", icon: "🧪", isCorrect: false },
+                { text: "Radioactive substances", icon: "☢️", isCorrect: false },
+                { text: "Don't exist", icon: "❌", isCorrect: false }
             ],
-            explanation: "Biopesticidy zahrnují mikroorganismy, rostlinné extrakty a další přírodní látky."
+            explanation: "Biopesticides include microorganisms, plant extracts, and other natural substances."
         },
         {
-            question: "Push-pull strategie znamená:",
+            question: "Push-pull strategy means:",
             type: "multiple_choice",
             options: [
-                { text: "Odpuzování od plodiny a lákání jinam", icon: "↔️", isCorrect: true },
-                { text: "Tlačení a tahání traktorů", icon: "🚜", isCorrect: false },
-                { text: "Typ postřikovače", icon: "💦", isCorrect: false },
-                { text: "Druh hnojení", icon: "🧪", isCorrect: false }
+                { text: "Repelling from crop and attracting elsewhere", icon: "↔️", isCorrect: true },
+                { text: "Pushing and pulling tractors", icon: "🚜", isCorrect: false },
+                { text: "Type of sprayer", icon: "💦", isCorrect: false },
+                { text: "Type of fertilizing", icon: "🧪", isCorrect: false }
             ],
-            explanation: "Push-pull využívá odpuzující a lákavé rostliny k řízení škůdců bez chemie."
+            explanation: "Push-pull uses repellent and attractive plants to manage pests without chemicals."
         },
         {
-            question: "Konfuzní metoda využívá:",
+            question: "Mating disruption uses:",
             type: "multiple_choice",
             options: [
-                { text: "Feromony k matení samců", icon: "💨", isCorrect: true },
-                { text: "Hlasitou hudbu", icon: "🎵", isCorrect: false },
-                { text: "Pestré barvy", icon: "🎨", isCorrect: false },
-                { text: "Silné světlo", icon: "💡", isCorrect: false }
+                { text: "Pheromones to confuse males", icon: "💨", isCorrect: true },
+                { text: "Loud music", icon: "🎵", isCorrect: false },
+                { text: "Colorful colors", icon: "🎨", isCorrect: false },
+                { text: "Bright light", icon: "💡", isCorrect: false }
             ],
-            explanation: "Nasycení prostředí feromony brání samcům najít samice k páření."
+            explanation: "Saturating environment with pheromones prevents males from finding females."
         },
         {
             question: "Sterile insect technique (SIT):",
             type: "multiple_choice",
             options: [
-                { text: "Vypouští sterilní samce", icon: "🐛", isCorrect: true },
-                { text: "Sterilizuje rostliny", icon: "🌱", isCorrect: false },
-                { text: "Čistí postřikovače", icon: "🧹", isCorrect: false },
-                { text: "Sterilizuje půdu", icon: "🌍", isCorrect: false }
+                { text: "Releases sterile males", icon: "🐛", isCorrect: true },
+                { text: "Sterilizes plants", icon: "🌱", isCorrect: false },
+                { text: "Cleans sprayers", icon: "🧹", isCorrect: false },
+                { text: "Sterilizes soil", icon: "🌍", isCorrect: false }
             ],
-            explanation: "SIT využívá vypouštění sterilizovaných samců k redukci populace škůdců."
+            explanation: "SIT uses release of sterilized males to reduce pest populations."
         },
         {
-            question: "Základem IPM (Integrated Pest Management) je:",
+            question: "Foundation of IPM (Integrated Pest Management) is:",
             type: "multiple_choice",
             options: [
-                { text: "Monitoring a prahy škodlivosti", icon: "📊", isCorrect: true },
-                { text: "Preventivní postřiky", icon: "💦", isCorrect: false },
-                { text: "Ignorování škůdců", icon: "🙈", isCorrect: false },
-                { text: "Pouze bio přípravky", icon: "🌿", isCorrect: false }
+                { text: "Monitoring and economic thresholds", icon: "📊", isCorrect: true },
+                { text: "Preventive spraying", icon: "💦", isCorrect: false },
+                { text: "Ignoring pests", icon: "🙈", isCorrect: false },
+                { text: "Only bio products", icon: "🌿", isCorrect: false }
             ],
-            explanation: "IPM je založeno na sledování škůdců a zásahu až po překročení prahu škodlivosti."
+            explanation: "IPM is based on pest monitoring and intervention after exceeding economic threshold."
         },
         {
-            question: "Microbiome engineering v ochraně rostlin:",
+            question: "Microbiome engineering in plant protection:",
             type: "multiple_choice",
             options: [
-                { text: "Využívá prospěšné mikroorganismy", icon: "🦠", isCorrect: true },
-                { text: "Je zakázáno", icon: "⛔", isCorrect: false },
-                { text: "Neexistuje", icon: "❌", isCorrect: false },
-                { text: "Pouze škodí", icon: "☠️", isCorrect: false }
+                { text: "Uses beneficial microorganisms", icon: "🦠", isCorrect: true },
+                { text: "Is prohibited", icon: "⛔", isCorrect: false },
+                { text: "Doesn't exist", icon: "❌", isCorrect: false },
+                { text: "Only harms", icon: "☠️", isCorrect: false }
             ],
-            explanation: "Manipulace s rostlinným mikrobiomem může zvýšit odolnost vůči chorobám."
+            explanation: "Manipulating plant microbiome can increase disease resistance."
         },
         {
-            question: "Budoucnost ochrany rostlin směřuje k:",
+            question: "Future of plant protection is heading toward:",
             type: "multiple_choice",
             options: [
-                { text: "Biologické a precizní ochraně", icon: "🎯", isCorrect: true },
-                { text: "Více chemikálií", icon: "🧪", isCorrect: false },
-                { text: "Žádné ochraně", icon: "⛔", isCorrect: false },
-                { text: "Pouze GMO", icon: "🧬", isCorrect: false }
+                { text: "Biological and precision protection", icon: "🎯", isCorrect: true },
+                { text: "More chemicals", icon: "🧪", isCorrect: false },
+                { text: "No protection", icon: "⛔", isCorrect: false },
+                { text: "Only GMO", icon: "🧬", isCorrect: false }
             ],
-            explanation: "Trendem je udržitelná ochrana s minimálním dopadem na životní prostředí."
+            explanation: "The trend is sustainable protection with minimal environmental impact."
         }
     ]
 };
 
-// Export do window
+// Export to window
 window.MODULE2_QUESTIONS = MODULE2_QUESTIONS;
