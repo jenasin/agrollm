@@ -1,37 +1,45 @@
-// AgroLinguo - Hlavní loader otázek
-// Tento soubor kombinuje všechny moduly otázek
+// AgroLinguo - Main question loader
+// This file combines all question modules
 
-// Inicializace ALL_QUESTIONS - moduly se načtou před tímto skriptem
+// Initialize ALL_QUESTIONS - modules are loaded before this script
 (function() {
-    // Funkce pro vytvoření ALL_QUESTIONS
+    // Function to create ALL_QUESTIONS
     function initQuestions() {
         if (window.MODULE1_QUESTIONS &&
             window.MODULE2_QUESTIONS &&
             window.MODULE3_QUESTIONS &&
             window.MODULE4_QUESTIONS &&
             window.MODULE5_QUESTIONS &&
-            window.MODULE6_QUESTIONS) {
+            window.MODULE6_QUESTIONS &&
+            window.MODULE7_QUESTIONS &&
+            window.MODULE8_QUESTIONS &&
+            window.MODULE9_QUESTIONS &&
+            window.MODULE10_QUESTIONS) {
 
             window.ALL_QUESTIONS = {
-                1: window.MODULE1_QUESTIONS,  // Půda a Základy
-                2: window.MODULE2_QUESTIONS,  // Ochrana Rostlin
-                3: window.MODULE3_QUESTIONS,  // Sklizeň a Prodej
-                4: window.MODULE4_QUESTIONS,  // Zavlažování
-                5: window.MODULE5_QUESTIONS,  // Mechanizace
-                6: window.MODULE6_QUESTIONS   // Ekologie
+                1: window.MODULE1_QUESTIONS,   // Soil & Basics
+                2: window.MODULE2_QUESTIONS,   // Plant Protection
+                3: window.MODULE3_QUESTIONS,   // Harvest & Sales
+                4: window.MODULE4_QUESTIONS,   // Irrigation
+                5: window.MODULE5_QUESTIONS,   // Machinery
+                6: window.MODULE6_QUESTIONS,   // Ecology
+                7: window.MODULE7_QUESTIONS,   // Livestock
+                8: window.MODULE8_QUESTIONS,   // Climate & Weather
+                9: window.MODULE9_QUESTIONS,   // Farm Business
+                10: window.MODULE10_QUESTIONS  // Innovation
             };
 
-            console.log('AgroLinguo: Všechny moduly načteny!');
-            console.log('Celkem modulů:', Object.keys(window.ALL_QUESTIONS).length);
+            console.log('AgroLinguo: All modules loaded!');
+            console.log('Total modules:', Object.keys(window.ALL_QUESTIONS).length);
 
-            // Spočítáme celkový počet otázek
+            // Count total questions
             let totalQuestions = 0;
             for (const moduleId in window.ALL_QUESTIONS) {
                 for (const level in window.ALL_QUESTIONS[moduleId]) {
                     totalQuestions += window.ALL_QUESTIONS[moduleId][level].length;
                 }
             }
-            console.log('Celkem otázek:', totalQuestions);
+            console.log('Total questions:', totalQuestions);
             return true;
         }
         return false;
