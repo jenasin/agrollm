@@ -9,6 +9,8 @@
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Neural Learning Engine (100% offline) -->
+    <script src="neural_engine.js"></script>
     <!-- Moduly otázek -->
     <script src="questions_module1.js"></script>
     <script src="questions_module2.js"></script>
@@ -268,6 +270,11 @@
             const [dailyGoal, setDailyGoal] = useState(50);
             const [dailyXp, setDailyXp] = useState(0);
 
+            // === NEURAL ENGINE STATE ===
+            const [neuralState, setNeuralState] = useState(() => window.NeuralEngine?.getState() || {});
+            const [questionStartTime, setQuestionStartTime] = useState(Date.now());
+            const [showNeuralPanel, setShowNeuralPanel] = useState(false);
+
             // Načíst uložená data
             useEffect(() => {
                 const saved = localStorage.getItem('agrolinguo_save');
@@ -362,6 +369,7 @@
                 setXp(0);
                 setShowAnswer(false);
                 setSelectedAnswer(null);
+                setQuestionStartTime(Date.now()); // Track response time
                 setScreen('quiz');
             };
 
@@ -376,9 +384,23 @@
                 setSelectedAnswer(answerIndex);
                 setShowAnswer(true);
 
+                // === NEURAL ENGINE UPDATE ===
+                const responseTime = Date.now() - questionStartTime;
+                const neuralState = window.NeuralEngine.processAnswer(
+                    selectedModule,
+                    currentQuestion,
+                    isCorrect,
+                    responseTime
+                );
+                setNeuralState(neuralState);
+                console.log('[Neural] State:', neuralState.phase, 'Momentum:', neuralState.momentum.toFixed(2));
+
                 if (isCorrect) {
                     setScore(s => s + 1);
-                    setXp(x => x + 10);
+                    // Adaptive XP based on prediction
+                    const prediction = window.NeuralEngine.predictSuccess(selectedModule, currentQuestion);
+                    const bonusXp = prediction < 0.5 ? 15 : 10; // More XP for harder questions
+                    setXp(x => x + bonusXp);
                 } else {
                     setHearts(h => Math.max(0, h - 1));
                 }
@@ -399,6 +421,7 @@
                     setCurrentQuestion(c => c + 1);
                     setShowAnswer(false);
                     setSelectedAnswer(null);
+                    setQuestionStartTime(Date.now()); // Reset timer for next question
                 }
             };
 
@@ -458,6 +481,91 @@
                 </div>
             );
 
+            // === NEURAL PANEL COMPONENT ===
+            const NeuralPanel = () => {
+                const state = neuralState;
+                if (!state.knowledgeState) return null;
+
+                const phaseEmoji = {
+                    'exploring': '🔍',
+                    'accelerating': '🚀',
+                    'consolidating': '📚',
+                    'mastering': '🏆',
+                    'struggling': '💪'
+                };
+
+                const phaseText = {
+                    'exploring': 'Prozkoumáváš',
+                    'accelerating': 'Zrychluješ!',
+                    'consolidating': 'Upevňuješ',
+                    'mastering': 'Ovládáš!',
+                    'struggling': 'Nevzdávej se!'
+                };
+
+                return (
+                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-4 shadow-lg mb-4 text-white">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">🧠</span>
+                                <span className="font-bold">Neural Engine</span>
+                            </div>
+                            <div className="flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full">
+                                <span>{phaseEmoji[state.phase] || '🔍'}</span>
+                                <span className="text-sm font-bold">{phaseText[state.phase] || state.phase}</span>
+                            </div>
+                        </div>
+
+                        {/* Knowledge bars */}
+                        <div className="space-y-2 mb-3">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs w-20">Znalosti:</span>
+                                <div className="flex-1 bg-white/20 rounded-full h-2 overflow-hidden">
+                                    <div
+                                        className="bg-green-400 h-full transition-all"
+                                        style={{width: `${(state.avgKnowledge || 0) * 100}%`}}
+                                    />
+                                </div>
+                                <span className="text-xs w-10">{((state.avgKnowledge || 0) * 100).toFixed(0)}%</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs w-20">Momentum:</span>
+                                <div className="flex-1 bg-white/20 rounded-full h-2 overflow-hidden">
+                                    <div
+                                        className={`h-full transition-all ${state.momentum >= 0 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                                        style={{width: `${Math.abs(state.momentum || 0) * 50 + 50}%`}}
+                                    />
+                                </div>
+                                <span className="text-xs w-10">{((state.momentum || 0) * 100).toFixed(0)}%</span>
+                            </div>
+                        </div>
+
+                        {/* Weak/Strong skills */}
+                        <div className="flex gap-2 text-xs">
+                            <div className="flex-1 bg-white/10 rounded-lg p-2">
+                                <div className="font-bold mb-1">💪 Silné:</div>
+                                {(state.strongSkills || []).slice(0, 2).map((s, i) => (
+                                    <div key={i} className="truncate opacity-80">
+                                        {window.NeuralEngine?.getSkillName(s.skillId)}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="flex-1 bg-white/10 rounded-lg p-2">
+                                <div className="font-bold mb-1">📖 Procvič:</div>
+                                {(state.weakSkills || []).slice(0, 2).map((s, i) => (
+                                    <div key={i} className="truncate opacity-80">
+                                        {window.NeuralEngine?.getSkillName(s.skillId)}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mt-2 text-xs text-center opacity-60">
+                            {state.interactionCount || 0} interakcí • Offline AI
+                        </div>
+                    </div>
+                );
+            };
+
             // Domovská obrazovka
             const HomeScreen = () => (
                 <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
@@ -465,6 +573,9 @@
 
                     {/* Profil a level */}
                     <div className="p-4">
+                        {/* Neural Panel */}
+                        <NeuralPanel />
+
                         <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
                             <div className="flex items-center gap-4">
                                 <div className="relative">
