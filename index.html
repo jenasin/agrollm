@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgroLinguo - Vzdělávací aplikace</title>
+    <title>AgroLinguo - Learn Farming</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -11,14 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Neural Learning Engine (100% offline) -->
     <script src="neural_engine.js"></script>
-    <!-- Moduly otázek -->
+    <!-- Question modules -->
     <script src="questions_module1.js"></script>
     <script src="questions_module2.js"></script>
     <script src="questions_module3.js"></script>
     <script src="questions_module4.js"></script>
     <script src="questions_module5.js"></script>
     <script src="questions_module6.js"></script>
-    <!-- Hlavní loader -->
+    <!-- Main loader -->
     <script src="questions.js"></script>
     <style>
         * { font-family: 'Nunito', sans-serif; }
@@ -275,6 +275,9 @@
             const [questionStartTime, setQuestionStartTime] = useState(Date.now());
             const [showNeuralPanel, setShowNeuralPanel] = useState(false);
 
+            // === TAB NAVIGATION STATE ===
+            const [activeTab, setActiveTab] = useState('home');
+
             // Načíst uložená data
             useEffect(() => {
                 const saved = localStorage.getItem('agrolinguo_save');
@@ -299,55 +302,55 @@
             const playerLevel = Math.floor(totalXp / 100) + 1;
             const xpToNextLevel = 100 - (totalXp % 100);
 
-            // Moduly kurzu
+            // Course modules
             const modules = [
                 {
                     id: 1,
-                    name: 'Půda a Základy',
+                    name: 'Soil & Basics',
                     icon: '🌱',
                     color: 'from-green-400 to-green-600',
                     levels: 10,
-                    description: 'Naučte se základy zemědělství'
+                    description: 'Learn farming fundamentals'
                 },
                 {
                     id: 2,
-                    name: 'Ochrana Rostlin',
+                    name: 'Plant Protection',
                     icon: '🛡️',
                     color: 'from-blue-400 to-blue-600',
                     levels: 10,
-                    description: 'Škůdci a choroby'
+                    description: 'Pests and diseases'
                 },
                 {
                     id: 3,
-                    name: 'Sklizeň a Prodej',
+                    name: 'Harvest & Sales',
                     icon: '🌾',
                     color: 'from-yellow-400 to-yellow-600',
                     levels: 10,
-                    description: 'Od pole na trh'
+                    description: 'From field to market'
                 },
                 {
                     id: 4,
-                    name: 'Zavlažování',
+                    name: 'Irrigation',
                     icon: '💧',
                     color: 'from-cyan-400 to-cyan-600',
                     levels: 10,
-                    description: 'Vodní hospodářství'
+                    description: 'Water management'
                 },
                 {
                     id: 5,
-                    name: 'Mechanizace',
+                    name: 'Machinery',
                     icon: '🚜',
                     color: 'from-orange-400 to-orange-600',
                     levels: 10,
-                    description: 'Stroje a technika'
+                    description: 'Tools and equipment'
                 },
                 {
                     id: 6,
-                    name: 'Ekologie',
+                    name: 'Ecology',
                     icon: '🌍',
                     color: 'from-emerald-400 to-emerald-600',
                     levels: 10,
-                    description: 'Udržitelné zemědělství'
+                    description: 'Sustainable farming'
                 }
             ];
 
@@ -482,7 +485,7 @@
             );
 
             // === NEURAL PANEL COMPONENT ===
-            const NeuralPanel = () => {
+            const NeuralPanel = ({ compact = false }) => {
                 const state = neuralState;
                 if (!state.knowledgeState) return null;
 
@@ -495,12 +498,30 @@
                 };
 
                 const phaseText = {
-                    'exploring': 'Prozkoumáváš',
-                    'accelerating': 'Zrychluješ!',
-                    'consolidating': 'Upevňuješ',
-                    'mastering': 'Ovládáš!',
-                    'struggling': 'Nevzdávej se!'
+                    'exploring': 'Exploring',
+                    'accelerating': 'Accelerating!',
+                    'consolidating': 'Consolidating',
+                    'mastering': 'Mastering!',
+                    'struggling': 'Keep Going!'
                 };
+
+                if (compact) {
+                    return (
+                        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-3 shadow-lg text-white">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xl">🧠</span>
+                                    <span className="font-bold text-sm">Neural</span>
+                                </div>
+                                <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
+                                    <span>{phaseEmoji[state.phase] || '🔍'}</span>
+                                    <span className="text-xs font-bold">{phaseText[state.phase] || state.phase}</span>
+                                </div>
+                                <div className="text-sm font-bold">{((state.avgKnowledge || 0) * 100).toFixed(0)}%</div>
+                            </div>
+                        </div>
+                    );
+                }
 
                 return (
                     <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-4 shadow-lg mb-4 text-white">
@@ -518,7 +539,7 @@
                         {/* Knowledge bars */}
                         <div className="space-y-2 mb-3">
                             <div className="flex items-center gap-2">
-                                <span className="text-xs w-20">Znalosti:</span>
+                                <span className="text-xs w-20">Knowledge:</span>
                                 <div className="flex-1 bg-white/20 rounded-full h-2 overflow-hidden">
                                     <div
                                         className="bg-green-400 h-full transition-all"
@@ -542,7 +563,7 @@
                         {/* Weak/Strong skills */}
                         <div className="flex gap-2 text-xs">
                             <div className="flex-1 bg-white/10 rounded-lg p-2">
-                                <div className="font-bold mb-1">💪 Silné:</div>
+                                <div className="font-bold mb-1">💪 Strong:</div>
                                 {(state.strongSkills || []).slice(0, 2).map((s, i) => (
                                     <div key={i} className="truncate opacity-80">
                                         {window.NeuralEngine?.getSkillName(s.skillId)}
@@ -550,7 +571,7 @@
                                 ))}
                             </div>
                             <div className="flex-1 bg-white/10 rounded-lg p-2">
-                                <div className="font-bold mb-1">📖 Procvič:</div>
+                                <div className="font-bold mb-1">📖 Practice:</div>
                                 {(state.weakSkills || []).slice(0, 2).map((s, i) => (
                                     <div key={i} className="truncate opacity-80">
                                         {window.NeuralEngine?.getSkillName(s.skillId)}
@@ -560,88 +581,338 @@
                         </div>
 
                         <div className="mt-2 text-xs text-center opacity-60">
-                            {state.interactionCount || 0} interakcí • Offline AI
+                            {state.interactionCount || 0} interactions • Offline AI
                         </div>
                     </div>
                 );
             };
 
-            // Domovská obrazovka
-            const HomeScreen = () => (
-                <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
-                    <Header />
-
-                    {/* Profil a level */}
-                    <div className="p-4">
-                        {/* Neural Panel */}
-                        <NeuralPanel />
-
-                        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
-                            <div className="flex items-center gap-4">
-                                <div className="relative">
-                                    <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-3xl">
-                                        🧑‍🌾
-                                    </div>
-                                    <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full px-2 py-0.5 text-xs font-bold">
-                                        {playerLevel}
-                                    </div>
-                                </div>
-                                <div className="flex-1">
-                                    <div className="font-bold text-lg">Farmář</div>
-                                    <div className="text-sm text-gray-500">Level {playerLevel}</div>
-                                    <div className="mt-1 bg-gray-200 rounded-full h-2 overflow-hidden">
-                                        <div
-                                            className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-500"
-                                            style={{width: `${((totalXp % 100) / 100) * 100}%`}}
-                                        />
-                                    </div>
-                                    <div className="text-xs text-gray-400 mt-1">{totalXp % 100}/100 XP do dalšího levelu</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Denní cíl */}
-                        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
-                            <div className="flex justify-between items-center mb-2">
-                                <span className="font-bold">Denní cíl</span>
-                                <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
-                            </div>
-                            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
-                                <div
-                                    className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all duration-500"
-                                    style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}}
-                                />
-                            </div>
-                        </div>
-
-                        {/* Moduly */}
-                        <div className="space-y-3">
-                            <h2 className="font-bold text-xl text-gray-800">Kurzy</h2>
-                            {modules.map(module => (
-                                <div
-                                    key={module.id}
-                                    onClick={() => {setSelectedModule(module.id); setScreen('levels');}}
-                                    className={`bg-gradient-to-r ${module.color} p-4 rounded-2xl shadow-lg cursor-pointer transform transition hover:scale-102 active:scale-98`}
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="text-4xl bg-white/30 rounded-xl p-2">
-                                            {module.icon}
-                                        </div>
-                                        <div className="flex-1 text-white">
-                                            <div className="font-bold text-lg">{module.name}</div>
-                                            <div className="text-sm opacity-90">{module.description}</div>
-                                            <div className="text-xs opacity-75 mt-1">{module.levels} levelů</div>
-                                        </div>
-                                        <div className="text-white text-2xl">→</div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+            // === BOTTOM TAB BAR COMPONENT ===
+            const BottomTabBar = () => (
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg safe-area-bottom">
+                    <div className="flex justify-around items-center py-2">
+                        <button
+                            onClick={() => { setActiveTab('home'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'home' ? 'text-green-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">🏠</span>
+                            <span className="text-xs font-bold mt-1">Home</span>
+                        </button>
+                        <button
+                            onClick={() => { setActiveTab('learn'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'learn' ? 'text-green-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">📚</span>
+                            <span className="text-xs font-bold mt-1">Learn</span>
+                        </button>
+                        <button
+                            onClick={() => { setActiveTab('skills'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'skills' ? 'text-purple-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">🧠</span>
+                            <span className="text-xs font-bold mt-1">Skills</span>
+                        </button>
+                        <button
+                            onClick={() => { setActiveTab('profile'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'profile' ? 'text-green-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">👤</span>
+                            <span className="text-xs font-bold mt-1">Profile</span>
+                        </button>
                     </div>
                 </div>
             );
 
-            // Obrazovka levelů
+            // === SKILLS SCREEN ===
+            const SkillsScreen = () => {
+                const state = neuralState;
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-indigo-100 pb-20">
+                        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 shadow-md p-4">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">🧠</span>
+                                <span className="font-bold text-white text-lg">Skills & Progress</span>
+                            </div>
+                        </div>
+
+                        <div className="p-4 space-y-4">
+                            {/* Learning Phase */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>📊</span> Learning Phase
+                                </h3>
+                                <div className="flex items-center justify-center">
+                                    <div className={`px-6 py-3 rounded-full font-bold text-lg ${
+                                        state.phase === 'mastering' ? 'bg-yellow-100 text-yellow-700' :
+                                        state.phase === 'accelerating' ? 'bg-green-100 text-green-700' :
+                                        state.phase === 'consolidating' ? 'bg-blue-100 text-blue-700' :
+                                        state.phase === 'struggling' ? 'bg-red-100 text-red-700' :
+                                        'bg-purple-100 text-purple-700'
+                                    }`}>
+                                        {state.phase === 'exploring' && '🔍 Exploring'}
+                                        {state.phase === 'accelerating' && '🚀 Accelerating'}
+                                        {state.phase === 'consolidating' && '📚 Consolidating'}
+                                        {state.phase === 'mastering' && '🏆 Mastering'}
+                                        {state.phase === 'struggling' && '💪 Keep Going'}
+                                        {!state.phase && '🔍 Start Learning'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Overall Progress */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>📈</span> Overall Progress
+                                </h3>
+                                <div className="space-y-3">
+                                    <div>
+                                        <div className="flex justify-between text-sm mb-1">
+                                            <span>Knowledge</span>
+                                            <span className="font-bold">{((state.avgKnowledge || 0) * 100).toFixed(0)}%</span>
+                                        </div>
+                                        <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                            <div className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all"
+                                                style={{width: `${(state.avgKnowledge || 0) * 100}%`}} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="flex justify-between text-sm mb-1">
+                                            <span>Momentum</span>
+                                            <span className={`font-bold ${(state.momentum || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {((state.momentum || 0) * 100).toFixed(0)}%
+                                            </span>
+                                        </div>
+                                        <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                            <div className={`h-full transition-all ${(state.momentum || 0) >= 0 ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 'bg-red-400'}`}
+                                                style={{width: `${Math.abs(state.momentum || 0) * 50 + 50}%`}} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Strong Skills */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>💪</span> Strong Skills
+                                </h3>
+                                <div className="space-y-2">
+                                    {(state.strongSkills || []).length === 0 ? (
+                                        <div className="text-gray-400 text-center py-4">
+                                            Answer questions to discover your strengths!
+                                        </div>
+                                    ) : (state.strongSkills || []).slice(0, 5).map((s, i) => (
+                                        <div key={i} className="flex items-center justify-between bg-green-50 rounded-lg p-3">
+                                            <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
+                                            <span className="text-green-600 font-bold">{(s.mastery * 100).toFixed(0)}%</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Skills to Practice */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>📖</span> Skills to Practice
+                                </h3>
+                                <div className="space-y-2">
+                                    {(state.weakSkills || []).length === 0 ? (
+                                        <div className="text-gray-400 text-center py-4">
+                                            Keep learning to see your improvement areas!
+                                        </div>
+                                    ) : (state.weakSkills || []).slice(0, 5).map((s, i) => (
+                                        <div key={i} className="flex items-center justify-between bg-orange-50 rounded-lg p-3">
+                                            <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
+                                            <span className="text-orange-600 font-bold">{(s.mastery * 100).toFixed(0)}%</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-4 shadow-lg text-white">
+                                <h3 className="font-bold mb-3 flex items-center gap-2">
+                                    <span>⚡</span> Neural Stats
+                                </h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold">{state.interactionCount || 0}</div>
+                                        <div className="text-xs opacity-80">Interactions</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold">{Object.keys(state.knowledgeState || {}).length}</div>
+                                        <div className="text-xs opacity-80">Skills Tracked</div>
+                                    </div>
+                                </div>
+                                <div className="mt-3 text-xs text-center opacity-60">
+                                    🔒 100% Offline AI • No internet needed
+                                </div>
+                            </div>
+                        </div>
+
+                        <BottomTabBar />
+                    </div>
+                );
+            };
+
+            // === PROFILE SCREEN ===
+            const ProfileScreen = () => (
+                <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-20">
+                    <Header />
+                    <div className="p-4">
+                        <div className="bg-white rounded-2xl p-6 shadow-lg mb-4">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="relative">
+                                    <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-4xl">
+                                        🧑‍🌾
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full px-2 py-1 text-sm font-bold">
+                                        {playerLevel}
+                                    </div>
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-bold text-xl">Farmer</div>
+                                    <div className="text-gray-500">Level {playerLevel}</div>
+                                </div>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                                <div className="bg-yellow-50 rounded-xl p-3">
+                                    <div className="text-2xl font-bold text-yellow-600">{totalXp}</div>
+                                    <div className="text-xs text-gray-500">Total XP</div>
+                                </div>
+                                <div className="bg-orange-50 rounded-xl p-3">
+                                    <div className="text-2xl font-bold text-orange-600">{streak}</div>
+                                    <div className="text-xs text-gray-500">Streak 🔥</div>
+                                </div>
+                                <div className="bg-green-50 rounded-xl p-3">
+                                    <div className="text-2xl font-bold text-green-600">{Object.keys(levelProgress).length}</div>
+                                    <div className="text-xs text-gray-500">Completed</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* XP Progress */}
+                        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="font-bold">Level Progress</span>
+                                <span className="text-sm text-gray-500">{totalXp % 100}/100 XP</span>
+                            </div>
+                            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all"
+                                    style={{width: `${(totalXp % 100)}%`}} />
+                            </div>
+                            <div className="text-xs text-gray-400 mt-2 text-center">
+                                {100 - (totalXp % 100)} XP to Level {playerLevel + 1}
+                            </div>
+                        </div>
+
+                        {/* Daily Goal */}
+                        <div className="bg-white rounded-2xl p-4 shadow-lg">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="font-bold">Daily Goal</span>
+                                <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
+                            </div>
+                            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all"
+                                    style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <BottomTabBar />
+                </div>
+            );
+
+            // Home screen with tabs
+            const HomeScreen = () => {
+                // If skills or profile tab selected, show those
+                if (activeTab === 'skills') return <SkillsScreen />;
+                if (activeTab === 'profile') return <ProfileScreen />;
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-20">
+                        <Header />
+
+                        {/* Profile and level */}
+                        <div className="p-4">
+                            {/* Compact Neural Panel on home */}
+                            {activeTab === 'home' && neuralState.knowledgeState && (
+                                <div className="mb-4" onClick={() => setActiveTab('skills')}>
+                                    <NeuralPanel compact={true} />
+                                </div>
+                            )}
+
+                            <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="relative">
+                                        <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-3xl">
+                                            🧑‍🌾
+                                        </div>
+                                        <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full px-2 py-0.5 text-xs font-bold">
+                                            {playerLevel}
+                                        </div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="font-bold text-lg">Farmer</div>
+                                        <div className="text-sm text-gray-500">Level {playerLevel}</div>
+                                        <div className="mt-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                                            <div
+                                                className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-500"
+                                                style={{width: `${((totalXp % 100) / 100) * 100}%`}}
+                                            />
+                                        </div>
+                                        <div className="text-xs text-gray-400 mt-1">{totalXp % 100}/100 XP to next level</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Daily goal */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="font-bold">Daily Goal</span>
+                                    <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
+                                </div>
+                                <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                    <div
+                                        className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all duration-500"
+                                        style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Modules */}
+                            <div className="space-y-3">
+                                <h2 className="font-bold text-xl text-gray-800">Courses</h2>
+                                {modules.map(module => (
+                                    <div
+                                        key={module.id}
+                                        onClick={() => {setSelectedModule(module.id); setScreen('levels');}}
+                                        className={`bg-gradient-to-r ${module.color} p-4 rounded-2xl shadow-lg cursor-pointer transform transition hover:scale-102 active:scale-98`}
+                                    >
+                                        <div className="flex items-center gap-3">
+                                            <div className="text-4xl bg-white/30 rounded-xl p-2">
+                                                {module.icon}
+                                            </div>
+                                            <div className="flex-1 text-white">
+                                                <div className="font-bold text-lg">{module.name}</div>
+                                                <div className="text-sm opacity-90">{module.description}</div>
+                                                <div className="text-xs opacity-75 mt-1">{module.levels} levels</div>
+                                            </div>
+                                            <div className="text-white text-2xl">→</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <BottomTabBar />
+                    </div>
+                );
+            };
+
+            // Levels screen
             const LevelsScreen = () => {
                 const module = modules.find(m => m.id === selectedModule);
 
@@ -712,12 +983,12 @@
                         <div className="h-screen flex items-center justify-center">
                             <div className="text-center">
                                 <div className="text-6xl mb-4">📚</div>
-                                <div className="text-xl font-bold text-gray-600">Otázky pro tento level nejsou k dispozici</div>
+                                <div className="text-xl font-bold text-gray-600">Questions for this level are not available</div>
                                 <button
                                     onClick={() => setScreen('levels')}
                                     className="mt-4 bg-green-500 text-white px-6 py-2 rounded-full"
                                 >
-                                    Zpět
+                                    Back
                                 </button>
                             </div>
                         </div>
@@ -822,7 +1093,7 @@
                                     </div>
                                     <div className="flex-1">
                                         <div className={`feedback-title font-bold text-2xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                                            {isCorrect ? 'Výborně!' : 'Bohužel ne'}
+                                            {isCorrect ? 'Excellent!' : 'Not quite'}
                                         </div>
                                         <div className="feedback-text text-base text-gray-700 mt-1">{question.explanation}</div>
                                     </div>
@@ -835,7 +1106,7 @@
                                             : 'bg-red-500 shadow-[0_5px_0_#dc2626]'
                                     }`}
                                 >
-                                    {currentQuestion + 1 >= questions.length ? '🏆 Dokončit' : '→ Pokračovat'}
+                                    {currentQuestion + 1 >= questions.length ? '🏆 Finish' : '→ Continue'}
                                 </button>
                             </div>
                         )}
@@ -903,7 +1174,7 @@
                             </div>
 
                             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                                {stars >= 2 ? 'Výborně!' : stars === 1 ? 'Dobrá práce!' : 'Zkus to znovu!'}
+                                {stars >= 2 ? 'Excellent!' : stars === 1 ? 'Good job!' : 'Try again!'}
                             </h2>
 
                             <div className="flex justify-center gap-4 mb-6">
@@ -922,7 +1193,7 @@
                                 <div className="grid grid-cols-2 gap-8">
                                     <div className="text-center">
                                         <div className="text-4xl font-bold text-green-600">{score}/{questions.length}</div>
-                                        <div className="text-sm text-gray-500 mt-1">Správných</div>
+                                        <div className="text-sm text-gray-500 mt-1">Correct</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-4xl font-bold text-yellow-600">+{xp + (stars * 5)}</div>
@@ -932,45 +1203,45 @@
                             </div>
                         </div>
 
-                        {/* Tlačítka fixně dole */}
+                        {/* Buttons fixed at bottom */}
                         <div className="p-4 bg-white border-t shadow-lg slide-up">
                             <button
                                 onClick={goToNextLevel}
                                 className={`w-full py-5 rounded-2xl font-bold text-xl text-white shadow-lg mb-3 bg-gradient-to-r ${module.color}`}
                             >
-                                {isWin ? (selectedLevel < 10 ? '🚀 Další level' : '🔄 Hrát znovu') : '🔄 Zkusit znovu'}
+                                {isWin ? (selectedLevel < 10 ? '🚀 Next Level' : '🔄 Play Again') : '🔄 Try Again'}
                             </button>
                             <button
                                 onClick={() => setScreen('levels')}
                                 className="w-full py-3 rounded-xl font-bold text-gray-600 bg-gray-100"
                             >
-                                Zpět na přehled
+                                Back to Overview
                             </button>
                         </div>
                     </div>
                 );
             };
 
-            // Game Over obrazovka
+            // Game Over screen
             const GameOverScreen = () => (
                 <div className="h-screen bg-gradient-to-b from-red-50 to-red-100 flex flex-col items-center justify-center p-4">
                     <div className="bg-white rounded-3xl p-8 shadow-2xl text-center max-w-sm w-full bounce-in">
                         <div className="text-6xl mb-4">💔</div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Došla ti srdíčka!</h2>
-                        <p className="text-gray-500 mb-6">Nevzdávej to, zkus to znovu!</p>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Out of hearts!</h2>
+                        <p className="text-gray-500 mb-6">Don't give up, try again!</p>
 
                         <div className="space-y-3">
                             <button
                                 onClick={() => { refillHearts(); startLevel(selectedModule, selectedLevel); }}
                                 className="w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg"
                             >
-                                ❤️ Zkusit znovu
+                                ❤️ Try Again
                             </button>
                             <button
                                 onClick={() => setScreen('home')}
                                 className="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-bold"
                             >
-                                Zpět domů
+                                Back Home
                             </button>
                         </div>
                     </div>
