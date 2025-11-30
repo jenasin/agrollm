@@ -882,30 +882,64 @@
                                 </div>
                             </div>
 
-                            {/* Modules - Duolingo style big icons */}
+                            {/* Modules - Duolingo style big icons with progress */}
                             <div className="space-y-4">
                                 <h2 className="font-bold text-xl text-gray-800">Courses</h2>
-                                {modules.map(module => (
-                                    <div
-                                        key={module.id}
-                                        onClick={() => {setSelectedModule(module.id); setScreen('levels');}}
-                                        className={`bg-gradient-to-r ${module.color} p-5 rounded-3xl shadow-lg cursor-pointer transform transition hover:scale-[1.02] active:scale-[0.98]`}
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-20 h-20 bg-white/30 rounded-2xl flex items-center justify-center shadow-inner">
-                                                <span className="text-6xl">{module.icon}</span>
-                                            </div>
-                                            <div className="flex-1 text-white">
-                                                <div className="font-bold text-xl">{module.name}</div>
-                                                <div className="text-sm opacity-90 mt-1">{module.description}</div>
-                                                <div className="text-xs opacity-75 mt-2 flex items-center gap-2">
-                                                    <span className="bg-white/20 px-2 py-0.5 rounded-full">{module.levels} levels</span>
+                                {modules.map(module => {
+                                    // Calculate progress for this module
+                                    const completedLevels = Array.from({length: module.levels}, (_, i) => {
+                                        const levelKey = `${module.id}-${i + 1}`;
+                                        return levelProgress[levelKey] >= 1 ? 1 : 0;
+                                    }).reduce((a, b) => a + b, 0);
+
+                                    const totalStars = Array.from({length: module.levels}, (_, i) => {
+                                        const levelKey = `${module.id}-${i + 1}`;
+                                        return levelProgress[levelKey] || 0;
+                                    }).reduce((a, b) => a + b, 0);
+
+                                    const progressPercent = (completedLevels / module.levels) * 100;
+
+                                    return (
+                                        <div
+                                            key={module.id}
+                                            onClick={() => {setSelectedModule(module.id); setScreen('levels');}}
+                                            className={`bg-gradient-to-r ${module.color} p-5 rounded-3xl shadow-lg cursor-pointer transform transition hover:scale-[1.02] active:scale-[0.98]`}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-20 h-20 bg-white/30 rounded-2xl flex items-center justify-center shadow-inner relative">
+                                                    <span className="text-6xl">{module.icon}</span>
+                                                    {completedLevels === module.levels && (
+                                                        <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full w-8 h-8 flex items-center justify-center text-lg shadow-lg">
+                                                            🏆
+                                                        </div>
+                                                    )}
                                                 </div>
+                                                <div className="flex-1 text-white">
+                                                    <div className="font-bold text-xl">{module.name}</div>
+                                                    <div className="text-sm opacity-90 mt-1">{module.description}</div>
+
+                                                    {/* Progress bar */}
+                                                    <div className="mt-3">
+                                                        <div className="flex justify-between text-xs mb-1">
+                                                            <span className="opacity-80">{completedLevels}/{module.levels} levels</span>
+                                                            <span className="flex items-center gap-1">
+                                                                <span className="text-yellow-300">⭐</span>
+                                                                <span>{totalStars}/{module.levels * 3}</span>
+                                                            </span>
+                                                        </div>
+                                                        <div className="bg-white/20 rounded-full h-2 overflow-hidden">
+                                                            <div
+                                                                className="bg-white h-full transition-all duration-500 rounded-full"
+                                                                style={{width: `${progressPercent}%`}}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-white text-3xl opacity-80">→</div>
                                             </div>
-                                            <div className="text-white text-3xl opacity-80">→</div>
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -918,24 +952,57 @@
             const LevelsScreen = () => {
                 const module = modules.find(m => m.id === selectedModule);
 
+                // Calculate progress for this module
+                const completedLevels = Array.from({length: module.levels}, (_, i) => {
+                    const levelKey = `${module.id}-${i + 1}`;
+                    return levelProgress[levelKey] >= 1 ? 1 : 0;
+                }).reduce((a, b) => a + b, 0);
+
+                const totalStars = Array.from({length: module.levels}, (_, i) => {
+                    const levelKey = `${module.id}-${i + 1}`;
+                    return levelProgress[levelKey] || 0;
+                }).reduce((a, b) => a + b, 0);
+
+                const progressPercent = (completedLevels / module.levels) * 100;
+
                 return (
                     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
-                        {/* Header with big module icon */}
-                        <div className={`bg-gradient-to-r ${module.color} shadow-lg p-6`}>
-                            <div className="flex items-center gap-4">
+                        {/* Header with big module icon and progress */}
+                        <div className={`bg-gradient-to-r ${module.color} shadow-lg p-5`}>
+                            <div className="flex items-center gap-4 mb-4">
                                 <button
                                     onClick={() => setScreen('home')}
                                     className="text-3xl text-white/80 hover:text-white"
                                 >
                                     ←
                                 </button>
-                                <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center">
+                                <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center relative">
                                     <span className="text-5xl">{module.icon}</span>
+                                    {completedLevels === module.levels && (
+                                        <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full w-7 h-7 flex items-center justify-center text-sm shadow-lg">
+                                            🏆
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="text-white">
+                                <div className="text-white flex-1">
                                     <div className="font-bold text-2xl">{module.name}</div>
                                     <div className="text-sm opacity-80">{module.description}</div>
                                 </div>
+                            </div>
+
+                            {/* Progress stats */}
+                            <div className="flex justify-between items-center text-white text-sm mb-2">
+                                <span className="opacity-90">{completedLevels}/{module.levels} levels completed</span>
+                                <span className="flex items-center gap-1">
+                                    <span className="text-yellow-300 text-lg">⭐</span>
+                                    <span className="font-bold">{totalStars}/{module.levels * 3}</span>
+                                </span>
+                            </div>
+                            <div className="bg-white/20 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className="bg-white h-full transition-all duration-500 rounded-full"
+                                    style={{width: `${progressPercent}%`}}
+                                />
                             </div>
                         </div>
 
