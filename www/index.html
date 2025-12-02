@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AgroLinguo - Learn Farming</title>
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#22c55e">
+
+    <!-- iOS PWA Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AgroLinguo">
+    <link rel="apple-touch-icon" href="icon-192.svg">
+
+    <!-- Local libraries for offline use -->
+    <script src="libs/tailwind.min.js"></script>
+    <script src="libs/react.min.js"></script>
+    <script src="libs/react-dom.min.js"></script>
+    <script src="libs/babel.min.js"></script>
+
+    <!-- Local fonts -->
+    <style>
+        @font-face {
+            font-family: 'Nunito';
+            src: url('fonts/nunito-400.woff2') format('woff2');
+            font-weight: 400;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Nunito';
+            src: url('fonts/nunito-600.woff2') format('woff2');
+            font-weight: 600;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Nunito';
+            src: url('fonts/nunito-700.woff2') format('woff2');
+            font-weight: 700;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Nunito';
+            src: url('fonts/nunito-800.woff2') format('woff2');
+            font-weight: 800;
+            font-display: swap;
+        }
+    </style>
+    <!-- Neural Learning Engine (100% offline) -->
+    <script src="neural_engine.js"></script>
+    <!-- Question modules -->
+    <script src="questions/questions_module1.js"></script>
+    <script src="questions/questions_module2.js"></script>
+    <script src="questions/questions_module3.js"></script>
+    <script src="questions/questions_module4.js"></script>
+    <script src="questions/questions_module5.js"></script>
+    <script src="questions/questions_module6.js"></script>
+    <script src="questions/questions_module7.js"></script>
+    <script src="questions/questions_module8.js"></script>
+    <script src="questions/questions_module9.js"></script>
+    <script src="questions/questions_module10.js"></script>
+    <!-- Course configuration -->
+    <script src="course_config.js"></script>
+    <!-- Main loader -->
+    <script src="questions.js"></script>
+    <style>
+        * { font-family: 'Nunito', sans-serif; }
+        .progress-ring { transform: rotate(-90deg); }
+        .bounce-in { animation: bounceIn 0.5s ease-out; }
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .shake { animation: shake 0.5s ease-in-out; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .slide-up { animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
+
+        /* Duolingo-style tlačítka */
+        .btn-answer {
+            transform: translateY(0);
+            box-shadow: 0 4px 0 #d1d5db;
+            transition: all 0.1s ease;
+        }
+        .btn-answer:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #d1d5db;
+        }
+        .btn-answer.selected {
+            box-shadow: 0 4px 0 #22c55e;
+            border-color: #22c55e;
+            background: #dcfce7;
+        }
+        .btn-answer.selected:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 #22c55e;
+        }
+        .btn-answer.correct {
+            box-shadow: 0 4px 0 #16a34a;
+            animation: correctPop 0.4s ease;
+        }
+        .btn-answer.wrong {
+            box-shadow: 0 4px 0 #dc2626;
+            animation: wrongShake 0.4s ease;
+        }
+        @keyframes correctPop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-8px); }
+            80% { transform: translateX(8px); }
+        }
+
+        /* Efekt úspěchu */
+        .success-burst {
+            position: relative;
+        }
+        .success-burst::after {
+            content: '✨';
+            position: absolute;
+            font-size: 24px;
+            animation: burstOut 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes burstOut {
+            0% { opacity: 1; transform: scale(0.5) translateY(0); }
+            100% { opacity: 0; transform: scale(1.5) translateY(-30px); }
+        }
+
+        /* ========================================
+           MOBILNÍ OPTIMALIZACE (360-420px Android)
+           Pro low-literacy users - větší prvky
+           ======================================== */
+        @media (max-width: 600px) {
+            /* Hlavní kontejner */
+            .mobile-container {
+                padding: 12px 16px;
+            }
+
+            /* Karta otázky - větší padding a zaoblení */
+            .question-card {
+                padding: 18px 20px !important;
+                border-radius: 18px !important;
+                margin-bottom: 16px !important;
+            }
+
+            /* Text otázky - větší pro čitelnost */
+            .question-text {
+                font-size: 20px !important;
+                line-height: 1.4 !important;
+                font-weight: 700 !important;
+            }
+
+            /* Ikona otázky */
+            .question-icon {
+                font-size: 36px !important;
+                min-width: 44px !important;
+            }
+
+            /* Tlačítka odpovědí - velká klikací plocha */
+            .btn-answer {
+                min-height: 68px !important;
+                padding: 18px 20px !important;
+                border-radius: 16px !important;
+                margin-bottom: 12px !important;
+                box-shadow: 0 5px 0 #d1d5db !important;
+            }
+
+            /* Text odpovědi */
+            .answer-text {
+                font-size: 18px !important;
+                font-weight: 600 !important;
+            }
+
+            /* Ikona odpovědi */
+            .answer-icon {
+                font-size: 28px !important;
+                min-width: 40px !important;
+            }
+
+            /* Mezery mezi odpověďmi */
+            .answers-container {
+                gap: 14px !important;
+            }
+
+            /* Progress bar */
+            .progress-bar {
+                height: 10px !important;
+                border-radius: 5px !important;
+            }
+
+            /* Header - srdíčka */
+            .hearts-display {
+                font-size: 22px !important;
+            }
+
+            /* Spodní feedback panel */
+            .feedback-panel {
+                padding: 20px !important;
+                border-radius: 24px 24px 0 0 !important;
+            }
+
+            .feedback-text {
+                font-size: 18px !important;
+            }
+
+            .feedback-title {
+                font-size: 22px !important;
+            }
+
+            .feedback-emoji {
+                font-size: 48px !important;
+            }
+
+            /* Tlačítko pokračovat */
+            .continue-btn {
+                min-height: 60px !important;
+                font-size: 20px !important;
+                border-radius: 16px !important;
+                padding: 16px 24px !important;
+            }
+
+            /* Větší dotyková oblast pro X tlačítko */
+            .close-btn {
+                min-width: 48px !important;
+                min-height: 48px !important;
+                font-size: 24px !important;
+            }
+        }
+
+        /* Extra malé telefony (< 360px) */
+        @media (max-width: 360px) {
+            .question-text {
+                font-size: 18px !important;
+            }
+            .btn-answer {
+                min-height: 60px !important;
+                padding: 14px 16px !important;
+            }
+            .answer-text {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Konfety animace */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        .star-burst {
+            animation: starBurst 0.6s ease-out;
+        }
+        @keyframes starBurst {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.3) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        .float-up {
+            animation: floatUp 0.5s ease-out;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(50px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-green-50 to-green-100 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useCallback } = React;
+
+        // Hlavní komponenta aplikace
+        function App() {
+            const [screen, setScreen] = useState('home');
+            const [selectedModule, setSelectedModule] = useState(null);
+            const [selectedLevel, setSelectedLevel] = useState(null);
+            const [currentQuestion, setCurrentQuestion] = useState(0);
+            const [score, setScore] = useState(0);
+            const [hearts, setHearts] = useState(5);
+            const [xp, setXp] = useState(0);
+            const [totalXp, setTotalXp] = useState(0);
+            const [streak, setStreak] = useState(0);
+            const [showAnswer, setShowAnswer] = useState(false);
+            const [selectedAnswer, setSelectedAnswer] = useState(null);
+            const [levelProgress, setLevelProgress] = useState({});
+            const [dailyGoal, setDailyGoal] = useState(50);
+            const [dailyXp, setDailyXp] = useState(0);
+
+            // === NEURAL ENGINE STATE ===
+            const [neuralState, setNeuralState] = useState(() => window.NeuralEngine?.getState() || {});
+            const [questionStartTime, setQuestionStartTime] = useState(Date.now());
+            const [showNeuralPanel, setShowNeuralPanel] = useState(false);
+
+            // === TAB NAVIGATION STATE ===
+            const [activeTab, setActiveTab] = useState('home');
+
+            // Načíst uložená data
+            useEffect(() => {
+                const saved = localStorage.getItem('agrolinguo_save');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    setTotalXp(data.totalXp || 0);
+                    setStreak(data.streak || 0);
+                    setLevelProgress(data.levelProgress || {});
+                    setDailyXp(data.dailyXp || 0);
+                    setHearts(data.hearts || 5);
+                }
+            }, []);
+
+            // Uložit data
+            useEffect(() => {
+                localStorage.setItem('agrolinguo_save', JSON.stringify({
+                    totalXp, streak, levelProgress, dailyXp, hearts
+                }));
+            }, [totalXp, streak, levelProgress, dailyXp, hearts]);
+
+            // Vypočítat level hráče
+            const playerLevel = Math.floor(totalXp / 100) + 1;
+            const xpToNextLevel = 100 - (totalXp % 100);
+
+            // Course modules - loaded dynamically from course_config.js + questions.js
+            const modules = getModules();
+
+            // Získat otázky pro level
+            const getQuestionsForLevel = (moduleId, levelNum) => {
+                const key = `module${moduleId}_level${levelNum}`;
+                if (window.ALL_QUESTIONS && window.ALL_QUESTIONS[moduleId] && window.ALL_QUESTIONS[moduleId][key]) {
+                    return window.ALL_QUESTIONS[moduleId][key];
+                }
+                return [];
+            };
+
+            // Spustit level
+            const startLevel = (moduleId, levelNum) => {
+                setSelectedModule(moduleId);
+                setSelectedLevel(levelNum);
+                setCurrentQuestion(0);
+                setScore(0);
+                setXp(0);
+                setShowAnswer(false);
+                setSelectedAnswer(null);
+                setQuestionStartTime(Date.now()); // Track response time
+                setScreen('quiz');
+            };
+
+            // Zpracovat odpověď
+            const handleAnswer = (answerIndex) => {
+                if (showAnswer) return;
+
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const question = questions[currentQuestion];
+                const isCorrect = question.options[answerIndex].isCorrect;
+
+                setSelectedAnswer(answerIndex);
+                setShowAnswer(true);
+
+                // === NEURAL ENGINE UPDATE ===
+                const responseTime = Date.now() - questionStartTime;
+                const neuralState = window.NeuralEngine.processAnswer(
+                    selectedModule,
+                    currentQuestion,
+                    isCorrect,
+                    responseTime
+                );
+                setNeuralState(neuralState);
+                console.log('[Neural] State:', neuralState.phase, 'Momentum:', neuralState.momentum.toFixed(2));
+
+                if (isCorrect) {
+                    setScore(s => s + 1);
+                    // Adaptive XP based on prediction
+                    const prediction = window.NeuralEngine.predictSuccess(selectedModule, currentQuestion);
+                    const bonusXp = prediction < 0.5 ? 15 : 10; // More XP for harder questions
+                    setXp(x => x + bonusXp);
+                } else {
+                    setHearts(h => Math.max(0, h - 1));
+                }
+            };
+
+            // Další otázka
+            const nextQuestion = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+
+                if (hearts <= 0) {
+                    setScreen('gameover');
+                    return;
+                }
+
+                if (currentQuestion + 1 >= questions.length) {
+                    finishLevel();
+                } else {
+                    setCurrentQuestion(c => c + 1);
+                    setShowAnswer(false);
+                    setSelectedAnswer(null);
+                    setQuestionStartTime(Date.now()); // Reset timer for next question
+                }
+            };
+
+            // Dokončit level
+            const finishLevel = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const percentage = (score / questions.length) * 100;
+                const stars = percentage >= 90 ? 3 : percentage >= 70 ? 2 : percentage >= 50 ? 1 : 0;
+
+                const levelKey = `${selectedModule}-${selectedLevel}`;
+                const prevStars = levelProgress[levelKey] || 0;
+
+                if (stars > prevStars) {
+                    setLevelProgress(prev => ({...prev, [levelKey]: stars}));
+                }
+
+                const earnedXp = xp + (stars * 5);
+                setTotalXp(t => t + earnedXp);
+                setDailyXp(d => d + earnedXp);
+
+                if (stars >= 2) {
+                    setStreak(s => s + 1);
+                    if (streak > 0 && streak % 5 === 4) {
+                        setGems(g => g + 10);
+                    }
+                }
+
+                setScreen('results');
+            };
+
+            // Resetovat srdíčka
+            const refillHearts = () => {
+                setHearts(5);
+            };
+
+            // Header komponenta
+            const Header = () => (
+                <div className="bg-white shadow-md p-4 flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                        <span className="text-2xl">🌿</span>
+                        <span className="font-bold text-green-700">AgroLinguo</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 bg-red-100 px-3 py-1 rounded-full">
+                            <span>❤️</span>
+                            <span className="font-bold text-red-600">{hearts}</span>
+                        </div>
+                        <div className="flex items-center gap-1 bg-orange-100 px-3 py-1 rounded-full">
+                            <span>🔥</span>
+                            <span className="font-bold text-orange-600">{streak}</span>
+                        </div>
+                        <div className="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full">
+                            <span>⭐</span>
+                            <span className="font-bold text-yellow-600">{totalXp} XP</span>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // === NEURAL PANEL COMPONENT ===
+            const NeuralPanel = ({ compact = false }) => {
+                const state = neuralState;
+                if (!state.knowledgeState) return null;
+
+                const phaseEmoji = {
+                    'exploring': '🔍',
+                    'accelerating': '🚀',
+                    'consolidating': '📚',
+                    'mastering': '🏆',
+                    'struggling': '💪'
+                };
+
+                const phaseText = {
+                    'exploring': 'Exploring',
+                    'accelerating': 'Accelerating!',
+                    'consolidating': 'Consolidating',
+                    'mastering': 'Mastering!',
+                    'struggling': 'Keep Going!'
+                };
+
+                if (compact) {
+                    return (
+                        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-3 shadow-lg text-white">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xl">🧠</span>
+                                    <span className="font-bold text-sm">Neural</span>
+                                </div>
+                                <div className="flex items-center gap-1 bg-white/20 px-2 py-1 rounded-full">
+                                    <span>{phaseEmoji[state.phase] || '🔍'}</span>
+                                    <span className="text-xs font-bold">{phaseText[state.phase] || state.phase}</span>
+                                </div>
+                                <div className="text-sm font-bold">{((state.avgKnowledge || 0) * 100).toFixed(0)}%</div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-4 shadow-lg mb-4 text-white">
+                        <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">🧠</span>
+                                <span className="font-bold">Neural Engine</span>
+                            </div>
+                            <div className="flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full">
+                                <span>{phaseEmoji[state.phase] || '🔍'}</span>
+                                <span className="text-sm font-bold">{phaseText[state.phase] || state.phase}</span>
+                            </div>
+                        </div>
+
+                        {/* Knowledge bars */}
+                        <div className="space-y-2 mb-3">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs w-20">Knowledge:</span>
+                                <div className="flex-1 bg-white/20 rounded-full h-2 overflow-hidden">
+                                    <div
+                                        className="bg-green-400 h-full transition-all"
+                                        style={{width: `${(state.avgKnowledge || 0) * 100}%`}}
+                                    />
+                                </div>
+                                <span className="text-xs w-10">{((state.avgKnowledge || 0) * 100).toFixed(0)}%</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs w-20">Momentum:</span>
+                                <div className="flex-1 bg-white/20 rounded-full h-2 overflow-hidden">
+                                    <div
+                                        className={`h-full transition-all ${state.momentum >= 0 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                                        style={{width: `${Math.abs(state.momentum || 0) * 50 + 50}%`}}
+                                    />
+                                </div>
+                                <span className="text-xs w-10">{((state.momentum || 0) * 100).toFixed(0)}%</span>
+                            </div>
+                        </div>
+
+                        {/* Weak/Strong skills */}
+                        <div className="flex gap-2 text-xs">
+                            <div className="flex-1 bg-white/10 rounded-lg p-2">
+                                <div className="font-bold mb-1">💪 Strong:</div>
+                                {(state.strongSkills || []).slice(0, 2).map((s, i) => (
+                                    <div key={i} className="truncate opacity-80">
+                                        {window.NeuralEngine?.getSkillName(s.skillId)}
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="flex-1 bg-white/10 rounded-lg p-2">
+                                <div className="font-bold mb-1">📖 Practice:</div>
+                                {(state.weakSkills || []).slice(0, 2).map((s, i) => (
+                                    <div key={i} className="truncate opacity-80">
+                                        {window.NeuralEngine?.getSkillName(s.skillId)}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mt-2 text-xs text-center opacity-60">
+                            {state.interactionCount || 0} interactions • Offline AI
+                        </div>
+                    </div>
+                );
+            };
+
+            // === BOTTOM TAB BAR COMPONENT ===
+            const BottomTabBar = () => (
+                <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg safe-area-bottom">
+                    <div className="flex justify-around items-center py-2">
+                        <button
+                            onClick={() => { setActiveTab('home'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'home' ? 'text-green-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">🏠</span>
+                            <span className="text-xs font-bold mt-1">Home</span>
+                        </button>
+                        <button
+                            onClick={() => { setActiveTab('learn'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'learn' ? 'text-green-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">📚</span>
+                            <span className="text-xs font-bold mt-1">Learn</span>
+                        </button>
+                        <button
+                            onClick={() => { setActiveTab('skills'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'skills' ? 'text-purple-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">🧠</span>
+                            <span className="text-xs font-bold mt-1">Skills</span>
+                        </button>
+                        <button
+                            onClick={() => { setActiveTab('profile'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'profile' ? 'text-green-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-2xl">👤</span>
+                            <span className="text-xs font-bold mt-1">Profile</span>
+                        </button>
+                    </div>
+                </div>
+            );
+
+            // === SKILLS SCREEN ===
+            const SkillsScreen = () => {
+                const state = neuralState;
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-purple-50 to-indigo-100 pb-20">
+                        <div className="bg-gradient-to-r from-purple-500 to-indigo-600 shadow-md p-4">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">🧠</span>
+                                <span className="font-bold text-white text-lg">Skills & Progress</span>
+                            </div>
+                        </div>
+
+                        <div className="p-4 space-y-4">
+                            {/* Learning Phase */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>📊</span> Learning Phase
+                                </h3>
+                                <div className="flex items-center justify-center">
+                                    <div className={`px-6 py-3 rounded-full font-bold text-lg ${
+                                        state.phase === 'mastering' ? 'bg-yellow-100 text-yellow-700' :
+                                        state.phase === 'accelerating' ? 'bg-green-100 text-green-700' :
+                                        state.phase === 'consolidating' ? 'bg-blue-100 text-blue-700' :
+                                        state.phase === 'struggling' ? 'bg-red-100 text-red-700' :
+                                        'bg-purple-100 text-purple-700'
+                                    }`}>
+                                        {state.phase === 'exploring' && '🔍 Exploring'}
+                                        {state.phase === 'accelerating' && '🚀 Accelerating'}
+                                        {state.phase === 'consolidating' && '📚 Consolidating'}
+                                        {state.phase === 'mastering' && '🏆 Mastering'}
+                                        {state.phase === 'struggling' && '💪 Keep Going'}
+                                        {!state.phase && '🔍 Start Learning'}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Overall Progress */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>📈</span> Overall Progress
+                                </h3>
+                                <div className="space-y-3">
+                                    <div>
+                                        <div className="flex justify-between text-sm mb-1">
+                                            <span>Knowledge</span>
+                                            <span className="font-bold">{((state.avgKnowledge || 0) * 100).toFixed(0)}%</span>
+                                        </div>
+                                        <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                            <div className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all"
+                                                style={{width: `${(state.avgKnowledge || 0) * 100}%`}} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="flex justify-between text-sm mb-1">
+                                            <span>Momentum</span>
+                                            <span className={`font-bold ${(state.momentum || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                                {((state.momentum || 0) * 100).toFixed(0)}%
+                                            </span>
+                                        </div>
+                                        <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                            <div className={`h-full transition-all ${(state.momentum || 0) >= 0 ? 'bg-gradient-to-r from-yellow-400 to-orange-500' : 'bg-red-400'}`}
+                                                style={{width: `${Math.abs(state.momentum || 0) * 50 + 50}%`}} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Strong Skills */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>💪</span> Strong Skills
+                                </h3>
+                                <div className="space-y-2">
+                                    {(state.strongSkills || []).length === 0 ? (
+                                        <div className="text-gray-400 text-center py-4">
+                                            Answer questions to discover your strengths!
+                                        </div>
+                                    ) : (state.strongSkills || []).slice(0, 5).map((s, i) => (
+                                        <div key={i} className="flex items-center justify-between bg-green-50 rounded-lg p-3">
+                                            <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
+                                            <span className="text-green-600 font-bold">{(s.mastery * 100).toFixed(0)}%</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Skills to Practice */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                    <span>📖</span> Skills to Practice
+                                </h3>
+                                <div className="space-y-2">
+                                    {(state.weakSkills || []).length === 0 ? (
+                                        <div className="text-gray-400 text-center py-4">
+                                            Keep learning to see your improvement areas!
+                                        </div>
+                                    ) : (state.weakSkills || []).slice(0, 5).map((s, i) => (
+                                        <div key={i} className="flex items-center justify-between bg-orange-50 rounded-lg p-3">
+                                            <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
+                                            <span className="text-orange-600 font-bold">{(s.mastery * 100).toFixed(0)}%</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-4 shadow-lg text-white">
+                                <h3 className="font-bold mb-3 flex items-center gap-2">
+                                    <span>⚡</span> Neural Stats
+                                </h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold">{state.interactionCount || 0}</div>
+                                        <div className="text-xs opacity-80">Interactions</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold">{Object.keys(state.knowledgeState || {}).length}</div>
+                                        <div className="text-xs opacity-80">Skills Tracked</div>
+                                    </div>
+                                </div>
+                                <div className="mt-3 text-xs text-center opacity-60">
+                                    🔒 100% Offline AI • No internet needed
+                                </div>
+                            </div>
+                        </div>
+
+                        <BottomTabBar />
+                    </div>
+                );
+            };
+
+            // === PROFILE SCREEN ===
+            const ProfileScreen = () => (
+                <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-20">
+                    <Header />
+                    <div className="p-4">
+                        <div className="bg-white rounded-2xl p-6 shadow-lg mb-4">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="relative">
+                                    <div className="w-20 h-20 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-4xl">
+                                        🧑‍🌾
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full px-2 py-1 text-sm font-bold">
+                                        {playerLevel}
+                                    </div>
+                                </div>
+                                <div className="flex-1">
+                                    <div className="font-bold text-xl">Farmer</div>
+                                    <div className="text-gray-500">Level {playerLevel}</div>
+                                </div>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                                <div className="bg-yellow-50 rounded-xl p-3">
+                                    <div className="text-2xl font-bold text-yellow-600">{totalXp}</div>
+                                    <div className="text-xs text-gray-500">Total XP</div>
+                                </div>
+                                <div className="bg-orange-50 rounded-xl p-3">
+                                    <div className="text-2xl font-bold text-orange-600">{streak}</div>
+                                    <div className="text-xs text-gray-500">Streak 🔥</div>
+                                </div>
+                                <div className="bg-green-50 rounded-xl p-3">
+                                    <div className="text-2xl font-bold text-green-600">{Object.keys(levelProgress).length}</div>
+                                    <div className="text-xs text-gray-500">Completed</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* XP Progress */}
+                        <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="font-bold">Level Progress</span>
+                                <span className="text-sm text-gray-500">{totalXp % 100}/100 XP</span>
+                            </div>
+                            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all"
+                                    style={{width: `${(totalXp % 100)}%`}} />
+                            </div>
+                            <div className="text-xs text-gray-400 mt-2 text-center">
+                                {100 - (totalXp % 100)} XP to Level {playerLevel + 1}
+                            </div>
+                        </div>
+
+                        {/* Daily Goal */}
+                        <div className="bg-white rounded-2xl p-4 shadow-lg">
+                            <div className="flex justify-between items-center mb-2">
+                                <span className="font-bold">Daily Goal</span>
+                                <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
+                            </div>
+                            <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all"
+                                    style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}} />
+                            </div>
+                        </div>
+                    </div>
+
+                    <BottomTabBar />
+                </div>
+            );
+
+            // Home screen with tabs
+            const HomeScreen = () => {
+                // If skills or profile tab selected, show those
+                if (activeTab === 'skills') return <SkillsScreen />;
+                if (activeTab === 'profile') return <ProfileScreen />;
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-20">
+                        <Header />
+
+                        {/* Profile and level */}
+                        <div className="p-4">
+                            {/* Compact Neural Panel on home */}
+                            {activeTab === 'home' && neuralState.knowledgeState && (
+                                <div className="mb-4" onClick={() => setActiveTab('skills')}>
+                                    <NeuralPanel compact={true} />
+                                </div>
+                            )}
+
+                            <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                                <div className="flex items-center gap-4">
+                                    <div className="relative">
+                                        <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center text-3xl">
+                                            🧑‍🌾
+                                        </div>
+                                        <div className="absolute -bottom-1 -right-1 bg-yellow-400 rounded-full px-2 py-0.5 text-xs font-bold">
+                                            {playerLevel}
+                                        </div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className="font-bold text-lg">Farmer</div>
+                                        <div className="text-sm text-gray-500">Level {playerLevel}</div>
+                                        <div className="mt-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                                            <div
+                                                className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-500"
+                                                style={{width: `${((totalXp % 100) / 100) * 100}%`}}
+                                            />
+                                        </div>
+                                        <div className="text-xs text-gray-400 mt-1">{totalXp % 100}/100 XP to next level</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Daily goal */}
+                            <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
+                                <div className="flex justify-between items-center mb-2">
+                                    <span className="font-bold">Daily Goal</span>
+                                    <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
+                                </div>
+                                <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                    <div
+                                        className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all duration-500"
+                                        style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Modules - Duolingo style big icons with progress */}
+                            <div className="space-y-4">
+                                <h2 className="font-bold text-xl text-gray-800">Courses</h2>
+                                {modules.map(module => {
+                                    // Calculate progress for this module
+                                    const completedLevels = Array.from({length: module.levels}, (_, i) => {
+                                        const levelKey = `${module.id}-${i + 1}`;
+                                        return levelProgress[levelKey] >= 1 ? 1 : 0;
+                                    }).reduce((a, b) => a + b, 0);
+
+                                    const totalStars = Array.from({length: module.levels}, (_, i) => {
+                                        const levelKey = `${module.id}-${i + 1}`;
+                                        return levelProgress[levelKey] || 0;
+                                    }).reduce((a, b) => a + b, 0);
+
+                                    const progressPercent = (completedLevels / module.levels) * 100;
+
+                                    return (
+                                        <div
+                                            key={module.id}
+                                            onClick={() => {setSelectedModule(module.id); setScreen('levels');}}
+                                            className={`bg-gradient-to-r ${module.color} p-5 rounded-3xl shadow-lg cursor-pointer transform transition hover:scale-[1.02] active:scale-[0.98]`}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-20 h-20 bg-white/30 rounded-2xl flex items-center justify-center shadow-inner relative">
+                                                    <span className="text-6xl">{module.icon}</span>
+                                                    {completedLevels === module.levels && (
+                                                        <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full w-8 h-8 flex items-center justify-center text-lg shadow-lg">
+                                                            🏆
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex-1 text-white">
+                                                    <div className="font-bold text-xl">{module.name}</div>
+                                                    <div className="text-sm opacity-90 mt-1">{module.description}</div>
+
+                                                    {/* Progress bar */}
+                                                    <div className="mt-3">
+                                                        <div className="flex justify-between text-xs mb-1">
+                                                            <span className="opacity-80">{completedLevels}/{module.levels} levels</span>
+                                                            <span className="flex items-center gap-1">
+                                                                <span className="text-yellow-300">⭐</span>
+                                                                <span>{totalStars}/{module.levels * 3}</span>
+                                                            </span>
+                                                        </div>
+                                                        <div className="bg-white/20 rounded-full h-2 overflow-hidden">
+                                                            <div
+                                                                className="bg-white h-full transition-all duration-500 rounded-full"
+                                                                style={{width: `${progressPercent}%`}}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-white text-3xl opacity-80">→</div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        <BottomTabBar />
+                    </div>
+                );
+            };
+
+            // Levels screen - Duolingo style
+            const LevelsScreen = () => {
+                const module = modules.find(m => m.id === selectedModule);
+
+                // Calculate progress for this module
+                const completedLevels = Array.from({length: module.levels}, (_, i) => {
+                    const levelKey = `${module.id}-${i + 1}`;
+                    return levelProgress[levelKey] >= 1 ? 1 : 0;
+                }).reduce((a, b) => a + b, 0);
+
+                const totalStars = Array.from({length: module.levels}, (_, i) => {
+                    const levelKey = `${module.id}-${i + 1}`;
+                    return levelProgress[levelKey] || 0;
+                }).reduce((a, b) => a + b, 0);
+
+                const progressPercent = (completedLevels / module.levels) * 100;
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100">
+                        {/* Header with big module icon and progress */}
+                        <div className={`bg-gradient-to-r ${module.color} shadow-lg p-5`}>
+                            <div className="flex items-center gap-4 mb-4">
+                                <button
+                                    onClick={() => setScreen('home')}
+                                    className="text-3xl text-white/80 hover:text-white"
+                                >
+                                    ←
+                                </button>
+                                <div className="w-16 h-16 bg-white/30 rounded-2xl flex items-center justify-center relative">
+                                    <span className="text-5xl">{module.icon}</span>
+                                    {completedLevels === module.levels && (
+                                        <div className="absolute -top-2 -right-2 bg-yellow-400 rounded-full w-7 h-7 flex items-center justify-center text-sm shadow-lg">
+                                            🏆
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="text-white flex-1">
+                                    <div className="font-bold text-2xl">{module.name}</div>
+                                    <div className="text-sm opacity-80">{module.description}</div>
+                                </div>
+                            </div>
+
+                            {/* Progress stats */}
+                            <div className="flex justify-between items-center text-white text-sm mb-2">
+                                <span className="opacity-90">{completedLevels}/{module.levels} levels completed</span>
+                                <span className="flex items-center gap-1">
+                                    <span className="text-yellow-300 text-lg">⭐</span>
+                                    <span className="font-bold">{totalStars}/{module.levels * 3}</span>
+                                </span>
+                            </div>
+                            <div className="bg-white/20 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className="bg-white h-full transition-all duration-500 rounded-full"
+                                    style={{width: `${progressPercent}%`}}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Level grid - bigger buttons */}
+                        <div className="p-5">
+                            <div className="grid grid-cols-4 gap-4">
+                                {Array.from({length: module.levels}, (_, i) => {
+                                    const levelNum = i + 1;
+                                    const levelKey = `${module.id}-${levelNum}`;
+                                    const stars = levelProgress[levelKey] || 0;
+                                    const prevLevelKey = `${module.id}-${levelNum - 1}`;
+                                    const isUnlocked = levelNum === 1 || (levelProgress[prevLevelKey] || 0) >= 1;
+
+                                    return (
+                                        <button
+                                            key={levelNum}
+                                            onClick={() => isUnlocked && startLevel(module.id, levelNum)}
+                                            disabled={!isUnlocked}
+                                            className={`aspect-square rounded-3xl flex flex-col items-center justify-center shadow-lg transition transform hover:scale-105 active:scale-95 ${
+                                                isUnlocked
+                                                    ? `bg-gradient-to-br ${module.color} text-white shadow-[0_6px_0_rgba(0,0,0,0.2)]`
+                                                    : 'bg-gray-200 text-gray-400 shadow-[0_6px_0_#d1d5db]'
+                                            }`}
+                                        >
+                                            {isUnlocked ? (
+                                                <>
+                                                    <span className="font-bold text-3xl">{levelNum}</span>
+                                                    <div className="flex mt-2 gap-0.5">
+                                                        {[1,2,3].map(s => (
+                                                            <span key={s} className={`text-base ${s <= stars ? 'text-yellow-300' : 'text-white/30'}`}>
+                                                                ⭐
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <span className="text-4xl">🔒</span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Quiz obrazovka
+            const QuizScreen = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const question = questions[currentQuestion];
+                const module = modules.find(m => m.id === selectedModule);
+
+                if (!question) {
+                    return (
+                        <div className="h-screen flex items-center justify-center">
+                            <div className="text-center">
+                                <div className="text-6xl mb-4">📚</div>
+                                <div className="text-xl font-bold text-gray-600">Questions for this level are not available</div>
+                                <button
+                                    onClick={() => setScreen('levels')}
+                                    className="mt-4 bg-green-500 text-white px-6 py-2 rounded-full"
+                                >
+                                    Back
+                                </button>
+                            </div>
+                        </div>
+                    );
+                }
+
+                const isCorrect = showAnswer && question.options[selectedAnswer]?.isCorrect;
+
+                return (
+                    <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col overflow-hidden relative">
+                        {/* Header s progress barem */}
+                        <div className="bg-white shadow-sm px-4 py-3 flex-shrink-0">
+                            <div className="flex items-center justify-between mb-2">
+                                <button onClick={() => setScreen('levels')} className="close-btn text-2xl p-2 -ml-2">✕</button>
+                                <div className="hearts-display flex items-center">
+                                    {Array.from({length: 5}, (_, i) => (
+                                        <span key={i} className={`text-xl ${i < hearts ? '' : 'opacity-30'}`}>❤️</span>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="progress-bar bg-gray-200 rounded-full h-3 overflow-hidden">
+                                <div
+                                    className={`bg-gradient-to-r ${module.color} h-full transition-all duration-500`}
+                                    style={{width: `${((currentQuestion + 1) / questions.length) * 100}%`}}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Karta s otázkou */}
+                        <div className="mobile-container px-4 py-3 flex-shrink-0">
+                            <div className="question-card bg-white rounded-2xl p-5 shadow-lg">
+                                <div className="flex items-start gap-4">
+                                    <span className="question-icon text-4xl">{module.icon}</span>
+                                    <h2 className="question-text text-xl font-bold text-gray-800 flex-1 leading-snug">
+                                        {question.question}
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Odpovědi - velké tlačítka pro mobil */}
+                        <div className="flex-1 px-4 overflow-y-auto pb-4">
+                            <div className="answers-container flex flex-col gap-3">
+                                {question.options.map((option, index) => {
+                                    let stateClass = '';
+                                    let extraClass = '';
+
+                                    if (showAnswer) {
+                                        if (option.isCorrect) {
+                                            stateClass = 'correct';
+                                            extraClass = 'bg-green-100 border-green-500';
+                                        } else if (index === selectedAnswer && !option.isCorrect) {
+                                            stateClass = 'wrong';
+                                            extraClass = 'bg-red-100 border-red-500';
+                                        } else {
+                                            extraClass = 'bg-gray-100 opacity-50 border-gray-300';
+                                        }
+                                    } else if (index === selectedAnswer) {
+                                        stateClass = 'selected';
+                                    }
+
+                                    return (
+                                        <button
+                                            key={index}
+                                            onClick={() => handleAnswer(index)}
+                                            disabled={showAnswer}
+                                            className={`btn-answer w-full min-h-[64px] py-4 px-5 rounded-2xl bg-white border-2 border-gray-200 text-left ${stateClass} ${extraClass}`}
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                {option.icon && <span className="answer-icon text-3xl">{option.icon}</span>}
+                                                <span className="answer-text font-bold text-gray-800 flex-1 text-lg">{option.text}</span>
+                                                {showAnswer && option.isCorrect && (
+                                                    <span className="text-green-500 text-3xl">✓</span>
+                                                )}
+                                                {showAnswer && index === selectedAnswer && !option.isCorrect && (
+                                                    <span className="text-red-500 text-3xl">✗</span>
+                                                )}
+                                            </div>
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Spodní feedback panel */}
+                        {showAnswer && (
+                            <div className={`feedback-panel fixed bottom-0 left-0 right-0 px-5 py-6 rounded-t-3xl slide-up ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
+                                 style={{boxShadow: '0 -10px 40px rgba(0,0,0,0.2)'}}>
+
+                                {/* Hvězdičky při správné odpovědi */}
+                                {isCorrect && (
+                                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 flex gap-3">
+                                        <span className="text-3xl star-burst" style={{animationDelay: '0s'}}>⭐</span>
+                                        <span className="text-4xl star-burst" style={{animationDelay: '0.1s'}}>🌟</span>
+                                        <span className="text-3xl star-burst" style={{animationDelay: '0.2s'}}>⭐</span>
+                                    </div>
+                                )}
+
+                                <div className="flex items-start gap-4 mb-5">
+                                    <div className={`feedback-emoji text-5xl ${isCorrect ? 'bounce-in' : 'shake'}`}>
+                                        {isCorrect ? '🎉' : '😢'}
+                                    </div>
+                                    <div className="flex-1">
+                                        <div className={`feedback-title font-bold text-2xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                                            {isCorrect ? 'Excellent!' : 'Not quite'}
+                                        </div>
+                                        <div className="feedback-text text-base text-gray-700 mt-1">{question.explanation}</div>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={nextQuestion}
+                                    className={`continue-btn btn-answer w-full min-h-[56px] py-4 rounded-2xl font-bold text-xl text-white ${
+                                        isCorrect
+                                            ? 'bg-green-500 shadow-[0_5px_0_#16a34a]'
+                                            : 'bg-red-500 shadow-[0_5px_0_#dc2626]'
+                                    }`}
+                                >
+                                    {currentQuestion + 1 >= questions.length ? '🏆 Finish' : '→ Continue'}
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
+            // Konfety komponenta
+            const Confetti = () => {
+                const colors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3'];
+                const confettiPieces = Array.from({length: 50}, (_, i) => ({
+                    id: i,
+                    left: Math.random() * 100,
+                    delay: Math.random() * 2,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size: Math.random() * 10 + 5
+                }));
+
+                return (
+                    <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
+                        {confettiPieces.map(piece => (
+                            <div
+                                key={piece.id}
+                                className="confetti"
+                                style={{
+                                    left: `${piece.left}%`,
+                                    animationDelay: `${piece.delay}s`,
+                                    backgroundColor: piece.color,
+                                    width: `${piece.size}px`,
+                                    height: `${piece.size}px`,
+                                    borderRadius: Math.random() > 0.5 ? '50%' : '0'
+                                }}
+                            />
+                        ))}
+                    </div>
+                );
+            };
+
+            // Obrazovka výsledků
+            const ResultsScreen = () => {
+                const questions = getQuestionsForLevel(selectedModule, selectedLevel);
+                const percentage = Math.round((score / questions.length) * 100);
+                const stars = percentage >= 90 ? 3 : percentage >= 70 ? 2 : percentage >= 50 ? 1 : 0;
+                const module = modules.find(m => m.id === selectedModule);
+                const isWin = stars >= 1;
+
+                // Přejít na další level
+                const goToNextLevel = () => {
+                    if (isWin && selectedLevel < module.levels) {
+                        startLevel(selectedModule, selectedLevel + 1);
+                    } else {
+                        startLevel(selectedModule, selectedLevel);
+                    }
+                };
+
+                return (
+                    <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col overflow-hidden">
+                        {/* Konfety při výhře */}
+                        {isWin && <Confetti />}
+
+                        {/* Hlavní obsah */}
+                        <div className="flex-1 flex flex-col items-center justify-center p-4 relative z-10">
+                            <div className={`text-8xl mb-2 ${isWin ? 'star-burst' : ''}`}>
+                                {stars >= 2 ? '🏆' : stars === 1 ? '🎉' : '💪'}
+                            </div>
+
+                            <h2 className="text-3xl font-bold text-gray-800 mb-4">
+                                {stars >= 2 ? 'Excellent!' : stars === 1 ? 'Good job!' : 'Try again!'}
+                            </h2>
+
+                            <div className="flex justify-center gap-4 mb-6">
+                                {[1,2,3].map(s => (
+                                    <span
+                                        key={s}
+                                        className={`text-5xl ${s <= stars ? 'star-burst' : 'opacity-20'}`}
+                                        style={{animationDelay: `${0.3 + s * 0.15}s`}}
+                                    >
+                                        ⭐
+                                    </span>
+                                ))}
+                            </div>
+
+                            <div className="bg-white/80 backdrop-blur rounded-2xl p-5 shadow-lg">
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="text-center">
+                                        <div className="text-4xl font-bold text-green-600">{score}/{questions.length}</div>
+                                        <div className="text-sm text-gray-500 mt-1">Correct</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-4xl font-bold text-yellow-600">+{xp + (stars * 5)}</div>
+                                        <div className="text-sm text-gray-500 mt-1">XP</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Buttons fixed at bottom */}
+                        <div className="p-4 bg-white border-t shadow-lg slide-up">
+                            <button
+                                onClick={goToNextLevel}
+                                className={`w-full py-5 rounded-2xl font-bold text-xl text-white shadow-lg mb-3 bg-gradient-to-r ${module.color}`}
+                            >
+                                {isWin ? (selectedLevel < module.levels ? '🚀 Next Level' : '🔄 Play Again') : '🔄 Try Again'}
+                            </button>
+                            <button
+                                onClick={() => setScreen('levels')}
+                                className="w-full py-3 rounded-xl font-bold text-gray-600 bg-gray-100"
+                            >
+                                Back to Overview
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Game Over screen
+            const GameOverScreen = () => (
+                <div className="h-screen bg-gradient-to-b from-red-50 to-red-100 flex flex-col items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl p-8 shadow-2xl text-center max-w-sm w-full bounce-in">
+                        <div className="text-6xl mb-4">💔</div>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Out of hearts!</h2>
+                        <p className="text-gray-500 mb-6">Don't give up, try again!</p>
+
+                        <div className="space-y-3">
+                            <button
+                                onClick={() => { refillHearts(); startLevel(selectedModule, selectedLevel); }}
+                                className="w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg"
+                            >
+                                ❤️ Try Again
+                            </button>
+                            <button
+                                onClick={() => setScreen('home')}
+                                className="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-bold"
+                            >
+                                Back Home
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            // Render podle aktuální obrazovky
+            switch (screen) {
+                case 'home': return <HomeScreen />;
+                case 'levels': return <LevelsScreen />;
+                case 'quiz': return <QuizScreen />;
+                case 'results': return <ResultsScreen />;
+                case 'gameover': return <GameOverScreen />;
+                default: return <HomeScreen />;
+            }
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+
+    <!-- Service Worker Registration for Offline PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('✅ Service Worker registered:', registration.scope);
+                    })
+                    .catch(function(error) {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

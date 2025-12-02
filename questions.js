@@ -1,76 +1,157 @@
-// AgroLinguo - Main question loader
-// This file combines all question modules
+// AgroLinguo - Dynamic Question Loader
+// =====================================
+// Automatically detects and loads all question modules
+// No hardcoded module numbers - just add questions_moduleX.js files!
 
-// Initialize ALL_QUESTIONS - modules are loaded before this script
 (function() {
-    // Function to create ALL_QUESTIONS
-    function initQuestions() {
-        if (window.MODULE1_QUESTIONS &&
-            window.MODULE2_QUESTIONS &&
-            window.MODULE3_QUESTIONS &&
-            window.MODULE4_QUESTIONS &&
-            window.MODULE5_QUESTIONS &&
-            window.MODULE6_QUESTIONS &&
-            window.MODULE7_QUESTIONS &&
-            window.MODULE8_QUESTIONS &&
-            window.MODULE9_QUESTIONS &&
-            window.MODULE10_QUESTIONS) {
+    'use strict';
 
-            window.ALL_QUESTIONS = {
-                1: window.MODULE1_QUESTIONS,   // Soil & Basics
-                2: window.MODULE2_QUESTIONS,   // Plant Protection
-                3: window.MODULE3_QUESTIONS,   // Harvest & Sales
-                4: window.MODULE4_QUESTIONS,   // Irrigation
-                5: window.MODULE5_QUESTIONS,   // Machinery
-                6: window.MODULE6_QUESTIONS,   // Ecology
-                7: window.MODULE7_QUESTIONS,   // Livestock
-                8: window.MODULE8_QUESTIONS,   // Climate & Weather
-                9: window.MODULE9_QUESTIONS,   // Farm Business
-                10: window.MODULE10_QUESTIONS  // Innovation
-            };
+    // Auto-detect all loaded question modules
+    function detectModules() {
+        const modules = {};
+        let moduleId = 1;
 
-            console.log('AgroLinguo: All modules loaded!');
-            console.log('Total modules:', Object.keys(window.ALL_QUESTIONS).length);
-
-            // Count total questions
-            let totalQuestions = 0;
-            for (const moduleId in window.ALL_QUESTIONS) {
-                for (const level in window.ALL_QUESTIONS[moduleId]) {
-                    totalQuestions += window.ALL_QUESTIONS[moduleId][level].length;
-                }
+        // Scan for MODULE*_QUESTIONS in window
+        while (true) {
+            const varName = `MODULE${moduleId}_QUESTIONS`;
+            if (window[varName]) {
+                modules[moduleId] = window[varName];
+                moduleId++;
+            } else {
+                break;
             }
-            console.log('Total questions:', totalQuestions);
-            return true;
         }
-        return false;
+
+        return modules;
     }
 
-    // Zkusíme inicializovat okamžitě
-    if (!initQuestions()) {
-        // Pokud moduly ještě nejsou načteny, počkáme na DOMContentLoaded
-        window.addEventListener('DOMContentLoaded', function() {
-            if (!window.ALL_QUESTIONS) {
-                const checkModules = function() {
-                    if (!initQuestions()) {
-                        setTimeout(checkModules, 50);
-                    }
-                };
-                checkModules();
+    // Count levels in a module
+    function countLevels(moduleQuestions) {
+        let count = 0;
+        for (const key in moduleQuestions) {
+            if (key.includes('_level')) {
+                count++;
             }
+        }
+        return count;
+    }
+
+    // Build complete module info combining config + questions
+    function buildModuleInfo() {
+        const config = window.COURSE_CONFIG || { modules: [], colorPalette: [] };
+        const questions = window.ALL_QUESTIONS || {};
+        const moduleInfo = [];
+
+        // Get config modules as base
+        const configModules = config.modules || [];
+        const colorPalette = config.colorPalette || [
+            'from-gray-400 to-gray-600'
+        ];
+
+        // For each detected question module
+        for (const moduleId in questions) {
+            const id = parseInt(moduleId);
+            const moduleQuestions = questions[id];
+            const levelCount = countLevels(moduleQuestions);
+
+            // Find matching config or create default
+            const configEntry = configModules.find(m => m.id === id) || {
+                id: id,
+                name: `Module ${id}`,
+                icon: '📚',
+                color: colorPalette[(id - 1) % colorPalette.length],
+                description: 'Learning module'
+            };
+
+            moduleInfo.push({
+                ...configEntry,
+                levels: levelCount,
+                questionsLoaded: true
+            });
+        }
+
+        // Sort by id
+        moduleInfo.sort((a, b) => a.id - b.id);
+
+        return moduleInfo;
+    }
+
+    // Initialize everything
+    function init() {
+        // Detect modules
+        window.ALL_QUESTIONS = detectModules();
+
+        // Build module info for UI
+        window.MODULE_INFO = buildModuleInfo();
+
+        // Stats
+        const moduleCount = Object.keys(window.ALL_QUESTIONS).length;
+        let totalQuestions = 0;
+        let totalLevels = 0;
+
+        for (const moduleId in window.ALL_QUESTIONS) {
+            const moduleQuestions = window.ALL_QUESTIONS[moduleId];
+            for (const level in moduleQuestions) {
+                totalQuestions += moduleQuestions[level].length;
+                totalLevels++;
+            }
+        }
+
+        console.log('🌱 AgroLinguo Loaded!');
+        console.log(`   📚 Modules: ${moduleCount}`);
+        console.log(`   📊 Levels: ${totalLevels}`);
+        console.log(`   ❓ Questions: ${totalQuestions}`);
+
+        return moduleCount > 0;
+    }
+
+    // Try to initialize immediately
+    if (!init() || Object.keys(window.ALL_QUESTIONS).length === 0) {
+        // If modules not loaded yet, wait for DOMContentLoaded
+        window.addEventListener('DOMContentLoaded', function() {
+            const checkModules = function() {
+                if (!init() || Object.keys(window.ALL_QUESTIONS).length === 0) {
+                    setTimeout(checkModules, 50);
+                }
+            };
+            checkModules();
         });
     }
 })();
 
-// Pomocná funkce pro získání otázek pro daný modul a level
-function getQuestions(moduleId, level) {
-    const key = `module${moduleId}_level${level}`;
-    if (window.ALL_QUESTIONS && window.ALL_QUESTIONS[moduleId] && window.ALL_QUESTIONS[moduleId][key]) {
+// ==========================================
+// Public API Functions
+// ==========================================
+
+// Get questions for a specific module and level
+function getQuestions(moduleId, levelNum) {
+    const key = `module${moduleId}_level${levelNum}`;
+    if (window.ALL_QUESTIONS &&
+        window.ALL_QUESTIONS[moduleId] &&
+        window.ALL_QUESTIONS[moduleId][key]) {
         return window.ALL_QUESTIONS[moduleId][key];
     }
     return [];
 }
 
-// Pomocná funkce pro zamíchání pole
+// Get module info (for UI)
+function getModules() {
+    return window.MODULE_INFO || [];
+}
+
+// Get single module info
+function getModuleById(moduleId) {
+    const modules = getModules();
+    return modules.find(m => m.id === moduleId) || null;
+}
+
+// Get level count for a module
+function getLevelCount(moduleId) {
+    const module = getModuleById(moduleId);
+    return module ? module.levels : 0;
+}
+
+// Shuffle array (for randomizing questions/answers)
 function shuffleArray(array) {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -78,4 +159,12 @@ function shuffleArray(array) {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
     return shuffled;
+}
+
+// Check if all required scripts are loaded
+function isAppReady() {
+    return window.ALL_QUESTIONS &&
+           Object.keys(window.ALL_QUESTIONS).length > 0 &&
+           window.MODULE_INFO &&
+           window.MODULE_INFO.length > 0;
 }

@@ -12,16 +12,18 @@
     <!-- Neural Learning Engine (100% offline) -->
     <script src="neural_engine.js"></script>
     <!-- Question modules -->
-    <script src="questions_module1.js"></script>
-    <script src="questions_module2.js"></script>
-    <script src="questions_module3.js"></script>
-    <script src="questions_module4.js"></script>
-    <script src="questions_module5.js"></script>
-    <script src="questions_module6.js"></script>
-    <script src="questions_module7.js"></script>
-    <script src="questions_module8.js"></script>
-    <script src="questions_module9.js"></script>
-    <script src="questions_module10.js"></script>
+    <script src="questions/questions_module1.js"></script>
+    <script src="questions/questions_module2.js"></script>
+    <script src="questions/questions_module3.js"></script>
+    <script src="questions/questions_module4.js"></script>
+    <script src="questions/questions_module5.js"></script>
+    <script src="questions/questions_module6.js"></script>
+    <script src="questions/questions_module7.js"></script>
+    <script src="questions/questions_module8.js"></script>
+    <script src="questions/questions_module9.js"></script>
+    <script src="questions/questions_module10.js"></script>
+    <!-- Course configuration -->
+    <script src="course_config.js"></script>
     <!-- Main loader -->
     <script src="questions.js"></script>
     <style>
@@ -306,89 +308,8 @@
             const playerLevel = Math.floor(totalXp / 100) + 1;
             const xpToNextLevel = 100 - (totalXp % 100);
 
-            // Course modules
-            const modules = [
-                {
-                    id: 1,
-                    name: 'Soil & Basics',
-                    icon: '🌱',
-                    color: 'from-green-400 to-green-600',
-                    levels: 10,
-                    description: 'Learn farming fundamentals'
-                },
-                {
-                    id: 2,
-                    name: 'Plant Protection',
-                    icon: '🛡️',
-                    color: 'from-blue-400 to-blue-600',
-                    levels: 10,
-                    description: 'Pests and diseases'
-                },
-                {
-                    id: 3,
-                    name: 'Harvest & Sales',
-                    icon: '🌾',
-                    color: 'from-yellow-400 to-yellow-600',
-                    levels: 10,
-                    description: 'From field to market'
-                },
-                {
-                    id: 4,
-                    name: 'Irrigation',
-                    icon: '💧',
-                    color: 'from-cyan-400 to-cyan-600',
-                    levels: 10,
-                    description: 'Water management'
-                },
-                {
-                    id: 5,
-                    name: 'Machinery',
-                    icon: '🚜',
-                    color: 'from-orange-400 to-orange-600',
-                    levels: 10,
-                    description: 'Tools and equipment'
-                },
-                {
-                    id: 6,
-                    name: 'Ecology',
-                    icon: '🌍',
-                    color: 'from-emerald-400 to-emerald-600',
-                    levels: 10,
-                    description: 'Sustainable farming'
-                },
-                {
-                    id: 7,
-                    name: 'Livestock',
-                    icon: '🐄',
-                    color: 'from-amber-400 to-amber-600',
-                    levels: 10,
-                    description: 'Animal husbandry'
-                },
-                {
-                    id: 8,
-                    name: 'Climate & Weather',
-                    icon: '🌤️',
-                    color: 'from-sky-400 to-sky-600',
-                    levels: 10,
-                    description: 'Weather patterns for farming'
-                },
-                {
-                    id: 9,
-                    name: 'Farm Business',
-                    icon: '💰',
-                    color: 'from-violet-400 to-violet-600',
-                    levels: 10,
-                    description: 'Finance and management'
-                },
-                {
-                    id: 10,
-                    name: 'Innovation',
-                    icon: '🔬',
-                    color: 'from-rose-400 to-rose-600',
-                    levels: 10,
-                    description: 'Modern farming technology'
-                }
-            ];
+            // Course modules - loaded dynamically from course_config.js + questions.js
+            const modules = getModules();
 
             // Získat otázky pro level
             const getQuestionsForLevel = (moduleId, levelNum) => {
@@ -1269,7 +1190,7 @@
 
                 // Přejít na další level
                 const goToNextLevel = () => {
-                    if (isWin && selectedLevel < 10) {
+                    if (isWin && selectedLevel < module.levels) {
                         startLevel(selectedModule, selectedLevel + 1);
                     } else {
                         startLevel(selectedModule, selectedLevel);
@@ -1323,7 +1244,7 @@
                                 onClick={goToNextLevel}
                                 className={`w-full py-5 rounded-2xl font-bold text-xl text-white shadow-lg mb-3 bg-gradient-to-r ${module.color}`}
                             >
-                                {isWin ? (selectedLevel < 10 ? '🚀 Next Level' : '🔄 Play Again') : '🔄 Try Again'}
+                                {isWin ? (selectedLevel < module.levels ? '🚀 Next Level' : '🔄 Play Again') : '🔄 Try Again'}
                             </button>
                             <button
                                 onClick={() => setScreen('levels')}
