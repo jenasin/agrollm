@@ -2076,6 +2076,12 @@
                                     <span>Module: {module.id} | Level: {selectedLevel}</span>
                                     <span>Lang: {currentLang.toUpperCase()}</span>
                                 </div>
+                                {/* Session time */}
+                                <div className="mt-2 pt-2 border-t border-white/20 flex items-center justify-center gap-2">
+                                    <span>⏱️</span>
+                                    <span className="font-mono font-bold text-lg">{formatTimer(elapsedSeconds)}</span>
+                                    <span className="text-xs opacity-70">/ 30:00</span>
+                                </div>
                             </div>
                         </div>
 
