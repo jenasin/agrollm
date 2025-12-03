@@ -801,19 +801,15 @@
                     const prediction = window.NeuralEngine.predictSuccess(selectedModule, currentQuestion);
                     const bonusXp = prediction < 0.5 ? 15 : 10; // More XP for harder questions
                     setXp(x => x + bonusXp);
-                } else {
-                    setHearts(h => Math.max(0, h - 1));
                 }
+                // NO hearts deduction - unlimited attempts for research
             };
 
             // Další otázka
             const nextQuestion = () => {
                 const questions = getQuestionsForLevel(selectedModule, selectedLevel);
 
-                if (hearts <= 0) {
-                    setScreen('gameover');
-                    return;
-                }
+                // No game over - unlimited hearts for research
 
                 if (currentQuestion + 1 >= questions.length) {
                     finishLevel();
@@ -945,13 +941,27 @@
                 const sessionId = Date.now();
                 setCurrentSessionId(sessionId);
                 setSessionStarted(true);
-                // Reset session-specific stats
-                setResearchStats(prev => ({
-                    ...prev,
-                    currentSessionStart: sessionId,
-                    sessionQuestions: 0,
-                    sessionCorrect: 0
-                }));
+                // Reset ALL stats for fresh session - each person gets clean slate
+                setResearchStats({
+                    totalQuestions: 0,
+                    correctAnswers: 0,
+                    incorrectAnswers: 0,
+                    totalResponseTimeMs: 0,
+                    answerHistory: [],
+                    moduleStats: {},
+                    dailyStats: {},
+                    startDate: sessionId,
+                    sessions: [],
+                    totalSessionTimeMs: 0,
+                    currentSessionStart: sessionId
+                });
+                // Reset game state
+                setScore(0);
+                setXp(0);
+                setHearts(5);
+                setCurrentQuestion(0);
+                setShowAnswer(false);
+                setSelectedAnswer(null);
             };
 
             const endAndSaveSession = () => {
@@ -963,11 +973,18 @@
                     duration: Date.now() - currentSessionId,
                     totalQuestions: researchStats.totalQuestions,
                     correctAnswers: researchStats.correctAnswers,
+                    incorrectAnswers: researchStats.incorrectAnswers,
                     accuracy: researchStats.totalQuestions > 0
                         ? Math.round((researchStats.correctAnswers / researchStats.totalQuestions) * 100)
                         : 0,
-                    xpEarned: totalXp,
-                    language: currentLang
+                    avgResponseTimeMs: researchStats.totalQuestions > 0
+                        ? Math.round(researchStats.totalResponseTimeMs / researchStats.totalQuestions)
+                        : 0,
+                    xpEarned: xp,
+                    language: currentLang,
+                    // Full answer history for research
+                    answerHistory: researchStats.answerHistory,
+                    moduleStats: researchStats.moduleStats
                 };
 
                 const updatedSessions = [...savedSessions, sessionData];
@@ -979,9 +996,21 @@
                 setCurrentSessionId(null);
             };
 
+            // Export all sessions as JSON
+            const exportAllSessions = () => {
+                const dataStr = JSON.stringify(savedSessions, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `agrolinguo_research_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
             // Start Screen Component
             const StartScreen = () => {
-                const recentSessions = savedSessions.slice(-5).reverse();
+                const recentSessions = savedSessions.slice(-10).reverse();
 
                 return (
                     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col items-center justify-center p-6">
@@ -993,42 +1022,56 @@
 
                         <button
                             onClick={startSession}
-                            className="w-full max-w-sm py-5 px-8 bg-gradient-to-r from-green-500 to-green-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition mb-8"
+                            className="w-full max-w-sm py-5 px-8 bg-gradient-to-r from-green-500 to-green-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition mb-6"
                         >
                             🚀 {t('startSession')}
                         </button>
 
+                        {/* Session counter */}
+                        <div className="bg-white rounded-full px-6 py-2 shadow mb-6 text-center">
+                            <span className="text-2xl font-bold text-blue-600">{savedSessions.length}</span>
+                            <span className="text-gray-500 ml-2">{currentLang === 'sw' ? 'vipindi vilivyorekodiwa' : 'sessions recorded'}</span>
+                        </div>
+
                         {recentSessions.length > 0 && (
-                            <div className="w-full max-w-sm">
+                            <div className="w-full max-w-sm mb-4">
                                 <h3 className="text-lg font-bold text-gray-700 mb-3">{t('previousSessions')}</h3>
-                                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                                <div className="bg-white rounded-2xl shadow-lg overflow-hidden max-h-64 overflow-y-auto">
                                     {recentSessions.map((session, idx) => (
-                                        <div key={session.id} className={`p-4 flex justify-between items-center ${idx > 0 ? 'border-t' : ''}`}>
+                                        <div key={session.id} className={`p-3 flex justify-between items-center ${idx > 0 ? 'border-t' : ''}`}>
                                             <div>
-                                                <div className="font-bold text-gray-800">
-                                                    {new Date(session.id).toLocaleDateString()}
+                                                <div className="font-bold text-gray-800 text-sm">
+                                                    #{savedSessions.length - idx} • {new Date(session.id).toLocaleString()}
                                                 </div>
-                                                <div className="text-sm text-gray-500">
-                                                    {Math.round(session.duration / 60000)} min • {session.totalQuestions} {t('question')}
+                                                <div className="text-xs text-gray-500">
+                                                    {Math.round(session.duration / 60000)} min • {session.totalQuestions} Q • {session.avgResponseTimeMs || 0}ms avg
                                                 </div>
                                             </div>
                                             <div className="text-right">
                                                 <div className={`font-bold text-lg ${session.accuracy >= 70 ? 'text-green-600' : session.accuracy >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
                                                     {session.accuracy}%
                                                 </div>
-                                                <div className="text-sm text-gray-400">
+                                                <div className="text-xs text-gray-400">
                                                     {session.correctAnswers}/{session.totalQuestions}
                                                 </div>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
+
+                                {/* Export button */}
+                                <button
+                                    onClick={exportAllSessions}
+                                    className="w-full mt-3 py-3 px-4 bg-blue-500 text-white font-bold rounded-xl flex items-center justify-center gap-2"
+                                >
+                                    📥 {currentLang === 'sw' ? 'Pakua Data Yote (JSON)' : 'Download All Data (JSON)'}
+                                </button>
                             </div>
                         )}
 
                         <button
                             onClick={changeLanguage}
-                            className="mt-6 text-gray-500 underline flex items-center gap-2"
+                            className="mt-4 text-gray-500 underline flex items-center gap-2"
                         >
                             {window.AVAILABLE_LANGS?.[currentLang]?.flag} {t('chooseLanguage')}
                         </button>
