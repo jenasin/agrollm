@@ -921,10 +921,37 @@
             };
 
             // Header komponenta
+            const [showHeaderMenu, setShowHeaderMenu] = useState(false);
+
+            const resetGame = () => {
+                if (confirm(currentLang === 'sw'
+                    ? 'Una uhakika unataka kufuta maendeleo yote?'
+                    : 'Are you sure you want to reset all progress?')) {
+                    localStorage.removeItem('agrolinguo_save');
+                    localStorage.removeItem('agrolinguo_research_stats');
+                    localStorage.removeItem('agrolinguo_lang_selected');
+                    window.location.reload();
+                }
+            };
+
+            const installPWA = () => {
+                if (window.deferredPrompt) {
+                    window.deferredPrompt.prompt();
+                    window.deferredPrompt.userChoice.then(choice => {
+                        window.deferredPrompt = null;
+                    });
+                } else {
+                    alert(currentLang === 'sw'
+                        ? 'Tumia menyu ya kivinjari (⋮) → "Ongeza kwenye Skrini ya Nyumbani"'
+                        : 'Use browser menu (⋮) → "Add to Home Screen"');
+                }
+                setShowHeaderMenu(false);
+            };
+
             const Header = () => {
                 const langInfo = window.AVAILABLE_LANGS?.[currentLang] || { flag: '🌐', name: 'Language' };
                 return (
-                    <div className="bg-white shadow-md p-4 flex justify-between items-center">
+                    <div className="bg-white shadow-md p-4 flex justify-between items-center relative">
                         <div className="flex items-center gap-2">
                             <span className="text-2xl">🌿</span>
                             <span className="font-bold text-green-700">AgroLinguo</span>
@@ -936,20 +963,51 @@
                                 <span>{langInfo.flag}</span>
                             </button>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1 bg-red-100 px-3 py-1 rounded-full">
+                        <div className="flex items-center gap-2">
+                            {/* Install & Menu button */}
+                            <button
+                                onClick={() => setShowHeaderMenu(!showHeaderMenu)}
+                                className="flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-full text-sm transition"
+                                title="Menu"
+                            >
+                                <span>⚙️</span>
+                            </button>
+                            <div className="flex items-center gap-1 bg-red-100 px-2 py-1 rounded-full text-sm">
                                 <span>❤️</span>
                                 <span className="font-bold text-red-600">{hearts}</span>
                             </div>
-                            <div className="flex items-center gap-1 bg-orange-100 px-3 py-1 rounded-full">
-                                <span>🔥</span>
-                                <span className="font-bold text-orange-600">{streak}</span>
-                            </div>
-                            <div className="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full">
+                            <div className="flex items-center gap-1 bg-yellow-100 px-2 py-1 rounded-full text-sm">
                                 <span>⭐</span>
-                                <span className="font-bold text-yellow-600">{totalXp} XP</span>
+                                <span className="font-bold text-yellow-600">{totalXp}</span>
                             </div>
                         </div>
+
+                        {/* Dropdown menu */}
+                        {showHeaderMenu && (
+                            <div className="absolute top-full right-4 mt-2 bg-white rounded-xl shadow-xl border z-50 overflow-hidden min-w-[200px]">
+                                <button
+                                    onClick={installPWA}
+                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition text-left"
+                                >
+                                    <span className="text-xl">📲</span>
+                                    <span className="font-semibold text-blue-700">{t('installApp')}</span>
+                                </button>
+                                <button
+                                    onClick={resetGame}
+                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition text-left border-t"
+                                >
+                                    <span className="text-xl">🔄</span>
+                                    <span className="font-semibold text-red-600">{currentLang === 'sw' ? 'Futa Maendeleo' : 'Reset Progress'}</span>
+                                </button>
+                                <button
+                                    onClick={() => setShowHeaderMenu(false)}
+                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition text-left border-t"
+                                >
+                                    <span className="text-xl">✕</span>
+                                    <span className="text-gray-500">{currentLang === 'sw' ? 'Funga' : 'Close'}</span>
+                                </button>
+                            </div>
+                        )}
                     </div>
                 );
             };
@@ -2193,8 +2251,17 @@
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     </script>
 
-    <!-- Service Worker Registration -->
+    <!-- Service Worker & PWA Install -->
     <script>
+        // Capture PWA install prompt
+        window.deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            window.deferredPrompt = e;
+            console.log('PWA install prompt captured');
+        });
+
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
