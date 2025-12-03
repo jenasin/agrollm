@@ -1,0 +1,72 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-12-03 14:30",
+  "categories": {
+    "by-region": {
+      "name": "Podle regionu / By Region",
+      "icon": "🌍",
+      "description": "Tests by geographic region"
+    },
+    "by-topic": {
+      "name": "Podle tématu / By Topic",
+      "icon": "📚",
+      "description": "Tests by farming topic"
+    },
+    "by-difficulty": {
+      "name": "Podle obtížnosti / By Difficulty",
+      "icon": "📊",
+      "description": "Tests by cognitive level"
+    },
+    "custom": {
+      "name": "Vlastní / Custom",
+      "icon": "✏️",
+      "description": "User-created tests"
+    }
+  },
+  "tests": [
+    {
+      "id": "turkana",
+      "name": "Turkana Region - Basic Farming",
+      "testType": "Educational Quiz",
+      "category": "by-region",
+      "country": "Kenya",
+      "region": "Turkana",
+      "topic": "Basic Farming",
+      "cognitiveLevel": "simple",
+      "questionCount": 5,
+      "fileName": "questions_turkana.js",
+      "filePath": "by-region/questions_turkana.js",
+      "createdAt": "2024-12-03"
+    },
+    {
+      "id": "irrigation",
+      "name": "Irrigation Basics",
+      "testType": "Educational Quiz",
+      "category": "by-topic",
+      "country": "General",
+      "region": "Africa",
+      "topic": "Irrigation & Water Management",
+      "cognitiveLevel": "simple",
+      "questionCount": 7,
+      "fileName": "questions_irrigation.js",
+      "filePath": "by-topic/questions_irrigation.js",
+      "createdAt": "2024-12-03"
+    }
+  ],
+  "statistics": {
+    "totalTests": 2,
+    "totalQuestions": 12,
+    "byRegion": {
+      "Turkana": 1,
+      "Africa": 1
+    },
+    "byTopic": {
+      "Basic Farming": 1,
+      "Irrigation & Water Management": 1
+    },
+    "byCategory": {
+      "by-region": 1,
+      "by-topic": 1
+    }
+  }
+}

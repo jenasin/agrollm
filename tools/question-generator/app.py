@@ -1,8 +1,7 @@
 """
-AgroLinguo Question Generator
-=============================
-Streamlit app that uses GPT to generate culturally and cognitively
-appropriate farming questions for specific African regions.
+AgroLinguo Question Generator - Chat Style
+===========================================
+Conversational wizard that guides users through question generation.
 """
 
 import streamlit as st
@@ -11,391 +10,850 @@ import json
 import os
 import re
 from datetime import datetime
+from glob import glob
 
 # Page config
 st.set_page_config(
-    page_title="AgroLinguo Question Generator",
+    page_title="AgroLinguo Generator",
     page_icon="🌱",
-    layout="wide"
+    layout="centered"
 )
 
 # Initialize session state
-if 'region_analysis' not in st.session_state:
-    st.session_state.region_analysis = None
-if 'generated_questions' not in st.session_state:
-    st.session_state.generated_questions = None
+if 'messages' not in st.session_state:
+    st.session_state.messages = []
+if 'step' not in st.session_state:
+    st.session_state.step = 'start'
+if 'data' not in st.session_state:
+    st.session_state.data = {}
 if 'api_key' not in st.session_state:
     st.session_state.api_key = os.getenv('OPENAI_API_KEY', '')
+if 'viewing_test' not in st.session_state:
+    st.session_state.viewing_test = None
+if 'custom_generating' not in st.session_state:
+    st.session_state.custom_generating = False
 
-# Sidebar - API Key
+def get_questions_dir():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(script_dir, "..", "..", "questions")
+
+def get_saved_tests():
+    """Scan questions directory for all saved tests"""
+    questions_dir = get_questions_dir()
+    tests = []
+
+    for category in ['custom', 'by-region', 'by-topic', 'by-difficulty']:
+        category_dir = os.path.join(questions_dir, category)
+        if os.path.exists(category_dir):
+            for file in glob(os.path.join(category_dir, "*.js")):
+                file_name = os.path.basename(file)
+                try:
+                    with open(file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                        first_line = content.split('\n')[0]
+                        title = first_line.replace('//', '').strip() if first_line.startswith('//') else file_name
+                        tests.append({
+                            'file': file,
+                            'name': file_name,
+                            'title': title,
+                            'category': category
+                        })
+                except:
+                    tests.append({
+                        'file': file,
+                        'name': file_name,
+                        'title': file_name,
+                        'category': category
+                    })
+    return tests
+
+def add_message(role, content):
+    st.session_state.messages.append({"role": role, "content": content})
+
+def reset_chat():
+    st.session_state.messages = []
+    st.session_state.step = 'start'
+    st.session_state.data = {}
+
+# Sample prompts
+SAMPLE_PROMPTS = {
+    "🇰🇪 Kenya - Swahili (Watoto/Children)": """Generate 20 educational farming questions in SWAHILI language for children in Kenya.
+
+TARGET AUDIENCE:
+- Country: Kenya
+- Region: Central Kenya / Nairobi area
+- Target group: Children aged 8-14 years (watoto)
+- Education level: Primary school
+- Language: Swahili (Kiswahili)
+
+REQUIREMENTS:
+1. ALL questions and answers must be in Swahili (Kiswahili)
+2. Use simple, child-friendly language
+3. Include fun emojis that appeal to children
+4. Focus on basic farming concepts children can understand
+5. Use local Kenyan crops: mahindi (maize), maharagwe (beans), sukuma wiki, nyanya (tomatoes)
+6. Include animals they know: ng'ombe (cow), kuku (chicken), mbuzi (goat)
+7. Make explanations encouraging and educational
+
+EXAMPLE FORMAT:
+{
+  "question": "Mazao gani yanahitaji maji mengi?",
+  "options": [
+    {"text": "Mpunga (mchele)", "icon": "🌾", "isCorrect": true},
+    {"text": "Mtama", "icon": "🌿", "isCorrect": false},
+    {"text": "Mahindi", "icon": "🌽", "isCorrect": false},
+    {"text": "Maharagwe", "icon": "🫘", "isCorrect": false}
+  ],
+  "explanation": "Vizuri sana! Mpunga unahitaji maji mengi kukua vizuri."
+}
+
+OUTPUT FORMAT (JSON array):
+[
+  {
+    "question": "Question in Swahili",
+    "options": [
+      {"text": "Answer in Swahili", "icon": "emoji", "isCorrect": true/false},
+      ...
+    ],
+    "explanation": "Explanation in Swahili"
+  }
+]
+
+Generate exactly 20 questions entirely in Swahili.""",
+
+    "🇰🇪 Kenya - English (Children)": """Generate 20 educational farming questions in English for children in Kenya.
+
+TARGET AUDIENCE:
+- Country: Kenya
+- Region: Various regions
+- Target group: Children aged 8-14 years
+- Education level: Primary school
+- Language: English (simple)
+
+REQUIREMENTS:
+1. Use simple English words children understand
+2. Include fun, colorful emojis
+3. Focus on basic farming concepts
+4. Use Kenyan crops: maize, beans, sukuma wiki, tomatoes
+5. Include local animals: cows, chickens, goats
+6. Make learning fun and encouraging
+
+Generate exactly 20 questions in simple English.""",
+
+    "🇹🇿 Tanzania - Swahili (Wakulima)": """Generate 20 educational farming questions in SWAHILI for farmers in Tanzania.
+
+TARGET AUDIENCE:
+- Country: Tanzania
+- Region: Rural Tanzania
+- Target group: Adult farmers (wakulima)
+- Education level: Basic literacy
+- Language: Swahili (Kiswahili)
+
+REQUIREMENTS:
+1. ALL content in Swahili
+2. Practical farming knowledge
+3. Tanzanian context (crops: mahindi, mpunga, kahawa, chai)
+4. Weather patterns of Tanzania
+5. Encouraging explanations
+
+Generate exactly 20 questions in Swahili.""",
+
+    "🇺🇬 Uganda - Luganda (Abalimi)": """Generate 20 educational farming questions in LUGANDA for farmers in Uganda.
+
+TARGET AUDIENCE:
+- Country: Uganda
+- Region: Central Uganda (Buganda)
+- Target group: Smallholder farmers (abalimi)
+- Education level: Basic
+- Language: Luganda
+
+REQUIREMENTS:
+1. ALL content in Luganda language
+2. Use Ugandan crops: matooke, cassava, coffee, beans
+3. Include local farming practices
+4. Practical and actionable advice
+
+Generate exactly 20 questions in Luganda."""
+}
+
+# Header
+col1, col2, col3 = st.columns([2, 1, 1])
+with col1:
+    st.title("🌱 AgroLinguo")
+with col2:
+    lang = st.toggle("🇬🇧 EN", value=False)
+with col3:
+    if st.button("🔄 Reset"):
+        reset_chat()
+        st.rerun()
+
+st.caption("AI Question Generator for African Farmers" if lang else "AI Generátor otázek pro africké farmáře")
+
+# API Key in sidebar
 with st.sidebar:
-    st.header("⚙️ Settings")
+    st.header("⚙️ Settings" if lang else "⚙️ Nastavení")
     api_key = st.text_input(
-        "OpenAI API Key",
+        "OpenAI API Key:",
         value=st.session_state.api_key,
-        type="password",
-        help="Enter your OpenAI API key"
+        type="password"
     )
+    st.session_state.api_key = api_key
+
     if api_key:
-        st.session_state.api_key = api_key
-        openai.api_key = api_key
+        st.success("✅ API key set" if lang else "✅ API klíč nastaven")
+    else:
+        st.warning("⚠️ Enter API key" if lang else "⚠️ Zadejte API klíč")
 
     st.divider()
-    st.header("📊 Export Settings")
-    module_id = st.number_input("Module ID", min_value=1, max_value=99, value=11)
-    questions_per_level = st.number_input("Questions per level", min_value=5, max_value=20, value=10)
-    num_levels = st.number_input("Number of levels", min_value=1, max_value=10, value=10)
 
-# Main content
-st.title("🌱 AgroLinguo Question Generator")
-st.markdown("Generate culturally appropriate farming questions for African regions using AI")
+    # Saved Tests Section
+    st.header("📚 Saved Tests" if lang else "📚 Uložené testy")
 
-# Step 1: Region Input
-st.header("1️⃣ Define Target Region")
+    saved_tests = get_saved_tests()
 
-col1, col2 = st.columns(2)
+    if saved_tests:
+        categories = {}
+        for test in saved_tests:
+            cat = test['category']
+            if cat not in categories:
+                categories[cat] = []
+            categories[cat].append(test)
 
-with col1:
-    region_prompt = st.text_area(
-        "Describe the target region/community",
-        placeholder="Example: Rural farming communities in northern Kenya, specifically the Turkana region. Focus on pastoralist communities transitioning to crop farming due to climate change.",
-        height=150
-    )
+        category_icons = {
+            'custom': '✏️',
+            'by-region': '🌍',
+            'by-topic': '📖',
+            'by-difficulty': '📊'
+        }
 
-with col2:
-    farming_focus = st.multiselect(
-        "Farming topics to cover",
-        [
-            "Soil & Basics",
-            "Plant Protection",
-            "Harvest & Sales",
-            "Irrigation",
-            "Machinery",
-            "Ecology",
-            "Livestock",
-            "Climate & Weather",
-            "Farm Business",
-            "Innovation"
-        ],
-        default=["Soil & Basics", "Irrigation", "Livestock"]
-    )
+        for cat, tests in categories.items():
+            icon = category_icons.get(cat, '📁')
+            with st.expander(f"{icon} {cat.replace('-', ' ').title()} ({len(tests)})", expanded=(cat == 'custom')):
+                for test in tests:
+                    col1, col2 = st.columns([3, 1])
+                    with col1:
+                        st.write(f"📄 {test['title'][:25]}")
+                    with col2:
+                        if st.button("👁️", key=f"view_{test['file']}", help="View"):
+                            st.session_state.viewing_test = test['file']
+                            st.rerun()
+    else:
+        st.info("No tests yet" if lang else "Zatím žádné testy")
 
-    language_level = st.select_slider(
-        "Language complexity",
-        options=["Very Simple", "Simple", "Moderate", "Standard"],
-        value="Simple"
-    )
+# Mode tabs
+tab1, tab2, tab3 = st.tabs(["💬 Chat Wizard", "📝 Custom Prompt", "🇰🇪 Swahili Modules"])
 
-# Step 2: Analyze Region
-st.header("2️⃣ Analyze Target Audience")
+# ============ TAB 1: Chat Wizard ============
+with tab1:
+    # View test modal
+    if st.session_state.viewing_test:
+        test_file = st.session_state.viewing_test
+        st.subheader("📋 Test Preview" if lang else "📋 Náhled testu")
 
-if st.button("🔍 Analyze Region", type="primary", disabled=not region_prompt or not st.session_state.api_key):
-    with st.spinner("Analyzing region with GPT..."):
+        if st.button("✖️ Close" if lang else "✖️ Zavřít"):
+            st.session_state.viewing_test = None
+            st.rerun()
+
         try:
-            client = openai.OpenAI(api_key=st.session_state.api_key)
+            with open(test_file, 'r', encoding='utf-8') as f:
+                content = f.read()
 
-            analysis_prompt = f"""Analyze this African region for creating educational farming content:
+            lines = content.split('\n')
+            metadata = [line.replace('//', '').strip() for line in lines[:10] if line.startswith('//')]
+            if metadata:
+                st.info('\n'.join(metadata))
 
-Region: {region_prompt}
-
-Provide a detailed analysis in JSON format:
-{{
-    "region_name": "Short name for the region",
-    "country": "Country name",
-    "population_characteristics": {{
-        "literacy_rate": "estimated percentage",
-        "primary_language": "main language",
-        "secondary_languages": ["list"],
-        "average_education_years": "number or range"
-    }},
-    "cognitive_considerations": {{
-        "learning_style": "visual/oral/practical",
-        "attention_span": "short/medium/long",
-        "abstract_thinking": "low/medium/high",
-        "numeracy_level": "basic/intermediate/advanced",
-        "recommended_question_complexity": "very simple/simple/moderate"
-    }},
-    "motivational_factors": {{
-        "primary_motivations": ["list of what motivates them"],
-        "cultural_values": ["important values"],
-        "success_indicators": ["what they consider success"],
-        "challenges_faced": ["main challenges"]
-    }},
-    "farming_context": {{
-        "main_crops": ["crops they grow"],
-        "livestock": ["animals they keep"],
-        "farming_methods": ["traditional/modern methods"],
-        "water_access": "description",
-        "climate_challenges": ["challenges"],
-        "market_access": "description"
-    }},
-    "content_recommendations": {{
-        "use_local_examples": true,
-        "include_visuals": true,
-        "question_format": "multiple choice with icons",
-        "avoid_topics": ["culturally sensitive topics"],
-        "emphasize_topics": ["most relevant topics"],
-        "local_units": "local measurement units if any"
-    }}
-}}
-
-Be specific and realistic based on actual data about this region."""
-
-            response = client.chat.completions.create(
-                model="gpt-4o",
-                messages=[
-                    {"role": "system", "content": "You are an expert in African agriculture, education, and rural development. Provide accurate, culturally sensitive analysis."},
-                    {"role": "user", "content": analysis_prompt}
-                ],
-                temperature=0.7
-            )
-
-            # Parse JSON from response
-            response_text = response.choices[0].message.content
-            # Extract JSON from markdown code blocks if present
-            json_match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', response_text)
+            json_match = re.search(r'\[[\s\S]*\]', content)
             if json_match:
-                json_str = json_match.group(1)
-            else:
-                json_str = response_text
+                try:
+                    questions = json.loads(json_match.group())
+                    st.write(f"**{len(questions)} questions**")
+                    for i, q in enumerate(questions[:5], 1):
+                        with st.expander(f"Q{i}: {q.get('question', '')[:50]}..."):
+                            st.write(f"**{q.get('question', '')}**")
+                            for opt in q.get('options', []):
+                                mark = "✅" if opt.get('isCorrect') else "⬜"
+                                st.write(f"{mark} {opt.get('icon', '')} {opt.get('text', '')}")
+                            st.caption(f"💡 {q.get('explanation', '')}")
+                    if len(questions) > 5:
+                        st.caption(f"...+{len(questions) - 5} more")
+                except:
+                    st.code(content[:500], language='javascript')
 
-            st.session_state.region_analysis = json.loads(json_str)
-            st.success("✅ Analysis complete!")
-
-        except json.JSONDecodeError as e:
-            st.error(f"Failed to parse response: {e}")
-            st.code(response_text)
+            st.download_button("📥 Download", content, file_name=os.path.basename(test_file), mime="text/javascript")
         except Exception as e:
             st.error(f"Error: {e}")
 
-# Display analysis
-if st.session_state.region_analysis:
-    analysis = st.session_state.region_analysis
+        st.divider()
 
-    col1, col2, col3 = st.columns(3)
+    # Chat container
+    chat_container = st.container()
 
-    with col1:
-        st.subheader("👥 Population")
-        pop = analysis.get('population_characteristics', {})
-        st.metric("Literacy Rate", pop.get('literacy_rate', 'N/A'))
-        st.write(f"**Primary Language:** {pop.get('primary_language', 'N/A')}")
-        st.write(f"**Education:** {pop.get('average_education_years', 'N/A')} years")
+    with chat_container:
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
 
-    with col2:
-        st.subheader("🧠 Cognitive Profile")
-        cog = analysis.get('cognitive_considerations', {})
-        st.write(f"**Learning Style:** {cog.get('learning_style', 'N/A')}")
-        st.write(f"**Complexity Level:** {cog.get('recommended_question_complexity', 'N/A')}")
-        st.write(f"**Numeracy:** {cog.get('numeracy_level', 'N/A')}")
+    # Initial message
+    if st.session_state.step == 'start' and not st.session_state.messages:
+        welcome = """👋 **Welcome!** I'll help you create educational farming questions for African communities.
 
-    with col3:
-        st.subheader("💪 Motivation")
-        mot = analysis.get('motivational_factors', {})
-        st.write("**Primary Motivations:**")
-        for m in mot.get('primary_motivations', [])[:3]:
-            st.write(f"• {m}")
+Let's start - **Which African country** do you want to create questions for?
 
-    with st.expander("📋 Full Analysis"):
-        st.json(analysis)
+🇰🇪 Kenya | 🇺🇬 Uganda | 🇪🇹 Ethiopia | 🇹🇿 Tanzania | 🇷🇼 Rwanda | or type another...""" if lang else """👋 **Vítejte!** Pomohu vám vytvořit vzdělávací otázky pro africké farmáře.
 
-# Step 3: Generate Questions
-st.header("3️⃣ Generate Questions")
+Začneme - **Pro kterou africkou zemi** chcete vytvořit otázky?
 
-if st.button("🎯 Generate Questions", type="primary", disabled=not st.session_state.region_analysis):
-    with st.spinner(f"Generating {num_levels * questions_per_level} questions..."):
-        try:
-            client = openai.OpenAI(api_key=st.session_state.api_key)
-            analysis = st.session_state.region_analysis
+🇰🇪 Keňa | 🇺🇬 Uganda | 🇪🇹 Etiopie | 🇹🇿 Tanzanie | 🇷🇼 Rwanda | nebo napište jinou..."""
 
-            all_questions = {}
+        add_message("assistant", welcome)
+        st.session_state.step = 'country'
+        st.rerun()
 
-            progress_bar = st.progress(0)
+    # Chat input
+    if prompt := st.chat_input("Type your answer..." if lang else "Napište odpověď..."):
+        add_message("user", prompt)
+        step = st.session_state.step
 
-            for level in range(1, num_levels + 1):
-                # Difficulty increases with level
-                if level <= 3:
-                    difficulty = "beginner"
-                    complexity = "very simple, basic concepts"
-                elif level <= 6:
-                    difficulty = "intermediate"
-                    complexity = "simple, building on basics"
-                elif level <= 8:
-                    difficulty = "advanced"
-                    complexity = "moderate, applying knowledge"
+        if step == 'country':
+            st.session_state.data['country'] = prompt
+            response = f"""✅ **{prompt}**
+
+**Which specific region** in {prompt}?
+
+Example: Turkana, Karamoja, Tigray, Dodoma...""" if lang else f"""✅ **{prompt}**
+
+**Který konkrétní region** v zemi {prompt}?
+
+Například: Turkana, Karamoja, Tigray, Dodoma..."""
+            add_message("assistant", response)
+            st.session_state.step = 'region'
+
+        elif step == 'region':
+            st.session_state.data['region'] = prompt
+            response = f"""✅ Region: **{prompt}**
+
+**For whom** are these questions?
+
+👨‍🌾 Farmers | 👩‍🌾 Women | 🧒 Children | 👴 Elders | 🐄 Pastoralists...""" if lang else f"""✅ Region: **{prompt}**
+
+**Pro koho** jsou otázky?
+
+👨‍🌾 Farmáři | 👩‍🌾 Ženy | 🧒 Děti | 👴 Starší | 🐄 Pastevci..."""
+            add_message("assistant", response)
+            st.session_state.step = 'target'
+
+        elif step == 'target':
+            st.session_state.data['target_group'] = prompt
+            response = f"""✅ Target: **{prompt}**
+
+**What education level?**
+
+📖 None | ✏️ Basic | 📝 Primary | 🎓 Secondary...""" if lang else f"""✅ Cíl: **{prompt}**
+
+**Jaké vzdělání?**
+
+📖 Žádné | ✏️ Základní | 📝 Střední | 🎓 Vyšší..."""
+            add_message("assistant", response)
+            st.session_state.step = 'education'
+
+        elif step == 'education':
+            st.session_state.data['education'] = prompt
+            response = f"""✅ Education: **{prompt}**
+
+**What language** for the questions?
+
+🇬🇧 English | 🇰🇪 Swahili | 🇺🇬 Luganda | or type another...""" if lang else f"""✅ Vzdělání: **{prompt}**
+
+**V jakém jazyce** mají být otázky?
+
+🇬🇧 Angličtina | 🇰🇪 Svahilština | 🇺🇬 Luganda | nebo jiný..."""
+            add_message("assistant", response)
+            st.session_state.step = 'language'
+
+        elif step == 'language':
+            st.session_state.data['language'] = prompt
+            response = f"""✅ Language: **{prompt}**
+
+**What topic?**
+
+🌱 Soil & Basics | 💧 Irrigation | 🛡️ Plant Protection | 🐄 Livestock | 🌾 Harvest...""" if lang else f"""✅ Jazyk: **{prompt}**
+
+**Jaké téma?**
+
+🌱 Půda | 💧 Zavlažování | 🛡️ Ochrana rostlin | 🐄 Zvířata | 🌾 Sklizeň..."""
+            add_message("assistant", response)
+            st.session_state.step = 'topic'
+
+        elif step == 'topic':
+            st.session_state.data['topic'] = prompt
+            response = f"""✅ Topic: **{prompt}**
+
+**How many questions?**
+
+🔟 10 | 2️⃣0️⃣ 20 | 5️⃣0️⃣ 50 | 💯 100...""" if lang else f"""✅ Téma: **{prompt}**
+
+**Kolik otázek?**
+
+🔟 10 | 2️⃣0️⃣ 20 | 5️⃣0️⃣ 50 | 💯 100..."""
+            add_message("assistant", response)
+            st.session_state.step = 'count'
+
+        elif step == 'count':
+            num = ''.join(filter(str.isdigit, prompt))
+            count = int(num) if num else 10
+            st.session_state.data['question_count'] = count
+
+            d = st.session_state.data
+            summary = f"""📋 **Summary:**
+
+| | |
+|---|---|
+| 🌍 Country | {d.get('country')} |
+| 📍 Region | {d.get('region')} |
+| 👥 Target | {d.get('target_group')} |
+| 📚 Education | {d.get('education')} |
+| 🗣️ Language | {d.get('language')} |
+| 📖 Topic | {d.get('topic')} |
+| ❓ Count | {count} |
+
+Type **yes** to generate or **edit** to restart."""
+
+            add_message("assistant", summary)
+            st.session_state.step = 'confirm'
+
+        elif step == 'confirm':
+            if prompt.lower() in ['yes', 'ano', 'ok', 'y', 'a']:
+                if not st.session_state.api_key:
+                    add_message("assistant", "⚠️ **Enter API key in sidebar first!**")
                 else:
-                    difficulty = "expert"
-                    complexity = "challenging, critical thinking"
+                    add_message("assistant", "🔄 **Generating...**")
+                    st.session_state.step = 'generating'
+            elif prompt.lower() in ['edit', 'change', 'upravit']:
+                add_message("assistant", "🔄 **Starting over.** Which country?")
+                st.session_state.data = {}
+                st.session_state.step = 'country'
+            else:
+                add_message("assistant", "❓ Type **yes** or **edit**")
 
-                generation_prompt = f"""Generate {questions_per_level} farming education questions for this audience:
+        st.rerun()
 
-AUDIENCE PROFILE:
-- Region: {analysis.get('region_name', 'Unknown')} ({analysis.get('country', 'Africa')})
-- Literacy: {analysis.get('population_characteristics', {}).get('literacy_rate', 'Low')}
-- Learning style: {analysis.get('cognitive_considerations', {}).get('learning_style', 'practical')}
-- Language level: {language_level}
-- Main crops: {', '.join(analysis.get('farming_context', {}).get('main_crops', ['general crops']))}
-- Livestock: {', '.join(analysis.get('farming_context', {}).get('livestock', ['general livestock']))}
-- Challenges: {', '.join(analysis.get('farming_context', {}).get('climate_challenges', ['drought']))}
+    # Generation step
+    if st.session_state.step == 'generating':
+        d = st.session_state.data
 
-LEVEL: {level}/10 ({difficulty})
-COMPLEXITY: {complexity}
-TOPICS: {', '.join(farming_focus)}
+        with st.spinner("Generating with GPT-4..."):
+            try:
+                client = openai.OpenAI(api_key=st.session_state.api_key)
+                count = d.get('question_count', 10)
+                target_lang = d.get('language', 'English')
 
-MOTIVATIONAL CONTEXT:
-- Motivations: {', '.join(analysis.get('motivational_factors', {}).get('primary_motivations', []))}
-- Values: {', '.join(analysis.get('motivational_factors', {}).get('cultural_values', []))}
+                gen_prompt = f"""Generate {count} educational farming questions for this audience:
+
+TARGET AUDIENCE:
+- Country: {d.get('country')}
+- Region: {d.get('region')}
+- Target group: {d.get('target_group')}
+- Education level: {d.get('education')}
+- Topic: {d.get('topic')}
+- OUTPUT LANGUAGE: {target_lang}
 
 REQUIREMENTS:
-1. Questions must be culturally relevant and use local examples
-2. Use simple, clear language (imagine explaining to someone with {analysis.get('population_characteristics', {}).get('average_education_years', '4-6')} years of education)
-3. Include practical, actionable knowledge they can use immediately
-4. Each question should have 4 options with icons/emojis
-5. Explanations should be encouraging and educational
-6. Focus on building confidence and practical skills
-7. Use local crops, animals, and situations they would recognize
-8. Avoid abstract concepts - keep it concrete and visual
+1. ALL questions, options, and explanations must be in {target_lang}
+2. Questions must be culturally relevant to the region
+3. Use simple, clear language appropriate for the education level
+4. Each question has 4 options with relevant emojis
+5. Use local crops, animals, situations they know
 
 OUTPUT FORMAT (JSON array):
 [
   {{
-    "question": "Clear, simple question in English",
+    "question": "Question in {target_lang}",
     "options": [
-      {{"text": "Correct answer", "icon": "🌱", "isCorrect": true}},
-      {{"text": "Wrong option 1", "icon": "❌", "isCorrect": false}},
-      {{"text": "Wrong option 2", "icon": "❌", "isCorrect": false}},
-      {{"text": "Wrong option 3", "icon": "❌", "isCorrect": false}}
+      {{"text": "Answer in {target_lang}", "icon": "🌱", "isCorrect": true}},
+      {{"text": "Wrong 1", "icon": "❌", "isCorrect": false}},
+      {{"text": "Wrong 2", "icon": "❌", "isCorrect": false}},
+      {{"text": "Wrong 3", "icon": "❌", "isCorrect": false}}
     ],
-    "explanation": "Brief, encouraging explanation of why the answer is correct and how to apply this knowledge"
+    "explanation": "Explanation in {target_lang}"
   }}
 ]
 
-Generate exactly {questions_per_level} questions. Make them progressively build knowledge within this level."""
+Generate exactly {count} questions entirely in {target_lang}."""
 
                 response = client.chat.completions.create(
                     model="gpt-4o",
                     messages=[
-                        {"role": "system", "content": "You are an expert agricultural educator specializing in adult education for rural African communities. Create questions that are practical, culturally sensitive, and build confidence. Use simple language and concrete examples."},
-                        {"role": "user", "content": generation_prompt}
+                        {"role": "system", "content": f"Expert agricultural educator. Generate ALL content in {target_lang}."},
+                        {"role": "user", "content": gen_prompt}
                     ],
                     temperature=0.8
                 )
 
-                response_text = response.choices[0].message.content
-                json_match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', response_text)
-                if json_match:
-                    json_str = json_match.group(1)
-                else:
-                    json_str = response_text
+                text = response.choices[0].message.content
+                match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', text)
+                json_str = match.group(1) if match else text
 
                 questions = json.loads(json_str)
-                all_questions[f"module{module_id}_level{level}"] = questions
+                st.session_state.data['questions'] = questions
 
-                progress_bar.progress(level / num_levels)
+                safe_name = f"{d.get('region', 'test').lower().replace(' ', '_')}_{d.get('language', 'en').lower()[:3]}"[:30]
+                file_name = f"questions_{safe_name}.js"
 
-            st.session_state.generated_questions = all_questions
-            st.success(f"✅ Generated {sum(len(q) for q in all_questions.values())} questions!")
-
-        except Exception as e:
-            st.error(f"Error generating questions: {e}")
-            import traceback
-            st.code(traceback.format_exc())
-
-# Display and export questions
-if st.session_state.generated_questions:
-    st.header("4️⃣ Review & Export")
-
-    questions = st.session_state.generated_questions
-
-    # Preview
-    preview_level = st.selectbox(
-        "Preview level",
-        list(questions.keys())
-    )
-
-    if preview_level:
-        st.subheader(f"📝 {preview_level}")
-        for i, q in enumerate(questions[preview_level][:3]):  # Show first 3
-            with st.expander(f"Q{i+1}: {q['question'][:50]}..."):
-                st.write(f"**{q['question']}**")
-                for opt in q['options']:
-                    icon = "✅" if opt['isCorrect'] else "❌"
-                    st.write(f"{opt.get('icon', '')} {opt['text']} {icon}")
-                st.info(f"💡 {q['explanation']}")
-
-        if len(questions[preview_level]) > 3:
-            st.write(f"*... and {len(questions[preview_level]) - 3} more questions*")
-
-    # Export
-    st.subheader("📤 Export")
-
-    col1, col2 = st.columns(2)
-
-    with col1:
-        # Generate JavaScript code
-        js_code = f"""// AgroLinguo Questions - Module {module_id}
+                js_code = f"""// {d.get('topic')} for {d.get('region')}, {d.get('country')}
+// Language: {d.get('language')}
+// Target: {d.get('target_group')}
+// Education: {d.get('education')}
 // Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
-// Region: {st.session_state.region_analysis.get('region_name', 'Unknown')}
-// Country: {st.session_state.region_analysis.get('country', 'Unknown')}
 
-const MODULE{module_id}_QUESTIONS = {{
-"""
-        for level_key, level_questions in questions.items():
-            js_code += f"    {level_key}: "
-            js_code += json.dumps(level_questions, indent=8, ensure_ascii=False)
-            js_code += ",\n"
+const QUESTIONS = {json.dumps(questions, indent=2, ensure_ascii=False)};
 
-        js_code += f"""
-}};
-
-// Export to window
-window.MODULE{module_id}_QUESTIONS = MODULE{module_id}_QUESTIONS;
+window.QUESTIONS = QUESTIONS;
 """
 
-        st.download_button(
-            "📥 Download JavaScript",
-            js_code,
-            file_name=f"questions_module{module_id}.js",
-            mime="text/javascript"
-        )
+                questions_dir = get_questions_dir()
+                custom_dir = os.path.join(questions_dir, "custom")
+                os.makedirs(custom_dir, exist_ok=True)
 
-    with col2:
-        # Save directly to questions folder
-        if st.button("💾 Save to questions/ folder"):
-            try:
-                # Get the path relative to this script
-                script_dir = os.path.dirname(os.path.abspath(__file__))
-                questions_dir = os.path.join(script_dir, "..", "..", "questions")
-
-                if not os.path.exists(questions_dir):
-                    os.makedirs(questions_dir)
-
-                file_path = os.path.join(questions_dir, f"questions_module{module_id}.js")
-
+                file_path = os.path.join(custom_dir, file_name)
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(js_code)
 
-                st.success(f"✅ Saved to {file_path}")
-                st.info("Don't forget to update index.html and course_config.js!")
+                st.session_state.data['file_path'] = file_path
+                st.session_state.data['file_name'] = file_name
+
+                success_msg = f"""✅ **Done!** Generated {len(questions)} questions in {d.get('language')}.
+
+📁 Saved to: `custom/{file_name}`
+
+**Sample:**
+> {questions[0]['question']}
+
+"""
+                for opt in questions[0]['options']:
+                    mark = "✅" if opt['isCorrect'] else "❌"
+                    success_msg += f"- {opt.get('icon', '')} {opt['text']} {mark}\n"
+
+                success_msg += f"\n💡 {questions[0]['explanation']}"
+
+                add_message("assistant", success_msg)
+                st.session_state.step = 'done'
+                st.rerun()
 
             except Exception as e:
-                st.error(f"Error saving: {e}")
+                add_message("assistant", f"❌ **Error:** {str(e)}")
+                st.session_state.step = 'confirm'
+                st.rerun()
 
-    # Show config snippet
-    with st.expander("📋 Add to course_config.js"):
-        config_snippet = f"""{{
-    id: {module_id},
-    name: '{st.session_state.region_analysis.get('region_name', 'New Module')}',
-    icon: '🌍',
-    color: 'from-lime-400 to-lime-600',
-    description: 'Farming for {st.session_state.region_analysis.get('country', 'Africa')}'
-}}"""
-        st.code(config_snippet, language="javascript")
+    # Download button when done
+    if st.session_state.step == 'done' and 'questions' in st.session_state.data:
+        st.divider()
+        questions = st.session_state.data['questions']
+        d = st.session_state.data
 
-# Footer
-st.divider()
-st.markdown("""
-<div style='text-align: center; color: gray;'>
-    <p>🌱 AgroLinguo Question Generator | Powered by GPT-4</p>
-    <p>Creating culturally appropriate farming education for Africa</p>
-</div>
-""", unsafe_allow_html=True)
+        js_code = f"""// {d.get('topic')} for {d.get('region')}, {d.get('country')}
+const QUESTIONS = {json.dumps(questions, indent=2, ensure_ascii=False)};
+window.QUESTIONS = QUESTIONS;
+"""
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.download_button("📥 Download JS", js_code, file_name=st.session_state.data.get('file_name', 'questions.js'), mime="text/javascript")
+        with col2:
+            st.metric("Questions", len(questions))
+
+# ============ TAB 2: Custom Prompt ============
+with tab2:
+    st.subheader("📝 Custom Prompt Generator" if lang else "📝 Vlastní prompt")
+    st.caption("Select a sample prompt or write your own" if lang else "Vyberte vzorový prompt nebo napište vlastní")
+
+    # Sample prompt selector
+    selected_sample = st.selectbox(
+        "🎯 Sample Prompts:" if lang else "🎯 Vzorové prompty:",
+        ["-- Select --"] + list(SAMPLE_PROMPTS.keys())
+    )
+
+    # Text area for prompt
+    default_prompt = SAMPLE_PROMPTS.get(selected_sample, "") if selected_sample != "-- Select --" else ""
+
+    custom_prompt = st.text_area(
+        "✏️ Your Prompt:" if lang else "✏️ Váš prompt:",
+        value=default_prompt,
+        height=400,
+        placeholder="Write your custom prompt here or select from samples above..."
+    )
+
+    # File name
+    col1, col2 = st.columns(2)
+    with col1:
+        custom_filename = st.text_input(
+            "📁 File name:" if lang else "📁 Název souboru:",
+            value="questions_kenya_swahili_children.js" if "Swahili" in selected_sample else "questions_custom.js"
+        )
+    with col2:
+        custom_count = st.number_input("❓ Questions:", min_value=5, max_value=100, value=20)
+
+    # Generate button
+    if st.button("🚀 Generate from Custom Prompt" if lang else "🚀 Generovat z vlastního promptu", type="primary", use_container_width=True):
+        if not st.session_state.api_key:
+            st.error("⚠️ Enter API key in sidebar first!")
+        elif not custom_prompt.strip():
+            st.error("⚠️ Enter a prompt first!")
+        else:
+            with st.spinner("🔄 Generating with GPT-4..."):
+                try:
+                    client = openai.OpenAI(api_key=st.session_state.api_key)
+
+                    response = client.chat.completions.create(
+                        model="gpt-4o",
+                        messages=[
+                            {"role": "system", "content": "Expert agricultural educator. Generate educational quiz questions in the exact JSON format requested."},
+                            {"role": "user", "content": custom_prompt}
+                        ],
+                        temperature=0.8
+                    )
+
+                    text = response.choices[0].message.content
+                    match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', text)
+                    json_str = match.group(1) if match else text
+
+                    # Try to find JSON array
+                    if not json_str.strip().startswith('['):
+                        array_match = re.search(r'\[[\s\S]*\]', json_str)
+                        if array_match:
+                            json_str = array_match.group()
+
+                    questions = json.loads(json_str)
+
+                    # Create JS code
+                    js_code = f"""// Custom Generated Questions
+// Prompt: {selected_sample if selected_sample != "-- Select --" else "Custom"}
+// Generated: {datetime.now().strftime('%Y-%m-%d %H:%M')}
+
+const QUESTIONS = {json.dumps(questions, indent=2, ensure_ascii=False)};
+
+window.QUESTIONS = QUESTIONS;
+"""
+
+                    # Save to file
+                    questions_dir = get_questions_dir()
+                    custom_dir = os.path.join(questions_dir, "custom")
+                    os.makedirs(custom_dir, exist_ok=True)
+
+                    file_path = os.path.join(custom_dir, custom_filename)
+                    with open(file_path, 'w', encoding='utf-8') as f:
+                        f.write(js_code)
+
+                    st.success(f"✅ Generated {len(questions)} questions!")
+                    st.info(f"📁 Saved to: `custom/{custom_filename}`")
+
+                    # Show sample
+                    st.subheader("📋 Sample Questions:")
+                    for i, q in enumerate(questions[:3], 1):
+                        with st.expander(f"Q{i}: {q.get('question', '')[:60]}..."):
+                            st.write(f"**{q.get('question', '')}**")
+                            for opt in q.get('options', []):
+                                mark = "✅" if opt.get('isCorrect') else "⬜"
+                                st.write(f"{mark} {opt.get('icon', '')} {opt.get('text', '')}")
+                            st.caption(f"💡 {q.get('explanation', '')}")
+
+                    # Download
+                    st.download_button(
+                        "📥 Download JS File",
+                        js_code,
+                        file_name=custom_filename,
+                        mime="text/javascript",
+                        use_container_width=True
+                    )
+
+                except json.JSONDecodeError as e:
+                    st.error(f"❌ JSON parsing error: {e}")
+                    st.code(text[:1000], language='text')
+                except Exception as e:
+                    st.error(f"❌ Error: {str(e)}")
+
+    # Info box
+    st.divider()
+    st.info("""
+**💡 Tips:**
+- Select a sample prompt to get started quickly
+- Modify the prompt to customize for your needs
+- Specify the exact language (Swahili, Luganda, etc.)
+- Include local context (crops, animals, regions)
+    """)
+
+# ============ TAB 3: Swahili Modules ============
+with tab3:
+    st.subheader("🇰🇪 Generate Swahili Modules" if lang else "🇰🇪 Generovat svahilské moduly")
+    st.caption("Generate complete course modules in Swahili for Kenya" if lang else "Vygenerovat kompletní moduly ve svahilštině pro Keňu")
+
+    # Module definitions
+    SW_MODULES = [
+        {"id": 1, "name": "Soil & Basics", "sw_name": "Udongo na Misingi", "icon": "🌱"},
+        {"id": 2, "name": "Plant Protection", "sw_name": "Ulinzi wa Mimea", "icon": "🛡️"},
+        {"id": 3, "name": "Harvest & Sales", "sw_name": "Mavuno na Mauzo", "icon": "🌾"},
+        {"id": 4, "name": "Irrigation", "sw_name": "Umwagiliaji", "icon": "💧"},
+        {"id": 5, "name": "Machinery", "sw_name": "Mashine za Kilimo", "icon": "🚜"},
+        {"id": 6, "name": "Ecology", "sw_name": "Ikolojia", "icon": "🌍"},
+        {"id": 7, "name": "Livestock", "sw_name": "Mifugo", "icon": "🐄"},
+        {"id": 8, "name": "Climate & Weather", "sw_name": "Hali ya Hewa", "icon": "🌤️"},
+        {"id": 9, "name": "Farm Business", "sw_name": "Biashara ya Kilimo", "icon": "💰"},
+        {"id": 10, "name": "Innovation", "sw_name": "Ubunifu", "icon": "🔬"},
+    ]
+
+    # Module selector
+    module_options = [f"{m['icon']} Module {m['id']}: {m['sw_name']} ({m['name']})" for m in SW_MODULES]
+    selected_module_idx = st.selectbox(
+        "📚 Select Module:" if lang else "📚 Vyberte modul:",
+        range(len(module_options)),
+        format_func=lambda x: module_options[x]
+    )
+
+    selected_module = SW_MODULES[selected_module_idx]
+
+    st.info(f"""
+**{selected_module['icon']} {selected_module['sw_name']}** ({selected_module['name']})
+
+This will generate:
+- 10 levels (difficulty 1-10)
+- 10 questions per level
+- **100 questions total** in Swahili
+
+Output: `questions/sw/questions_module{selected_module['id']}.js`
+    """)
+
+    # Generate button
+    if st.button(f"🚀 Generate Module {selected_module['id']} in Swahili", type="primary", use_container_width=True):
+        if not st.session_state.api_key:
+            st.error("⚠️ Enter API key in sidebar first!")
+        else:
+            all_questions = {}
+            progress_bar = st.progress(0)
+            status_text = st.empty()
+
+            try:
+                client = openai.OpenAI(api_key=st.session_state.api_key)
+
+                for level in range(1, 11):
+                    progress_bar.progress(level * 10)
+                    status_text.write(f"🔄 Generating Level {level}/10...")
+
+                    prompt = f"""Generate 10 educational farming questions in SWAHILI (Kiswahili) for Kenya.
+
+MODULE: {selected_module['id']} - {selected_module['sw_name']} ({selected_module['name']}) {selected_module['icon']}
+LEVEL: {level} of 10 (1=easy, 10=advanced)
+
+REQUIREMENTS:
+1. ALL text MUST be in Swahili (Kiswahili)
+2. Level {level} difficulty
+3. Kenyan context - local crops, animals, climate
+4. 4 options per question with emojis
+5. Encouraging explanations ("Vizuri sana!", "Sawa kabisa!")
+
+KENYAN CROPS: mahindi, maharagwe, chai, kahawa, sukuma wiki, nyanya, viazi
+ANIMALS: ng'ombe, mbuzi, kuku, kondoo
+
+OUTPUT FORMAT (JSON array only, no markdown):
+[
+  {{
+    "question": "Swahili question?",
+    "type": "multiple_choice",
+    "options": [
+      {{"text": "Jibu sahihi", "icon": "{selected_module['icon']}", "isCorrect": true}},
+      {{"text": "Jibu mbaya 1", "icon": "❌", "isCorrect": false}},
+      {{"text": "Jibu mbaya 2", "icon": "❌", "isCorrect": false}},
+      {{"text": "Jibu mbaya 3", "icon": "❌", "isCorrect": false}}
+    ],
+    "explanation": "Maelezo kwa Kiswahili - Vizuri sana!"
+  }}
+]
+
+Generate exactly 10 questions in Swahili for level {level}."""
+
+                    response = client.chat.completions.create(
+                        model="gpt-4o",
+                        messages=[
+                            {"role": "system", "content": "Expert Kenyan agricultural educator. Generate ALL content in Kiswahili."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        temperature=0.8
+                    )
+
+                    text = response.choices[0].message.content
+                    match = re.search(r'```(?:json)?\s*([\s\S]*?)\s*```', text)
+                    json_str = match.group(1) if match else text
+
+                    if not json_str.strip().startswith('['):
+                        array_match = re.search(r'\[[\s\S]*\]', json_str)
+                        if array_match:
+                            json_str = array_match.group()
+
+                    questions = json.loads(json_str)
+                    all_questions[f"module{selected_module['id']}_level{level}"] = questions
+
+                progress_bar.progress(100)
+                status_text.write("✅ Generation complete!")
+
+                # Save to file
+                total = sum(len(q) for q in all_questions.values())
+
+                js_content = f"""// Module {selected_module['id']}: {selected_module['sw_name']} ({selected_module['name']}) - {total} maswali
+// Lugha: Kiswahili (Swahili)
+// Nchi: Kenya
+// {selected_module['icon']} Generated for AgroLinguo
+
+const MODULE{selected_module['id']}_QUESTIONS_SW = {json.dumps(all_questions, indent=2, ensure_ascii=False)};
+
+window.MODULE{selected_module['id']}_QUESTIONS_SW = MODULE{selected_module['id']}_QUESTIONS_SW;
+"""
+
+                questions_dir = get_questions_dir()
+                sw_dir = os.path.join(questions_dir, "sw")
+                os.makedirs(sw_dir, exist_ok=True)
+
+                file_path = os.path.join(sw_dir, f"questions_module{selected_module['id']}.js")
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write(js_content)
+
+                st.success(f"✅ Generated {total} questions!")
+                st.info(f"📁 Saved to: `sw/questions_module{selected_module['id']}.js`")
+
+                # Show samples
+                st.subheader("📋 Sample Questions:")
+                for level_key in list(all_questions.keys())[:2]:
+                    level_num = level_key.split('_level')[1]
+                    st.write(f"**Level {level_num}:**")
+                    for q in all_questions[level_key][:2]:
+                        with st.expander(f"Q: {q.get('question', '')[:50]}..."):
+                            st.write(f"**{q.get('question', '')}**")
+                            for opt in q.get('options', []):
+                                mark = "✅" if opt.get('isCorrect') else "⬜"
+                                st.write(f"{mark} {opt.get('icon', '')} {opt.get('text', '')}")
+                            st.caption(f"💡 {q.get('explanation', '')}")
+
+                # Download button
+                st.download_button(
+                    "📥 Download Module JS",
+                    js_content,
+                    file_name=f"questions_module{selected_module['id']}_sw.js",
+                    mime="text/javascript",
+                    use_container_width=True
+                )
+
+            except Exception as e:
+                st.error(f"❌ Error: {str(e)}")
+
+    # Show existing Swahili modules
+    st.divider()
+    st.subheader("📁 Existing Swahili Modules" if lang else "📁 Existující svahilské moduly")
+
+    sw_dir = os.path.join(get_questions_dir(), "sw")
+    if os.path.exists(sw_dir):
+        sw_files = [f for f in os.listdir(sw_dir) if f.endswith('.js')]
+        if sw_files:
+            for f in sorted(sw_files):
+                st.write(f"✅ {f}")
+        else:
+            st.info("No Swahili modules generated yet" if lang else "Zatím žádné svahilské moduly")
+    else:
+        st.info("No Swahili modules generated yet" if lang else "Zatím žádné svahilské moduly")

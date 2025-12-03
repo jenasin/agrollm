@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AgroLinguo - Learn Farming</title>
+    <!-- PWA Support -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#22c55e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="AgroLinguo">
+    <link rel="apple-touch-icon" href="icon-192.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -11,17 +18,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- Neural Learning Engine (100% offline) -->
     <script src="neural_engine.js"></script>
-    <!-- Question modules -->
-    <script src="questions/questions_module1.js"></script>
-    <script src="questions/questions_module2.js"></script>
-    <script src="questions/questions_module3.js"></script>
-    <script src="questions/questions_module4.js"></script>
-    <script src="questions/questions_module5.js"></script>
-    <script src="questions/questions_module6.js"></script>
-    <script src="questions/questions_module7.js"></script>
-    <script src="questions/questions_module8.js"></script>
-    <script src="questions/questions_module9.js"></script>
-    <script src="questions/questions_module10.js"></script>
+    <!-- Question modules - loaded dynamically based on language -->
+    <script>
+        // Get language preference (default: en)
+        const LANG = localStorage.getItem('agrolinguo_lang') || 'en';
+        const LANG_PATH = 'questions/' + LANG + '/';
+
+        // Dynamically load question modules
+        for (let i = 1; i <= 10; i++) {
+            const script = document.createElement('script');
+            script.src = LANG_PATH + 'questions_module' + i + '.js';
+            script.async = false;
+            document.head.appendChild(script);
+        }
+
+        // Language info
+        window.CURRENT_LANG = LANG;
+        window.AVAILABLE_LANGS = {
+            'en': { name: 'English', flag: '🇬🇧' },
+            'sw': { name: 'Kiswahili', flag: '🇰🇪' }
+        };
+    </script>
     <!-- Course configuration -->
     <script src="course_config.js"></script>
     <!-- Main loader -->
@@ -276,6 +293,121 @@
             const [dailyGoal, setDailyGoal] = useState(50);
             const [dailyXp, setDailyXp] = useState(0);
 
+            // === LANGUAGE STATE ===
+            const [currentLang, setCurrentLang] = useState(() => window.CURRENT_LANG || 'en');
+            const [showLangSelect, setShowLangSelect] = useState(() => !localStorage.getItem('agrolinguo_lang_selected'));
+
+            // === TRANSLATIONS ===
+            const translations = {
+                en: {
+                    courses: 'Courses',
+                    dailyGoal: 'Daily Goal',
+                    level: 'Level',
+                    levels: 'levels',
+                    farmer: 'Farmer',
+                    home: 'Home',
+                    learn: 'Learn',
+                    skills: 'Skills',
+                    profile: 'Profile',
+                    correct: 'Correct',
+                    excellent: 'Excellent!',
+                    goodJob: 'Good job!',
+                    tryAgain: 'Try again!',
+                    notQuite: 'Not quite',
+                    continue: 'Continue',
+                    finish: 'Finish',
+                    nextLevel: 'Next Level',
+                    playAgain: 'Play Again',
+                    backToOverview: 'Back to Overview',
+                    backHome: 'Back Home',
+                    outOfHearts: 'Out of hearts!',
+                    dontGiveUp: "Don't give up, try again!",
+                    xpToNextLevel: 'XP to next level',
+                    levelProgress: 'Level Progress',
+                    totalXp: 'Total XP',
+                    streak: 'Streak',
+                    completed: 'Completed',
+                    neuralEngine: 'Neural Engine',
+                    knowledge: 'Knowledge',
+                    momentum: 'Momentum',
+                    strong: 'Strong',
+                    practice: 'Practice',
+                    interactions: 'interactions',
+                    offlineAi: 'Offline AI',
+                    exploring: 'Exploring',
+                    accelerating: 'Accelerating!',
+                    consolidating: 'Consolidating',
+                    mastering: 'Mastering!',
+                    keepGoing: 'Keep Going!',
+                    chooseLanguage: 'Choose Language',
+                    backToHome: 'Back to Home',
+                    selectLevel: 'Select Level',
+                    question: 'Question',
+                    downloadApp: 'Download App',
+                    installApp: 'Install to Phone',
+                    downloadDesc: 'Save for offline use',
+                    installDesc: 'Add to home screen'
+                },
+                sw: {
+                    courses: 'Kozi',
+                    dailyGoal: 'Lengo la Leo',
+                    level: 'Kiwango',
+                    levels: 'viwango',
+                    farmer: 'Mkulima',
+                    home: 'Nyumbani',
+                    learn: 'Jifunze',
+                    skills: 'Ujuzi',
+                    profile: 'Wasifu',
+                    correct: 'Sahihi',
+                    excellent: 'Vizuri sana!',
+                    goodJob: 'Umefanya vizuri!',
+                    tryAgain: 'Jaribu tena!',
+                    notQuite: 'Si sawa kabisa',
+                    continue: 'Endelea',
+                    finish: 'Maliza',
+                    nextLevel: 'Kiwango Kifuatacho',
+                    playAgain: 'Cheza Tena',
+                    backToOverview: 'Rudi Nyuma',
+                    backHome: 'Rudi Nyumbani',
+                    outOfHearts: 'Mioyo imeisha!',
+                    dontGiveUp: 'Usikate tamaa, jaribu tena!',
+                    xpToNextLevel: 'XP hadi kiwango kifuatacho',
+                    levelProgress: 'Maendeleo ya Kiwango',
+                    totalXp: 'Jumla XP',
+                    streak: 'Mfululizo',
+                    completed: 'Imekamilika',
+                    neuralEngine: 'Injini ya Akili',
+                    knowledge: 'Ujuzi',
+                    momentum: 'Kasi',
+                    strong: 'Imara',
+                    practice: 'Fanya Mazoezi',
+                    interactions: 'maingiliano',
+                    offlineAi: 'AI Offline',
+                    exploring: 'Kuchunguza',
+                    accelerating: 'Kuongeza kasi!',
+                    consolidating: 'Kuimarisha',
+                    mastering: 'Kutawala!',
+                    keepGoing: 'Endelea!',
+                    chooseLanguage: 'Chagua Lugha',
+                    backToHome: 'Rudi Nyumbani',
+                    selectLevel: 'Chagua Kiwango',
+                    question: 'Swali',
+                    downloadApp: 'Pakua Programu',
+                    installApp: 'Weka kwenye Simu',
+                    downloadDesc: 'Hifadhi kwa matumizi bila mtandao',
+                    installDesc: 'Ongeza kwenye skrini ya nyumbani'
+                }
+            };
+
+            // Translation function
+            const t = (key) => translations[currentLang]?.[key] || translations.en[key] || key;
+
+            // Localized module text helper
+            const lt = (obj) => {
+                if (typeof obj === 'string') return obj;
+                return obj?.[currentLang] || obj?.['en'] || obj || '';
+            };
+
             // === NEURAL ENGINE STATE ===
             const [neuralState, setNeuralState] = useState(() => window.NeuralEngine?.getState() || {});
             const [questionStartTime, setQuestionStartTime] = useState(Date.now());
@@ -417,29 +549,99 @@
                 setHearts(5);
             };
 
+            // === LANGUAGE SELECTION ===
+            const selectLanguage = (lang) => {
+                localStorage.setItem('agrolinguo_lang', lang);
+                localStorage.setItem('agrolinguo_lang_selected', 'true');
+                window.location.reload(); // Reload to load correct question modules
+            };
+
+            const changeLanguage = () => {
+                setShowLangSelect(true);
+            };
+
+            // === LANGUAGE SELECT SCREEN ===
+            const LanguageSelectScreen = () => {
+                const langs = window.AVAILABLE_LANGS || {
+                    'en': { name: 'English', flag: '🇬🇧' },
+                    'sw': { name: 'Kiswahili', flag: '🇰🇪' }
+                };
+
+                return (
+                    <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col items-center justify-center p-4">
+                        <div className="bounce-in text-center">
+                            <div className="text-8xl mb-4">🌱</div>
+                            <h1 className="text-4xl font-bold text-green-700 mb-2">AgroLinguo</h1>
+                            <p className="text-gray-600 mb-8">Learn farming, grow knowledge</p>
+
+                            <h2 className="text-xl font-bold text-gray-700 mb-4">
+                                {t('chooseLanguage')}
+                            </h2>
+
+                            <div className="space-y-3 max-w-xs mx-auto">
+                                {Object.entries(langs).map(([code, lang]) => (
+                                    <button
+                                        key={code}
+                                        onClick={() => selectLanguage(code)}
+                                        className={`w-full py-4 px-6 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 transition transform hover:scale-[1.02] active:scale-[0.98] ${
+                                            currentLang === code
+                                                ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg'
+                                                : 'bg-white border-2 border-gray-200 text-gray-700 hover:border-green-400'
+                                        }`}
+                                    >
+                                        <span className="text-3xl">{lang.flag}</span>
+                                        <span>{lang.name}</span>
+                                        {currentLang === code && <span className="ml-auto">✓</span>}
+                                    </button>
+                                ))}
+                            </div>
+
+                            {localStorage.getItem('agrolinguo_lang_selected') && (
+                                <button
+                                    onClick={() => setShowLangSelect(false)}
+                                    className="mt-6 text-gray-500 underline"
+                                >
+                                    {t('backToHome')}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
             // Header komponenta
-            const Header = () => (
-                <div className="bg-white shadow-md p-4 flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                        <span className="text-2xl">🌿</span>
-                        <span className="font-bold text-green-700">AgroLinguo</span>
+            const Header = () => {
+                const langInfo = window.AVAILABLE_LANGS?.[currentLang] || { flag: '🌐', name: 'Language' };
+                return (
+                    <div className="bg-white shadow-md p-4 flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                            <span className="text-2xl">🌿</span>
+                            <span className="font-bold text-green-700">AgroLinguo</span>
+                            <button
+                                onClick={changeLanguage}
+                                className="ml-2 flex items-center gap-1 bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded-full text-sm transition"
+                                title="Change Language"
+                            >
+                                <span>{langInfo.flag}</span>
+                            </button>
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1 bg-red-100 px-3 py-1 rounded-full">
+                                <span>❤️</span>
+                                <span className="font-bold text-red-600">{hearts}</span>
+                            </div>
+                            <div className="flex items-center gap-1 bg-orange-100 px-3 py-1 rounded-full">
+                                <span>🔥</span>
+                                <span className="font-bold text-orange-600">{streak}</span>
+                            </div>
+                            <div className="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full">
+                                <span>⭐</span>
+                                <span className="font-bold text-yellow-600">{totalXp} XP</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-1 bg-red-100 px-3 py-1 rounded-full">
-                            <span>❤️</span>
-                            <span className="font-bold text-red-600">{hearts}</span>
-                        </div>
-                        <div className="flex items-center gap-1 bg-orange-100 px-3 py-1 rounded-full">
-                            <span>🔥</span>
-                            <span className="font-bold text-orange-600">{streak}</span>
-                        </div>
-                        <div className="flex items-center gap-1 bg-yellow-100 px-3 py-1 rounded-full">
-                            <span>⭐</span>
-                            <span className="font-bold text-yellow-600">{totalXp} XP</span>
-                        </div>
-                    </div>
-                </div>
-            );
+                );
+            };
 
             // === NEURAL PANEL COMPONENT ===
             const NeuralPanel = ({ compact = false }) => {
@@ -553,28 +755,28 @@
                             className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'home' ? 'text-green-600' : 'text-gray-400'}`}
                         >
                             <span className="text-2xl">🏠</span>
-                            <span className="text-xs font-bold mt-1">Home</span>
+                            <span className="text-xs font-bold mt-1">{t('home')}</span>
                         </button>
                         <button
                             onClick={() => { setActiveTab('learn'); setScreen('home'); }}
                             className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'learn' ? 'text-green-600' : 'text-gray-400'}`}
                         >
                             <span className="text-2xl">📚</span>
-                            <span className="text-xs font-bold mt-1">Learn</span>
+                            <span className="text-xs font-bold mt-1">{t('learn')}</span>
                         </button>
                         <button
                             onClick={() => { setActiveTab('skills'); setScreen('home'); }}
                             className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'skills' ? 'text-purple-600' : 'text-gray-400'}`}
                         >
                             <span className="text-2xl">🧠</span>
-                            <span className="text-xs font-bold mt-1">Skills</span>
+                            <span className="text-xs font-bold mt-1">{t('skills')}</span>
                         </button>
                         <button
                             onClick={() => { setActiveTab('profile'); setScreen('home'); }}
                             className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'profile' ? 'text-green-600' : 'text-gray-400'}`}
                         >
                             <span className="text-2xl">👤</span>
-                            <span className="text-xs font-bold mt-1">Profile</span>
+                            <span className="text-xs font-bold mt-1">{t('profile')}</span>
                         </button>
                     </div>
                 </div>
@@ -661,7 +863,7 @@
                                     ) : (state.strongSkills || []).slice(0, 5).map((s, i) => (
                                         <div key={i} className="flex items-center justify-between bg-green-50 rounded-lg p-3">
                                             <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
-                                            <span className="text-green-600 font-bold">{(s.mastery * 100).toFixed(0)}%</span>
+                                            <span className="text-green-600 font-bold">{((s.mastery || 0) * 100).toFixed(0)}%</span>
                                         </div>
                                     ))}
                                 </div>
@@ -680,7 +882,7 @@
                                     ) : (state.weakSkills || []).slice(0, 5).map((s, i) => (
                                         <div key={i} className="flex items-center justify-between bg-orange-50 rounded-lg p-3">
                                             <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
-                                            <span className="text-orange-600 font-bold">{(s.mastery * 100).toFixed(0)}%</span>
+                                            <span className="text-orange-600 font-bold">{((s.mastery || 0) * 100).toFixed(0)}%</span>
                                         </div>
                                     ))}
                                 </div>
@@ -728,8 +930,8 @@
                                     </div>
                                 </div>
                                 <div className="flex-1">
-                                    <div className="font-bold text-xl">Farmer</div>
-                                    <div className="text-gray-500">Level {playerLevel}</div>
+                                    <div className="font-bold text-xl">{t('farmer')}</div>
+                                    <div className="text-gray-500">{t('level')} {playerLevel}</div>
                                 </div>
                             </div>
 
@@ -737,15 +939,15 @@
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div className="bg-yellow-50 rounded-xl p-3">
                                     <div className="text-2xl font-bold text-yellow-600">{totalXp}</div>
-                                    <div className="text-xs text-gray-500">Total XP</div>
+                                    <div className="text-xs text-gray-500">{t('totalXp')}</div>
                                 </div>
                                 <div className="bg-orange-50 rounded-xl p-3">
                                     <div className="text-2xl font-bold text-orange-600">{streak}</div>
-                                    <div className="text-xs text-gray-500">Streak 🔥</div>
+                                    <div className="text-xs text-gray-500">{t('streak')} 🔥</div>
                                 </div>
                                 <div className="bg-green-50 rounded-xl p-3">
                                     <div className="text-2xl font-bold text-green-600">{Object.keys(levelProgress).length}</div>
-                                    <div className="text-xs text-gray-500">Completed</div>
+                                    <div className="text-xs text-gray-500">{t('completed')}</div>
                                 </div>
                             </div>
                         </div>
@@ -753,7 +955,7 @@
                         {/* XP Progress */}
                         <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
                             <div className="flex justify-between items-center mb-2">
-                                <span className="font-bold">Level Progress</span>
+                                <span className="font-bold">{t('levelProgress')}</span>
                                 <span className="text-sm text-gray-500">{totalXp % 100}/100 XP</span>
                             </div>
                             <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
@@ -768,12 +970,51 @@
                         {/* Daily Goal */}
                         <div className="bg-white rounded-2xl p-4 shadow-lg">
                             <div className="flex justify-between items-center mb-2">
-                                <span className="font-bold">Daily Goal</span>
+                                <span className="font-bold">{t('dailyGoal')}</span>
                                 <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
                             </div>
                             <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
                                 <div className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all"
                                     style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}} />
+                            </div>
+                        </div>
+
+                        {/* Download / Install Section */}
+                        <div className="bg-white rounded-2xl p-4 shadow-lg mt-4">
+                            <h3 className="font-bold text-lg mb-3">📱 {t('downloadApp')}</h3>
+                            <div className="space-y-3">
+                                <a
+                                    href="agrolinguo-offline.zip"
+                                    download="AgroLinguo.zip"
+                                    className="flex items-center gap-3 p-3 bg-green-50 rounded-xl hover:bg-green-100 transition"
+                                >
+                                    <span className="text-2xl">📥</span>
+                                    <div>
+                                        <div className="font-bold text-green-700">{t('downloadApp')}</div>
+                                        <div className="text-xs text-gray-500">{t('downloadDesc')}</div>
+                                    </div>
+                                </a>
+                                <button
+                                    onClick={() => {
+                                        if (window.deferredPrompt) {
+                                            window.deferredPrompt.prompt();
+                                            window.deferredPrompt.userChoice.then(choice => {
+                                                window.deferredPrompt = null;
+                                            });
+                                        } else {
+                                            alert(currentLang === 'sw'
+                                                ? 'Tumia menyu ya kivinjari kuongeza kwenye skrini ya nyumbani'
+                                                : 'Use browser menu to add to home screen');
+                                        }
+                                    }}
+                                    className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition w-full text-left"
+                                >
+                                    <span className="text-2xl">📲</span>
+                                    <div>
+                                        <div className="font-bold text-blue-700">{t('installApp')}</div>
+                                        <div className="text-xs text-gray-500">{t('installDesc')}</div>
+                                    </div>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -812,8 +1053,8 @@
                                         </div>
                                     </div>
                                     <div className="flex-1">
-                                        <div className="font-bold text-lg">Farmer</div>
-                                        <div className="text-sm text-gray-500">Level {playerLevel}</div>
+                                        <div className="font-bold text-lg">{t('farmer')}</div>
+                                        <div className="text-sm text-gray-500">{t('level')} {playerLevel}</div>
                                         <div className="mt-1 bg-gray-200 rounded-full h-2 overflow-hidden">
                                             <div
                                                 className="bg-gradient-to-r from-green-400 to-green-600 h-full transition-all duration-500"
@@ -828,7 +1069,7 @@
                             {/* Daily goal */}
                             <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
                                 <div className="flex justify-between items-center mb-2">
-                                    <span className="font-bold">Daily Goal</span>
+                                    <span className="font-bold">{t('dailyGoal')}</span>
                                     <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
                                 </div>
                                 <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
@@ -841,7 +1082,7 @@
 
                             {/* Modules - Duolingo style big icons with progress */}
                             <div className="space-y-4">
-                                <h2 className="font-bold text-xl text-gray-800">Courses</h2>
+                                <h2 className="font-bold text-xl text-gray-800">{t('courses')}</h2>
                                 {modules.map(module => {
                                     // Calculate progress for this module
                                     const completedLevels = Array.from({length: module.levels}, (_, i) => {
@@ -872,13 +1113,13 @@
                                                     )}
                                                 </div>
                                                 <div className="flex-1 text-white">
-                                                    <div className="font-bold text-xl">{module.name}</div>
-                                                    <div className="text-sm opacity-90 mt-1">{module.description}</div>
+                                                    <div className="font-bold text-xl">{lt(module.name)}</div>
+                                                    <div className="text-sm opacity-90 mt-1">{lt(module.description)}</div>
 
                                                     {/* Progress bar */}
                                                     <div className="mt-3">
                                                         <div className="flex justify-between text-xs mb-1">
-                                                            <span className="opacity-80">{completedLevels}/{module.levels} levels</span>
+                                                            <span className="opacity-80">{completedLevels}/{module.levels} {t('levels')}</span>
                                                             <span className="flex items-center gap-1">
                                                                 <span className="text-yellow-300">⭐</span>
                                                                 <span>{totalStars}/{module.levels * 3}</span>
@@ -942,8 +1183,8 @@
                                     )}
                                 </div>
                                 <div className="text-white flex-1">
-                                    <div className="font-bold text-2xl">{module.name}</div>
-                                    <div className="text-sm opacity-80">{module.description}</div>
+                                    <div className="font-bold text-2xl">{lt(module.name)}</div>
+                                    <div className="text-sm opacity-80">{lt(module.description)}</div>
                                 </div>
                             </div>
 
@@ -1128,7 +1369,7 @@
                                     </div>
                                     <div className="flex-1">
                                         <div className={`feedback-title font-bold text-2xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                                            {isCorrect ? 'Excellent!' : 'Not quite'}
+                                            {isCorrect ? t('excellent') : t('notQuite')}
                                         </div>
                                         <div className="feedback-text text-base text-gray-700 mt-1">{question.explanation}</div>
                                     </div>
@@ -1141,7 +1382,7 @@
                                             : 'bg-red-500 shadow-[0_5px_0_#dc2626]'
                                     }`}
                                 >
-                                    {currentQuestion + 1 >= questions.length ? '🏆 Finish' : '→ Continue'}
+                                    {currentQuestion + 1 >= questions.length ? `🏆 ${t('finish')}` : `→ ${t('continue')}`}
                                 </button>
                             </div>
                         )}
@@ -1209,7 +1450,7 @@
                             </div>
 
                             <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                                {stars >= 2 ? 'Excellent!' : stars === 1 ? 'Good job!' : 'Try again!'}
+                                {stars >= 2 ? t('excellent') : stars === 1 ? t('goodJob') : t('tryAgain')}
                             </h2>
 
                             <div className="flex justify-center gap-4 mb-6">
@@ -1228,7 +1469,7 @@
                                 <div className="grid grid-cols-2 gap-8">
                                     <div className="text-center">
                                         <div className="text-4xl font-bold text-green-600">{score}/{questions.length}</div>
-                                        <div className="text-sm text-gray-500 mt-1">Correct</div>
+                                        <div className="text-sm text-gray-500 mt-1">{t('correct')}</div>
                                     </div>
                                     <div className="text-center">
                                         <div className="text-4xl font-bold text-yellow-600">+{xp + (stars * 5)}</div>
@@ -1244,13 +1485,13 @@
                                 onClick={goToNextLevel}
                                 className={`w-full py-5 rounded-2xl font-bold text-xl text-white shadow-lg mb-3 bg-gradient-to-r ${module.color}`}
                             >
-                                {isWin ? (selectedLevel < module.levels ? '🚀 Next Level' : '🔄 Play Again') : '🔄 Try Again'}
+                                {isWin ? (selectedLevel < module.levels ? `🚀 ${t('nextLevel')}` : `🔄 ${t('playAgain')}`) : `🔄 ${t('tryAgain')}`}
                             </button>
                             <button
                                 onClick={() => setScreen('levels')}
                                 className="w-full py-3 rounded-xl font-bold text-gray-600 bg-gray-100"
                             >
-                                Back to Overview
+                                {t('backToOverview')}
                             </button>
                         </div>
                     </div>
@@ -1262,21 +1503,21 @@
                 <div className="h-screen bg-gradient-to-b from-red-50 to-red-100 flex flex-col items-center justify-center p-4">
                     <div className="bg-white rounded-3xl p-8 shadow-2xl text-center max-w-sm w-full bounce-in">
                         <div className="text-6xl mb-4">💔</div>
-                        <h2 className="text-2xl font-bold text-gray-800 mb-2">Out of hearts!</h2>
-                        <p className="text-gray-500 mb-6">Don't give up, try again!</p>
+                        <h2 className="text-2xl font-bold text-gray-800 mb-2">{t('outOfHearts')}</h2>
+                        <p className="text-gray-500 mb-6">{t('dontGiveUp')}</p>
 
                         <div className="space-y-3">
                             <button
                                 onClick={() => { refillHearts(); startLevel(selectedModule, selectedLevel); }}
                                 className="w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg"
                             >
-                                ❤️ Try Again
+                                ❤️ {t('tryAgain')}
                             </button>
                             <button
                                 onClick={() => setScreen('home')}
                                 className="w-full bg-gray-200 text-gray-700 py-3 rounded-xl font-bold"
                             >
-                                Back Home
+                                {t('backHome')}
                             </button>
                         </div>
                     </div>
@@ -1284,6 +1525,11 @@
             );
 
             // Render podle aktuální obrazovky
+            // First show language selector if not selected yet
+            if (showLangSelect) {
+                return <LanguageSelectScreen />;
+            }
+
             switch (screen) {
                 case 'home': return <HomeScreen />;
                 case 'levels': return <LevelsScreen />;
@@ -1295,6 +1541,17 @@
         }
 
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('SW registered:', reg.scope))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
     </script>
 </body>
 </html>
