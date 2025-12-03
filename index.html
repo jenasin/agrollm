@@ -473,17 +473,9 @@
                 };
             });
 
-            // === 30 MINUTE SESSION TIMER ===
-            const [sessionStartTime] = useState(() => Date.now());
-            const [elapsedSeconds, setElapsedSeconds] = useState(0);
-            const SESSION_DURATION = 30 * 60; // 30 minutes in seconds
-
-            useEffect(() => {
-                const timer = setInterval(() => {
-                    setElapsedSeconds(Math.floor((Date.now() - sessionStartTime) / 1000));
-                }, 1000);
-                return () => clearInterval(timer);
-            }, [sessionStartTime]);
+            // === 30 MINUTE SESSION TIMER (isolated component) ===
+            const SESSION_DURATION = 30 * 60;
+            const sessionStartTimeRef = React.useRef(Date.now());
 
             const formatTimer = (seconds) => {
                 const mins = Math.floor(seconds / 60);
@@ -491,34 +483,84 @@
                 return `${mins}:${secs.toString().padStart(2, '0')}`;
             };
 
-            const remainingSeconds = Math.max(0, SESSION_DURATION - elapsedSeconds);
-            const isTimeUp = remainingSeconds === 0;
+            // Self-contained Timer component - doesn't cause parent re-renders
+            const SessionTimer = React.memo(() => {
+                const [elapsed, setElapsed] = useState(0);
+
+                useEffect(() => {
+                    const timer = setInterval(() => {
+                        setElapsed(Math.floor((Date.now() - sessionStartTimeRef.current) / 1000));
+                    }, 1000);
+                    return () => clearInterval(timer);
+                }, []);
+
+                const remaining = Math.max(0, SESSION_DURATION - elapsed);
+                const timeUp = remaining === 0;
+
+                return (
+                    <div className={`rounded-2xl p-3 shadow-lg mb-3 text-white ${timeUp ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">⏱️</span>
+                                <div>
+                                    <div className="font-bold text-sm">{timeUp ? '⏰ TIME UP!' : 'Session Time'}</div>
+                                    <div className="text-[10px] opacity-80">30 min research</div>
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-3xl font-bold font-mono">{formatTimer(elapsed)}</div>
+                                <div className="text-[10px] opacity-80">{timeUp ? 'completed' : `${formatTimer(remaining)} left`}</div>
+                            </div>
+                        </div>
+                        <div className="mt-2 bg-white/20 rounded-full h-2 overflow-hidden">
+                            <div
+                                className="bg-white h-full transition-all duration-1000"
+                                style={{width: `${Math.min((elapsed / SESSION_DURATION) * 100, 100)}%`}}
+                            />
+                        </div>
+                    </div>
+                );
+            });
+
+            // Mini timer for quiz header - isolated component
+            const MiniTimer = React.memo(() => {
+                const [elapsed, setElapsed] = useState(0);
+                useEffect(() => {
+                    const timer = setInterval(() => {
+                        setElapsed(Math.floor((Date.now() - sessionStartTimeRef.current) / 1000));
+                    }, 1000);
+                    return () => clearInterval(timer);
+                }, []);
+                const timeUp = elapsed >= SESSION_DURATION;
+                return (
+                    <div className={`flex items-center justify-center gap-2 mb-2 py-1 px-3 rounded-full text-sm font-bold ${timeUp ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
+                        <span>⏱️</span>
+                        <span className="font-mono">{formatTimer(elapsed)}</span>
+                        <span className="text-xs opacity-70">/ 30:00</span>
+                    </div>
+                );
+            });
+
+            const isTimeUp = false; // Checked only in timer components
 
             // Save research stats when they change
             useEffect(() => {
                 localStorage.setItem('agrolinguo_research_stats', JSON.stringify(researchStats));
             }, [researchStats]);
 
-            // Track session time
+            // Track session time - only on unmount, NO interval
             useEffect(() => {
                 const sessionStart = Date.now();
-                const interval = setInterval(() => {
-                    setResearchStats(prev => ({
-                        ...prev,
-                        totalSessionTimeMs: prev.totalSessionTimeMs + 1000
-                    }));
-                }, 1000);
-
                 return () => {
-                    clearInterval(interval);
-                    // Save session on unmount
                     const sessionEnd = Date.now();
+                    const duration = sessionEnd - sessionStart;
                     setResearchStats(prev => ({
                         ...prev,
+                        totalSessionTimeMs: prev.totalSessionTimeMs + duration,
                         sessions: [...prev.sessions, {
                             start: sessionStart,
                             end: sessionEnd,
-                            duration: sessionEnd - sessionStart
+                            duration: duration
                         }]
                     }));
                 };
@@ -1582,29 +1624,8 @@
 
                         {/* Profile and level */}
                         <div className="p-4">
-                            {/* SESSION TIMER - 30 min research */}
-                            <div className={`rounded-2xl p-3 shadow-lg mb-3 text-white ${isTimeUp ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-2xl">⏱️</span>
-                                        <div>
-                                            <div className="font-bold text-sm">{isTimeUp ? '⏰ TIME UP!' : 'Session Time'}</div>
-                                            <div className="text-[10px] opacity-80">30 min research</div>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <div className="text-3xl font-bold font-mono">{formatTimer(elapsedSeconds)}</div>
-                                        <div className="text-[10px] opacity-80">{isTimeUp ? 'completed' : `${formatTimer(remainingSeconds)} left`}</div>
-                                    </div>
-                                </div>
-                                {/* Progress bar */}
-                                <div className="mt-2 bg-white/20 rounded-full h-2 overflow-hidden">
-                                    <div
-                                        className="bg-white h-full transition-all duration-1000"
-                                        style={{width: `${Math.min((elapsedSeconds / SESSION_DURATION) * 100, 100)}%`}}
-                                    />
-                                </div>
-                            </div>
+                            {/* SESSION TIMER - isolated component, no parent re-renders */}
+                            <SessionTimer />
 
                             {/* LIVE STATS PANEL - visible for research photos */}
                             <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-3 shadow-lg mb-4 text-white" onClick={() => setActiveTab('stats')}>
@@ -1885,12 +1906,8 @@
                     <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col overflow-hidden relative">
                         {/* Header s progress barem */}
                         <div className="bg-white shadow-sm px-4 py-2 flex-shrink-0">
-                            {/* Timer row */}
-                            <div className={`flex items-center justify-center gap-2 mb-2 py-1 px-3 rounded-full text-sm font-bold ${isTimeUp ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
-                                <span>⏱️</span>
-                                <span className="font-mono">{formatTimer(elapsedSeconds)}</span>
-                                <span className="text-xs opacity-70">/ 30:00</span>
-                            </div>
+                            {/* Timer row - isolated component */}
+                            <MiniTimer />
                             <div className="flex items-center justify-between mb-2">
                                 <button onClick={() => setScreen('levels')} className="close-btn text-2xl p-2 -ml-2">✕</button>
                                 {/* Mini stats for research - visible during quiz */}
@@ -2138,17 +2155,11 @@
                                     <span>Module: {module.id} | Level: {selectedLevel}</span>
                                     <span>Lang: {currentLang.toUpperCase()}</span>
                                 </div>
-                                {/* Session time */}
-                                <div className="mt-2 pt-2 border-t border-white/20 flex items-center justify-center gap-2">
-                                    <span>⏱️</span>
-                                    <span className="font-mono font-bold text-lg">{formatTimer(elapsedSeconds)}</span>
-                                    <span className="text-xs opacity-70">/ 30:00</span>
-                                </div>
                             </div>
                         </div>
 
                         {/* Buttons fixed at bottom */}
-                        <div className="p-4 bg-white border-t shadow-lg slide-up">
+                        <div className="p-4 bg-white border-t shadow-lg">
                             <button
                                 onClick={goToNextLevel}
                                 className={`w-full py-5 rounded-2xl font-bold text-xl text-white shadow-lg mb-3 bg-gradient-to-r ${module.color}`}
