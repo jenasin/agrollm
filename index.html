@@ -848,7 +848,7 @@
                     return (
                         <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col items-center justify-center p-4">
                             <div className="text-center">
-                                <div className="text-8xl mb-4 pulse">🌱</div>
+                                <div className="text-8xl mb-4">🌱</div>
                                 <h1 className="text-2xl font-bold text-green-700">Loading...</h1>
                             </div>
                         </div>
@@ -1935,17 +1935,8 @@
                             <div className={`feedback-panel fixed bottom-0 left-0 right-0 px-5 py-6 rounded-t-3xl slide-up ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
                                  style={{boxShadow: '0 -10px 40px rgba(0,0,0,0.2)'}}>
 
-                                {/* Hvězdičky při správné odpovědi */}
-                                {isCorrect && (
-                                    <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 flex gap-3">
-                                        <span className="text-3xl star-burst" style={{animationDelay: '0s'}}>⭐</span>
-                                        <span className="text-4xl star-burst" style={{animationDelay: '0.1s'}}>🌟</span>
-                                        <span className="text-3xl star-burst" style={{animationDelay: '0.2s'}}>⭐</span>
-                                    </div>
-                                )}
-
                                 <div className="flex items-start gap-4 mb-5">
-                                    <div className={`feedback-emoji text-5xl ${isCorrect ? 'bounce-in' : 'shake'}`}>
+                                    <div className="feedback-emoji text-5xl">
                                         {isCorrect ? '🎉' : '😢'}
                                     </div>
                                     <div className="flex-1">
