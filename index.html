@@ -63,10 +63,32 @@
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
         }
-        .slide-up { animation: slideUp 0.3s ease-out; }
+        .slide-up {
+            animation: slideUp 0.3s ease-out forwards;
+            will-change: transform, opacity;
+        }
         @keyframes slideUp {
             from { transform: translateY(100%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+        }
+        /* Stable feedback panel - uses transform instead of animation */
+        .feedback-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            min-height: 180px;
+            transition: transform 0.3s ease-out;
+            will-change: transform;
+            z-index: 50;
+        }
+        .feedback-panel.hidden {
+            transform: translateY(100%);
+            pointer-events: none;
+        }
+        .feedback-panel.visible {
+            transform: translateY(0);
+            pointer-events: auto;
         }
         .glow { box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); }
 
@@ -1156,12 +1178,16 @@
                                         <div className="text-gray-400 text-center py-4">
                                             Answer questions to discover your strengths!
                                         </div>
-                                    ) : (state.strongSkills || []).slice(0, 5).map((s, i) => (
-                                        <div key={i} className="flex items-center justify-between bg-green-50 rounded-lg p-3">
-                                            <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
-                                            <span className="text-green-600 font-bold">{((s.mastery || 0) * 100).toFixed(0)}%</span>
-                                        </div>
-                                    ))}
+                                    ) : (state.strongSkills || []).slice(0, 5).map((s, i) => {
+                                        const masteryValue = Number(s.mastery);
+                                        const masteryPercent = isNaN(masteryValue) ? 0 : Math.round(masteryValue * 100);
+                                        return (
+                                            <div key={i} className="flex items-center justify-between bg-green-50 rounded-lg p-3">
+                                                <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
+                                                <span className="text-green-600 font-bold">{masteryPercent}%</span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -1175,12 +1201,16 @@
                                         <div className="text-gray-400 text-center py-4">
                                             Keep learning to see your improvement areas!
                                         </div>
-                                    ) : (state.weakSkills || []).slice(0, 5).map((s, i) => (
-                                        <div key={i} className="flex items-center justify-between bg-orange-50 rounded-lg p-3">
-                                            <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
-                                            <span className="text-orange-600 font-bold">{((s.mastery || 0) * 100).toFixed(0)}%</span>
-                                        </div>
-                                    ))}
+                                    ) : (state.weakSkills || []).slice(0, 5).map((s, i) => {
+                                        const masteryValue = Number(s.mastery);
+                                        const masteryPercent = isNaN(masteryValue) ? 0 : Math.round(masteryValue * 100);
+                                        return (
+                                            <div key={i} className="flex items-center justify-between bg-orange-50 rounded-lg p-3">
+                                                <span className="font-medium">{window.NeuralEngine?.getSkillName(s.skillId)}</span>
+                                                <span className="text-orange-600 font-bold">{masteryPercent}%</span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -1930,34 +1960,39 @@
                             </div>
                         </div>
 
-                        {/* Spodní feedback panel */}
-                        {showAnswer && (
-                            <div className={`feedback-panel fixed bottom-0 left-0 right-0 px-5 py-6 rounded-t-3xl slide-up ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
-                                 style={{boxShadow: '0 -10px 40px rgba(0,0,0,0.2)'}}>
-
-                                <div className="flex items-start gap-4 mb-5">
-                                    <div className="feedback-emoji text-5xl">
-                                        {isCorrect ? '🎉' : '😢'}
+                        {/* Spodní feedback panel - always mounted, uses CSS transition */}
+                        <div
+                            className={`feedback-panel px-5 py-6 rounded-t-3xl ${showAnswer ? 'visible' : 'hidden'} ${showAnswer && isCorrect ? 'bg-green-100' : 'bg-red-100'}`}
+                            style={{boxShadow: showAnswer ? '0 -10px 40px rgba(0,0,0,0.2)' : 'none'}}
+                        >
+                            <div className="flex items-start gap-4 mb-5">
+                                <div className="feedback-emoji text-5xl">
+                                    {showAnswer ? (isCorrect ? '🎉' : '😢') : '🎉'}
+                                </div>
+                                <div className="flex-1">
+                                    <div className={`feedback-title font-bold text-2xl ${showAnswer && isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                                        {showAnswer ? (isCorrect ? t('excellent') : t('notQuite')) : ' '}
                                     </div>
-                                    <div className="flex-1">
-                                        <div className={`feedback-title font-bold text-2xl ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                                            {isCorrect ? t('excellent') : t('notQuite')}
-                                        </div>
-                                        <div className="feedback-text text-base text-gray-700 mt-1">{question.explanation}</div>
+                                    <div className="feedback-text text-base text-gray-700 mt-1">
+                                        {showAnswer && question ? question.explanation : ' '}
                                     </div>
                                 </div>
-                                <button
-                                    onClick={nextQuestion}
-                                    className={`continue-btn btn-answer w-full min-h-[56px] py-4 rounded-2xl font-bold text-xl text-white ${
-                                        isCorrect
-                                            ? 'bg-green-500 shadow-[0_5px_0_#16a34a]'
-                                            : 'bg-red-500 shadow-[0_5px_0_#dc2626]'
-                                    }`}
-                                >
-                                    {currentQuestion + 1 >= questions.length ? `🏆 ${t('finish')}` : `→ ${t('continue')}`}
-                                </button>
                             </div>
-                        )}
+                            <button
+                                onClick={showAnswer ? nextQuestion : undefined}
+                                disabled={!showAnswer}
+                                className={`continue-btn btn-answer w-full min-h-[56px] py-4 rounded-2xl font-bold text-xl text-white ${
+                                    !showAnswer || isCorrect
+                                        ? 'bg-green-500 shadow-[0_5px_0_#16a34a]'
+                                        : 'bg-red-500 shadow-[0_5px_0_#dc2626]'
+                                }`}
+                            >
+                                {showAnswer
+                                    ? (currentQuestion + 1 >= questions.length ? `🏆 ${t('finish')}` : `→ ${t('continue')}`)
+                                    : `→ ${t('continue')}`
+                                }
+                            </button>
+                        </div>
                     </div>
                 );
             };
