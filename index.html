@@ -395,8 +395,61 @@
                     downloadApp: 'Pakua Programu',
                     installApp: 'Weka kwenye Simu',
                     downloadDesc: 'Hifadhi kwa matumizi bila mtandao',
-                    installDesc: 'Ongeza kwenye skrini ya nyumbani'
+                    installDesc: 'Ongeza kwenye skrini ya nyumbani',
+                    statistics: 'Takwimu',
+                    exportData: 'Hamisha Data',
+                    exportJson: 'Hamisha JSON',
+                    exportCsv: 'Hamisha CSV',
+                    totalQuestions: 'Maswali Yote',
+                    correctAnswers: 'Majibu Sahihi',
+                    incorrectAnswers: 'Majibu Yasiyo Sahihi',
+                    accuracy: 'Usahihi',
+                    avgResponseTime: 'Muda wa Wastani',
+                    totalTime: 'Muda Jumla',
+                    sessions: 'Vipindi',
+                    moduleStats: 'Takwimu za Moduli',
+                    learningCurve: 'Grafu ya Kujifunza',
+                    researchExport: 'Hamisha kwa Utafiti',
+                    resetStats: 'Futa Takwimu',
+                    confirmReset: 'Una uhakika unataka kufuta takwimu zote?',
+                    noData: 'Hakuna data bado. Anza kujifunza!',
+                    seconds: 'sekunde',
+                    minutes: 'dakika',
+                    hours: 'masaa',
+                    questionsAnswered: 'Maswali Yaliyojibiwa',
+                    performanceOverTime: 'Utendaji kwa Wakati',
+                    last7Days: 'Siku 7 Zilizopita',
+                    allTime: 'Wakati Wote'
                 }
+            };
+
+            // Extended translations for English
+            translations.en = {
+                ...translations.en,
+                statistics: 'Statistics',
+                exportData: 'Export Data',
+                exportJson: 'Export JSON',
+                exportCsv: 'Export CSV',
+                totalQuestions: 'Total Questions',
+                correctAnswers: 'Correct Answers',
+                incorrectAnswers: 'Incorrect Answers',
+                accuracy: 'Accuracy',
+                avgResponseTime: 'Avg Response Time',
+                totalTime: 'Total Time',
+                sessions: 'Sessions',
+                moduleStats: 'Module Statistics',
+                learningCurve: 'Learning Curve',
+                researchExport: 'Research Export',
+                resetStats: 'Reset Statistics',
+                confirmReset: 'Are you sure you want to reset all statistics?',
+                noData: 'No data yet. Start learning!',
+                seconds: 'seconds',
+                minutes: 'minutes',
+                hours: 'hours',
+                questionsAnswered: 'Questions Answered',
+                performanceOverTime: 'Performance Over Time',
+                last7Days: 'Last 7 Days',
+                allTime: 'All Time'
             };
 
             // Translation function
@@ -415,6 +468,214 @@
 
             // === TAB NAVIGATION STATE ===
             const [activeTab, setActiveTab] = useState('home');
+
+            // === RESEARCH STATISTICS STATE ===
+            const [researchStats, setResearchStats] = useState(() => {
+                const saved = localStorage.getItem('agrolinguo_research_stats');
+                if (saved) {
+                    try {
+                        return JSON.parse(saved);
+                    } catch (e) {
+                        console.error('Failed to parse research stats:', e);
+                    }
+                }
+                return {
+                    startDate: Date.now(),
+                    totalQuestions: 0,
+                    correctAnswers: 0,
+                    incorrectAnswers: 0,
+                    totalResponseTimeMs: 0,
+                    totalSessionTimeMs: 0,
+                    sessions: [],
+                    answerHistory: [], // detailed log of all answers
+                    moduleStats: {}, // per-module statistics
+                    dailyStats: {}, // per-day statistics
+                    currentSessionStart: Date.now()
+                };
+            });
+
+            // === 30 MINUTE SESSION TIMER ===
+            const [sessionStartTime] = useState(() => Date.now());
+            const [elapsedSeconds, setElapsedSeconds] = useState(0);
+            const SESSION_DURATION = 30 * 60; // 30 minutes in seconds
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setElapsedSeconds(Math.floor((Date.now() - sessionStartTime) / 1000));
+                }, 1000);
+                return () => clearInterval(timer);
+            }, [sessionStartTime]);
+
+            const formatTimer = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            };
+
+            const remainingSeconds = Math.max(0, SESSION_DURATION - elapsedSeconds);
+            const isTimeUp = remainingSeconds === 0;
+
+            // Save research stats when they change
+            useEffect(() => {
+                localStorage.setItem('agrolinguo_research_stats', JSON.stringify(researchStats));
+            }, [researchStats]);
+
+            // Track session time
+            useEffect(() => {
+                const sessionStart = Date.now();
+                const interval = setInterval(() => {
+                    setResearchStats(prev => ({
+                        ...prev,
+                        totalSessionTimeMs: prev.totalSessionTimeMs + 1000
+                    }));
+                }, 1000);
+
+                return () => {
+                    clearInterval(interval);
+                    // Save session on unmount
+                    const sessionEnd = Date.now();
+                    setResearchStats(prev => ({
+                        ...prev,
+                        sessions: [...prev.sessions, {
+                            start: sessionStart,
+                            end: sessionEnd,
+                            duration: sessionEnd - sessionStart
+                        }]
+                    }));
+                };
+            }, []);
+
+            // Function to record answer for research
+            const recordAnswerForResearch = (moduleId, levelNum, questionIndex, isCorrect, responseTimeMs, questionText) => {
+                const now = Date.now();
+                const today = new Date().toISOString().split('T')[0];
+
+                setResearchStats(prev => {
+                    const moduleKey = `module_${moduleId}`;
+                    const moduleStats = prev.moduleStats[moduleKey] || {
+                        total: 0, correct: 0, incorrect: 0, totalTimeMs: 0, levels: {}
+                    };
+
+                    const levelKey = `level_${levelNum}`;
+                    const levelStats = moduleStats.levels[levelKey] || {
+                        total: 0, correct: 0, incorrect: 0, totalTimeMs: 0
+                    };
+
+                    const dailyStats = prev.dailyStats[today] || {
+                        total: 0, correct: 0, incorrect: 0, totalTimeMs: 0
+                    };
+
+                    return {
+                        ...prev,
+                        totalQuestions: prev.totalQuestions + 1,
+                        correctAnswers: prev.correctAnswers + (isCorrect ? 1 : 0),
+                        incorrectAnswers: prev.incorrectAnswers + (isCorrect ? 0 : 1),
+                        totalResponseTimeMs: prev.totalResponseTimeMs + responseTimeMs,
+                        answerHistory: [...prev.answerHistory, {
+                            timestamp: now,
+                            moduleId,
+                            levelNum,
+                            questionIndex,
+                            isCorrect,
+                            responseTimeMs,
+                            questionText: questionText?.substring(0, 100) // truncate for storage
+                        }].slice(-1000), // Keep last 1000 answers
+                        moduleStats: {
+                            ...prev.moduleStats,
+                            [moduleKey]: {
+                                ...moduleStats,
+                                total: moduleStats.total + 1,
+                                correct: moduleStats.correct + (isCorrect ? 1 : 0),
+                                incorrect: moduleStats.incorrect + (isCorrect ? 0 : 1),
+                                totalTimeMs: moduleStats.totalTimeMs + responseTimeMs,
+                                levels: {
+                                    ...moduleStats.levels,
+                                    [levelKey]: {
+                                        ...levelStats,
+                                        total: levelStats.total + 1,
+                                        correct: levelStats.correct + (isCorrect ? 1 : 0),
+                                        incorrect: levelStats.incorrect + (isCorrect ? 0 : 1),
+                                        totalTimeMs: levelStats.totalTimeMs + responseTimeMs
+                                    }
+                                }
+                            }
+                        },
+                        dailyStats: {
+                            ...prev.dailyStats,
+                            [today]: {
+                                ...dailyStats,
+                                total: dailyStats.total + 1,
+                                correct: dailyStats.correct + (isCorrect ? 1 : 0),
+                                incorrect: dailyStats.incorrect + (isCorrect ? 0 : 1),
+                                totalTimeMs: dailyStats.totalTimeMs + responseTimeMs
+                            }
+                        }
+                    };
+                });
+            };
+
+            // Export functions for research
+            const exportStatsAsJSON = () => {
+                const exportData = {
+                    ...researchStats,
+                    exportDate: new Date().toISOString(),
+                    language: currentLang,
+                    playerLevel,
+                    totalXp,
+                    streak,
+                    levelProgress,
+                    neuralState: window.NeuralEngine?.getState()
+                };
+
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `agrolinguo_research_${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            const exportStatsAsCSV = () => {
+                // Create CSV header
+                let csv = 'timestamp,date,time,moduleId,levelNum,questionIndex,isCorrect,responseTimeMs,questionText\n';
+
+                // Add each answer as a row
+                researchStats.answerHistory.forEach(answer => {
+                    const date = new Date(answer.timestamp);
+                    csv += `${answer.timestamp},${date.toISOString().split('T')[0]},${date.toTimeString().split(' ')[0]},`;
+                    csv += `${answer.moduleId},${answer.levelNum},${answer.questionIndex},`;
+                    csv += `${answer.isCorrect ? 1 : 0},${answer.responseTimeMs},"${(answer.questionText || '').replace(/"/g, '""')}"\n`;
+                });
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `agrolinguo_answers_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+            };
+
+            const resetResearchStats = () => {
+                if (window.confirm(t('confirmReset'))) {
+                    const newStats = {
+                        startDate: Date.now(),
+                        totalQuestions: 0,
+                        correctAnswers: 0,
+                        incorrectAnswers: 0,
+                        totalResponseTimeMs: 0,
+                        totalSessionTimeMs: 0,
+                        sessions: [],
+                        answerHistory: [],
+                        moduleStats: {},
+                        dailyStats: {},
+                        currentSessionStart: Date.now()
+                    };
+                    setResearchStats(newStats);
+                    localStorage.setItem('agrolinguo_research_stats', JSON.stringify(newStats));
+                }
+            };
 
             // Načíst uložená data
             useEffect(() => {
@@ -486,6 +747,16 @@
                 );
                 setNeuralState(neuralState);
                 console.log('[Neural] State:', neuralState.phase, 'Momentum:', neuralState.momentum.toFixed(2));
+
+                // === RESEARCH STATISTICS UPDATE ===
+                recordAnswerForResearch(
+                    selectedModule,
+                    selectedLevel,
+                    currentQuestion,
+                    isCorrect,
+                    responseTime,
+                    question.question
+                );
 
                 if (isCorrect) {
                     setScore(s => s + 1);
@@ -752,30 +1023,37 @@
                     <div className="flex justify-around items-center py-2">
                         <button
                             onClick={() => { setActiveTab('home'); setScreen('home'); }}
-                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'home' ? 'text-green-600' : 'text-gray-400'}`}
+                            className={`flex flex-col items-center px-3 py-2 rounded-xl transition ${activeTab === 'home' ? 'text-green-600' : 'text-gray-400'}`}
                         >
-                            <span className="text-2xl">🏠</span>
+                            <span className="text-xl">🏠</span>
                             <span className="text-xs font-bold mt-1">{t('home')}</span>
                         </button>
                         <button
                             onClick={() => { setActiveTab('learn'); setScreen('home'); }}
-                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'learn' ? 'text-green-600' : 'text-gray-400'}`}
+                            className={`flex flex-col items-center px-3 py-2 rounded-xl transition ${activeTab === 'learn' ? 'text-green-600' : 'text-gray-400'}`}
                         >
-                            <span className="text-2xl">📚</span>
+                            <span className="text-xl">📚</span>
                             <span className="text-xs font-bold mt-1">{t('learn')}</span>
                         </button>
                         <button
                             onClick={() => { setActiveTab('skills'); setScreen('home'); }}
-                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'skills' ? 'text-purple-600' : 'text-gray-400'}`}
+                            className={`flex flex-col items-center px-3 py-2 rounded-xl transition ${activeTab === 'skills' ? 'text-purple-600' : 'text-gray-400'}`}
                         >
-                            <span className="text-2xl">🧠</span>
+                            <span className="text-xl">🧠</span>
                             <span className="text-xs font-bold mt-1">{t('skills')}</span>
                         </button>
                         <button
-                            onClick={() => { setActiveTab('profile'); setScreen('home'); }}
-                            className={`flex flex-col items-center px-4 py-2 rounded-xl transition ${activeTab === 'profile' ? 'text-green-600' : 'text-gray-400'}`}
+                            onClick={() => { setActiveTab('stats'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-3 py-2 rounded-xl transition ${activeTab === 'stats' ? 'text-blue-600' : 'text-gray-400'}`}
                         >
-                            <span className="text-2xl">👤</span>
+                            <span className="text-xl">📊</span>
+                            <span className="text-xs font-bold mt-1">{t('statistics')}</span>
+                        </button>
+                        <button
+                            onClick={() => { setActiveTab('profile'); setScreen('home'); }}
+                            className={`flex flex-col items-center px-3 py-2 rounded-xl transition ${activeTab === 'profile' ? 'text-green-600' : 'text-gray-400'}`}
+                        >
+                            <span className="text-xl">👤</span>
                             <span className="text-xs font-bold mt-1">{t('profile')}</span>
                         </button>
                     </div>
@@ -914,6 +1192,212 @@
                 );
             };
 
+            // === STATISTICS SCREEN (FOR RESEARCH) ===
+            const StatisticsScreen = () => {
+                const formatTime = (ms) => {
+                    const seconds = Math.floor(ms / 1000);
+                    const minutes = Math.floor(seconds / 60);
+                    const hours = Math.floor(minutes / 60);
+
+                    if (hours > 0) {
+                        return `${hours}h ${minutes % 60}m`;
+                    } else if (minutes > 0) {
+                        return `${minutes}m ${seconds % 60}s`;
+                    } else {
+                        return `${seconds}s`;
+                    }
+                };
+
+                const accuracy = researchStats.totalQuestions > 0
+                    ? ((researchStats.correctAnswers / researchStats.totalQuestions) * 100).toFixed(1)
+                    : 0;
+
+                const avgResponseTime = researchStats.totalQuestions > 0
+                    ? Math.round(researchStats.totalResponseTimeMs / researchStats.totalQuestions)
+                    : 0;
+
+                // Get last 7 days data for chart
+                const getLast7Days = () => {
+                    const days = [];
+                    for (let i = 6; i >= 0; i--) {
+                        const date = new Date();
+                        date.setDate(date.getDate() - i);
+                        const dateStr = date.toISOString().split('T')[0];
+                        const dayStats = researchStats.dailyStats[dateStr] || { total: 0, correct: 0 };
+                        days.push({
+                            date: dateStr,
+                            day: date.toLocaleDateString(currentLang === 'sw' ? 'sw-KE' : 'en-US', { weekday: 'short' }),
+                            total: dayStats.total,
+                            correct: dayStats.correct,
+                            accuracy: dayStats.total > 0 ? (dayStats.correct / dayStats.total * 100) : 0
+                        });
+                    }
+                    return days;
+                };
+
+                const last7Days = getLast7Days();
+                const maxDaily = Math.max(...last7Days.map(d => d.total), 1);
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 pb-20">
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md p-4">
+                            <div className="flex items-center gap-2">
+                                <span className="text-2xl">📊</span>
+                                <span className="font-bold text-white text-lg">{t('statistics')}</span>
+                            </div>
+                        </div>
+
+                        <div className="p-4 space-y-4">
+                            {researchStats.totalQuestions === 0 ? (
+                                <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
+                                    <div className="text-6xl mb-4">📚</div>
+                                    <p className="text-gray-500">{t('noData')}</p>
+                                </div>
+                            ) : (
+                                <>
+                                    {/* Main Stats Grid */}
+                                    <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                            <span>📈</span> {t('allTime')}
+                                        </h3>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-blue-50 rounded-xl p-3 text-center">
+                                                <div className="text-2xl font-bold text-blue-600">{researchStats.totalQuestions}</div>
+                                                <div className="text-xs text-gray-500">{t('totalQuestions')}</div>
+                                            </div>
+                                            <div className="bg-green-50 rounded-xl p-3 text-center">
+                                                <div className="text-2xl font-bold text-green-600">{accuracy}%</div>
+                                                <div className="text-xs text-gray-500">{t('accuracy')}</div>
+                                            </div>
+                                            <div className="bg-emerald-50 rounded-xl p-3 text-center">
+                                                <div className="text-2xl font-bold text-emerald-600">{researchStats.correctAnswers}</div>
+                                                <div className="text-xs text-gray-500">{t('correctAnswers')}</div>
+                                            </div>
+                                            <div className="bg-red-50 rounded-xl p-3 text-center">
+                                                <div className="text-2xl font-bold text-red-500">{researchStats.incorrectAnswers}</div>
+                                                <div className="text-xs text-gray-500">{t('incorrectAnswers')}</div>
+                                            </div>
+                                            <div className="bg-purple-50 rounded-xl p-3 text-center">
+                                                <div className="text-2xl font-bold text-purple-600">{avgResponseTime}ms</div>
+                                                <div className="text-xs text-gray-500">{t('avgResponseTime')}</div>
+                                            </div>
+                                            <div className="bg-orange-50 rounded-xl p-3 text-center">
+                                                <div className="text-2xl font-bold text-orange-600">{formatTime(researchStats.totalSessionTimeMs)}</div>
+                                                <div className="text-xs text-gray-500">{t('totalTime')}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Last 7 Days Chart */}
+                                    <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                            <span>📅</span> {t('last7Days')}
+                                        </h3>
+                                        <div className="flex items-end justify-between h-32 gap-2">
+                                            {last7Days.map((day, i) => (
+                                                <div key={i} className="flex-1 flex flex-col items-center">
+                                                    <div className="w-full flex flex-col items-center" style={{ height: '80px' }}>
+                                                        <div
+                                                            className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all"
+                                                            style={{
+                                                                height: `${(day.total / maxDaily) * 100}%`,
+                                                                minHeight: day.total > 0 ? '4px' : '0'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 mt-1">{day.day}</div>
+                                                    <div className="text-xs font-bold text-gray-700">{day.total}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Module Stats */}
+                                    <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                            <span>📚</span> {t('moduleStats')}
+                                        </h3>
+                                        <div className="space-y-3">
+                                            {modules.map(module => {
+                                                const moduleStats = researchStats.moduleStats[`module_${module.id}`];
+                                                if (!moduleStats || moduleStats.total === 0) return null;
+
+                                                const moduleAccuracy = (moduleStats.correct / moduleStats.total * 100).toFixed(0);
+                                                return (
+                                                    <div key={module.id} className="flex items-center gap-3">
+                                                        <span className="text-2xl">{module.icon}</span>
+                                                        <div className="flex-1">
+                                                            <div className="flex justify-between items-center mb-1">
+                                                                <span className="font-medium text-sm">{lt(module.name)}</span>
+                                                                <span className="text-sm text-gray-500">{moduleStats.total} {t('questionsAnswered').toLowerCase()}</span>
+                                                            </div>
+                                                            <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                                                                <div
+                                                                    className={`bg-gradient-to-r ${module.color} h-full`}
+                                                                    style={{ width: `${moduleAccuracy}%` }}
+                                                                />
+                                                            </div>
+                                                            <div className="text-xs text-gray-400 mt-1">{moduleAccuracy}% {t('accuracy').toLowerCase()}</div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Export Section */}
+                                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-4 shadow-lg text-white">
+                                        <h3 className="font-bold mb-3 flex items-center gap-2">
+                                            <span>📤</span> {t('researchExport')}
+                                        </h3>
+                                        <p className="text-sm opacity-80 mb-4">
+                                            {currentLang === 'sw'
+                                                ? 'Hamisha data kwa uchambuzi wa kisayansi'
+                                                : 'Export data for scientific analysis'}
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <button
+                                                onClick={exportStatsAsJSON}
+                                                className="bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition"
+                                            >
+                                                <span>📋</span> {t('exportJson')}
+                                            </button>
+                                            <button
+                                                onClick={exportStatsAsCSV}
+                                                className="bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition"
+                                            >
+                                                <span>📊</span> {t('exportCsv')}
+                                            </button>
+                                        </div>
+
+                                        {/* Additional info for researchers */}
+                                        <div className="mt-4 pt-4 border-t border-white/20 text-xs opacity-70">
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div>Start: {new Date(researchStats.startDate).toLocaleDateString()}</div>
+                                                <div>Answers: {researchStats.answerHistory.length}</div>
+                                                <div>Sessions: {researchStats.sessions.length}</div>
+                                                <div>Language: {currentLang.toUpperCase()}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Reset Button */}
+                                    <button
+                                        onClick={resetResearchStats}
+                                        className="w-full bg-white rounded-2xl p-4 shadow-lg text-red-500 font-bold flex items-center justify-center gap-2"
+                                    >
+                                        <span>🗑️</span> {t('resetStats')}
+                                    </button>
+                                </>
+                            )}
+                        </div>
+
+                        <BottomTabBar />
+                    </div>
+                );
+            };
+
             // === PROFILE SCREEN ===
             const ProfileScreen = () => (
                 <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-20">
@@ -1025,8 +1509,9 @@
 
             // Home screen with tabs
             const HomeScreen = () => {
-                // If skills or profile tab selected, show those
+                // If skills, stats, or profile tab selected, show those
                 if (activeTab === 'skills') return <SkillsScreen />;
+                if (activeTab === 'stats') return <StatisticsScreen />;
                 if (activeTab === 'profile') return <ProfileScreen />;
 
                 return (
@@ -1035,6 +1520,67 @@
 
                         {/* Profile and level */}
                         <div className="p-4">
+                            {/* SESSION TIMER - 30 min research */}
+                            <div className={`rounded-2xl p-3 shadow-lg mb-3 text-white ${isTimeUp ? 'bg-gradient-to-r from-red-500 to-red-600 animate-pulse' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-2xl">⏱️</span>
+                                        <div>
+                                            <div className="font-bold text-sm">{isTimeUp ? '⏰ TIME UP!' : 'Session Time'}</div>
+                                            <div className="text-[10px] opacity-80">30 min research</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <div className="text-3xl font-bold font-mono">{formatTimer(elapsedSeconds)}</div>
+                                        <div className="text-[10px] opacity-80">{isTimeUp ? 'completed' : `${formatTimer(remainingSeconds)} left`}</div>
+                                    </div>
+                                </div>
+                                {/* Progress bar */}
+                                <div className="mt-2 bg-white/20 rounded-full h-2 overflow-hidden">
+                                    <div
+                                        className="bg-white h-full transition-all duration-1000"
+                                        style={{width: `${Math.min((elapsedSeconds / SESSION_DURATION) * 100, 100)}%`}}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* LIVE STATS PANEL - visible for research photos */}
+                            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-3 shadow-lg mb-4 text-white" onClick={() => setActiveTab('stats')}>
+                                <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-lg">📊</span>
+                                        <span className="font-bold text-sm">Live Stats</span>
+                                    </div>
+                                    <span className="text-xs opacity-70">{new Date().toLocaleDateString()}</span>
+                                </div>
+                                <div className="grid grid-cols-4 gap-2 text-center">
+                                    <div className="bg-white/20 rounded-lg p-2">
+                                        <div className="text-lg font-bold">{researchStats.totalQuestions}</div>
+                                        <div className="text-[10px] opacity-80">Questions</div>
+                                    </div>
+                                    <div className="bg-white/20 rounded-lg p-2">
+                                        <div className="text-lg font-bold text-green-300">{researchStats.correctAnswers}</div>
+                                        <div className="text-[10px] opacity-80">Correct</div>
+                                    </div>
+                                    <div className="bg-white/20 rounded-lg p-2">
+                                        <div className="text-lg font-bold">
+                                            {researchStats.totalQuestions > 0
+                                                ? Math.round(researchStats.correctAnswers / researchStats.totalQuestions * 100)
+                                                : 0}%
+                                        </div>
+                                        <div className="text-[10px] opacity-80">Accuracy</div>
+                                    </div>
+                                    <div className="bg-white/20 rounded-lg p-2">
+                                        <div className="text-lg font-bold">
+                                            {researchStats.totalQuestions > 0
+                                                ? Math.round(researchStats.totalResponseTimeMs / researchStats.totalQuestions / 1000 * 10) / 10
+                                                : 0}s
+                                        </div>
+                                        <div className="text-[10px] opacity-80">Avg Time</div>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* Compact Neural Panel on home */}
                             {activeTab === 'home' && neuralState.knowledgeState && (
                                 <div className="mb-4" onClick={() => setActiveTab('skills')}>
@@ -1276,9 +1822,26 @@
                 return (
                     <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col overflow-hidden relative">
                         {/* Header s progress barem */}
-                        <div className="bg-white shadow-sm px-4 py-3 flex-shrink-0">
+                        <div className="bg-white shadow-sm px-4 py-2 flex-shrink-0">
+                            {/* Timer row */}
+                            <div className={`flex items-center justify-center gap-2 mb-2 py-1 px-3 rounded-full text-sm font-bold ${isTimeUp ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
+                                <span>⏱️</span>
+                                <span className="font-mono">{formatTimer(elapsedSeconds)}</span>
+                                <span className="text-xs opacity-70">/ 30:00</span>
+                            </div>
                             <div className="flex items-center justify-between mb-2">
                                 <button onClick={() => setScreen('levels')} className="close-btn text-2xl p-2 -ml-2">✕</button>
+                                {/* Mini stats for research - visible during quiz */}
+                                <div className="flex items-center gap-1 bg-blue-100 px-2 py-1 rounded-full text-xs">
+                                    <span>📊</span>
+                                    <span className="font-bold text-blue-600">{researchStats.totalQuestions}</span>
+                                    <span className="text-blue-400">|</span>
+                                    <span className="font-bold text-green-600">
+                                        {researchStats.totalQuestions > 0
+                                            ? Math.round(researchStats.correctAnswers / researchStats.totalQuestions * 100)
+                                            : 0}%
+                                    </span>
+                                </div>
                                 <div className="hearts-display flex items-center">
                                     {Array.from({length: 5}, (_, i) => (
                                         <span key={i} className={`text-xl ${i < hearts ? '' : 'opacity-30'}`}>❤️</span>
@@ -1475,6 +2038,43 @@
                                         <div className="text-4xl font-bold text-yellow-600">+{xp + (stars * 5)}</div>
                                         <div className="text-sm text-gray-500 mt-1">XP</div>
                                     </div>
+                                </div>
+                            </div>
+
+                            {/* RESEARCH STATS SUMMARY - for photos */}
+                            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-4 shadow-lg mt-4 text-white">
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-2">
+                                        <span>📊</span>
+                                        <span className="font-bold">Research Data</span>
+                                    </div>
+                                    <span className="text-xs opacity-70">{new Date().toLocaleString()}</span>
+                                </div>
+                                <div className="grid grid-cols-3 gap-2 text-center text-sm">
+                                    <div className="bg-white/20 rounded-lg p-2">
+                                        <div className="font-bold text-xl">{researchStats.totalQuestions}</div>
+                                        <div className="text-[10px] opacity-80">Total Qs</div>
+                                    </div>
+                                    <div className="bg-white/20 rounded-lg p-2">
+                                        <div className="font-bold text-xl text-green-300">
+                                            {researchStats.totalQuestions > 0
+                                                ? Math.round(researchStats.correctAnswers / researchStats.totalQuestions * 100)
+                                                : 0}%
+                                        </div>
+                                        <div className="text-[10px] opacity-80">Accuracy</div>
+                                    </div>
+                                    <div className="bg-white/20 rounded-lg p-2">
+                                        <div className="font-bold text-xl">
+                                            {researchStats.totalQuestions > 0
+                                                ? (researchStats.totalResponseTimeMs / researchStats.totalQuestions / 1000).toFixed(1)
+                                                : 0}s
+                                        </div>
+                                        <div className="text-[10px] opacity-80">Avg Time</div>
+                                    </div>
+                                </div>
+                                <div className="mt-2 pt-2 border-t border-white/20 text-[10px] opacity-70 flex justify-between">
+                                    <span>Module: {module.id} | Level: {selectedLevel}</span>
+                                    <span>Lang: {currentLang.toUpperCase()}</span>
                                 </div>
                             </div>
                         </div>
