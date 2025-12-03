@@ -271,6 +271,10 @@
             const [dailyGoal, setDailyGoal] = useState(50);
             const [dailyXp, setDailyXp] = useState(0);
 
+            // === SESSION STATE ===
+            const [sessionStarted, setSessionStarted] = useState(false);
+            const [currentSessionId, setCurrentSessionId] = useState(null);
+
             // === LANGUAGE STATE ===
             const [currentLang, setCurrentLang] = useState(() => window.CURRENT_LANG || 'en');
             const [showLangSelect, setShowLangSelect] = useState(() => !localStorage.getItem('agrolinguo_lang_selected'));
@@ -325,7 +329,13 @@
                     downloadApp: 'Download App',
                     installApp: 'Install to Phone',
                     downloadDesc: 'Save for offline use',
-                    installDesc: 'Add to home screen'
+                    installDesc: 'Add to home screen',
+                    startSession: 'Start Learning',
+                    welcomeBack: 'Welcome back!',
+                    readyToLearn: 'Ready to learn agriculture?',
+                    previousSessions: 'Previous Sessions',
+                    endSession: 'End Session',
+                    saveResults: 'Save & Exit'
                 },
                 sw: {
                     courses: 'Kozi',
@@ -375,6 +385,12 @@
                     installApp: 'Weka kwenye Simu',
                     downloadDesc: 'Hifadhi kwa matumizi bila mtandao',
                     installDesc: 'Ongeza kwenye skrini ya nyumbani',
+                    startSession: 'Anza Kujifunza',
+                    welcomeBack: 'Karibu tena!',
+                    readyToLearn: 'Uko tayari kujifunza kilimo?',
+                    previousSessions: 'Vipindi Vilivyopita',
+                    endSession: 'Maliza Kipindi',
+                    saveResults: 'Hifadhi na Toka',
                     statistics: 'Takwimu',
                     exportData: 'Hamisha Data',
                     exportJson: 'Hamisha JSON',
@@ -918,6 +934,108 @@
                 );
             };
 
+            // === SESSION MANAGEMENT ===
+            const [savedSessions, setSavedSessions] = useState(() => {
+                try {
+                    return JSON.parse(localStorage.getItem('agrolinguo_sessions') || '[]');
+                } catch { return []; }
+            });
+
+            const startSession = () => {
+                const sessionId = Date.now();
+                setCurrentSessionId(sessionId);
+                setSessionStarted(true);
+                // Reset session-specific stats
+                setResearchStats(prev => ({
+                    ...prev,
+                    currentSessionStart: sessionId,
+                    sessionQuestions: 0,
+                    sessionCorrect: 0
+                }));
+            };
+
+            const endAndSaveSession = () => {
+                if (!currentSessionId) return;
+
+                const sessionData = {
+                    id: currentSessionId,
+                    endTime: Date.now(),
+                    duration: Date.now() - currentSessionId,
+                    totalQuestions: researchStats.totalQuestions,
+                    correctAnswers: researchStats.correctAnswers,
+                    accuracy: researchStats.totalQuestions > 0
+                        ? Math.round((researchStats.correctAnswers / researchStats.totalQuestions) * 100)
+                        : 0,
+                    xpEarned: totalXp,
+                    language: currentLang
+                };
+
+                const updatedSessions = [...savedSessions, sessionData];
+                setSavedSessions(updatedSessions);
+                localStorage.setItem('agrolinguo_sessions', JSON.stringify(updatedSessions));
+
+                // Reset for next session
+                setSessionStarted(false);
+                setCurrentSessionId(null);
+            };
+
+            // Start Screen Component
+            const StartScreen = () => {
+                const recentSessions = savedSessions.slice(-5).reverse();
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col items-center justify-center p-6">
+                        <div className="text-center mb-8">
+                            <div className="text-8xl mb-4">🌱</div>
+                            <h1 className="text-4xl font-bold text-green-700 mb-2">AgroLinguo</h1>
+                            <p className="text-gray-600 text-lg">{t('readyToLearn')}</p>
+                        </div>
+
+                        <button
+                            onClick={startSession}
+                            className="w-full max-w-sm py-5 px-8 bg-gradient-to-r from-green-500 to-green-600 text-white text-2xl font-bold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition mb-8"
+                        >
+                            🚀 {t('startSession')}
+                        </button>
+
+                        {recentSessions.length > 0 && (
+                            <div className="w-full max-w-sm">
+                                <h3 className="text-lg font-bold text-gray-700 mb-3">{t('previousSessions')}</h3>
+                                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                                    {recentSessions.map((session, idx) => (
+                                        <div key={session.id} className={`p-4 flex justify-between items-center ${idx > 0 ? 'border-t' : ''}`}>
+                                            <div>
+                                                <div className="font-bold text-gray-800">
+                                                    {new Date(session.id).toLocaleDateString()}
+                                                </div>
+                                                <div className="text-sm text-gray-500">
+                                                    {Math.round(session.duration / 60000)} min • {session.totalQuestions} {t('question')}
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className={`font-bold text-lg ${session.accuracy >= 70 ? 'text-green-600' : session.accuracy >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                                    {session.accuracy}%
+                                                </div>
+                                                <div className="text-sm text-gray-400">
+                                                    {session.correctAnswers}/{session.totalQuestions}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        <button
+                            onClick={changeLanguage}
+                            className="mt-6 text-gray-500 underline flex items-center gap-2"
+                        >
+                            {window.AVAILABLE_LANGS?.[currentLang]?.flag} {t('chooseLanguage')}
+                        </button>
+                    </div>
+                );
+            };
+
             // Header komponenta
             const [showHeaderMenu, setShowHeaderMenu] = useState(false);
 
@@ -984,8 +1102,15 @@
                         {showHeaderMenu && (
                             <div className="absolute top-full right-4 mt-2 bg-white rounded-xl shadow-xl border z-50 overflow-hidden min-w-[200px]">
                                 <button
+                                    onClick={() => { endAndSaveSession(); setShowHeaderMenu(false); }}
+                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-green-50 transition text-left"
+                                >
+                                    <span className="text-xl">💾</span>
+                                    <span className="font-semibold text-green-700">{t('saveResults')}</span>
+                                </button>
+                                <button
                                     onClick={installPWA}
-                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition text-left"
+                                    className="w-full flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition text-left border-t"
                                 >
                                     <span className="text-xl">📲</span>
                                     <span className="font-semibold text-blue-700">{t('installApp')}</span>
@@ -2223,6 +2348,11 @@
             // First show language selector if not selected yet
             if (showLangSelect) {
                 return <LanguageSelectScreen />;
+            }
+
+            // Show start screen before session begins
+            if (!sessionStarted) {
+                return <StartScreen />;
             }
 
             switch (screen) {
