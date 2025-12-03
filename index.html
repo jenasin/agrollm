@@ -747,13 +747,13 @@
                 setScreen('quiz');
             };
 
-            // Zpracovat odpověď
-            const handleAnswer = (answerIndex) => {
+            // Zpracovat odpověď (accepts isCorrect from shuffled option)
+            const handleAnswer = (answerIndex, isCorrectAnswer) => {
                 if (showAnswer) return;
 
                 const questions = getQuestionsForLevel(selectedModule, selectedLevel);
                 const question = questions[currentQuestion];
-                const isCorrect = question.options[answerIndex].isCorrect;
+                const isCorrect = isCorrectAnswer;
 
                 setSelectedAnswer(answerIndex);
                 setShowAnswer(true);
@@ -1877,11 +1877,27 @@
                 );
             };
 
+            // Shuffle function
+            const shuffleArray = (array) => {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            };
+
             // Quiz obrazovka
             const QuizScreen = () => {
                 const questions = getQuestionsForLevel(selectedModule, selectedLevel);
                 const question = questions[currentQuestion];
                 const module = modules.find(m => m.id === selectedModule);
+
+                // Shuffle options once per question (using question index as key)
+                const shuffledOptions = React.useMemo(() => {
+                    if (!question) return [];
+                    return shuffleArray(question.options.map((opt, idx) => ({ ...opt, originalIndex: idx })));
+                }, [currentQuestion, selectedModule, selectedLevel]);
 
                 if (!question) {
                     return (
@@ -1900,7 +1916,7 @@
                     );
                 }
 
-                const isCorrect = showAnswer && question.options[selectedAnswer]?.isCorrect;
+                const isCorrect = showAnswer && shuffledOptions[selectedAnswer]?.isCorrect;
 
                 return (
                     <div className="h-screen bg-gradient-to-b from-green-50 to-green-100 flex flex-col overflow-hidden relative">
@@ -1947,10 +1963,10 @@
                             </div>
                         </div>
 
-                        {/* Odpovědi - velké tlačítka pro mobil */}
+                        {/* Odpovědi - velké tlačítka pro mobil (shuffled) */}
                         <div className="flex-1 px-4 overflow-y-auto pb-4">
                             <div className="answers-container flex flex-col gap-3">
-                                {question.options.map((option, index) => {
+                                {shuffledOptions.map((option, index) => {
                                     let stateClass = '';
                                     let extraClass = '';
 
@@ -1971,7 +1987,7 @@
                                     return (
                                         <button
                                             key={index}
-                                            onClick={() => handleAnswer(index)}
+                                            onClick={() => handleAnswer(index, option.isCorrect)}
                                             disabled={showAnswer}
                                             className={`btn-answer w-full min-h-[64px] py-4 px-5 rounded-2xl bg-white border-2 border-gray-200 text-left ${stateClass} ${extraClass}`}
                                         >
