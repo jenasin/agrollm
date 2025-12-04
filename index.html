@@ -813,9 +813,24 @@
             // Course modules - loaded dynamically from course_config.js + questions.js
             const modules = getModules();
 
-            // Získat otázky pro level
+            // Získat otázky pro level - with special module key handling
             const getQuestionsForLevel = (moduleId, levelNum) => {
-                const key = `module${moduleId}_level${levelNum}`;
+                // Special modules have different key formats
+                let key;
+                if (moduleId === 11) {
+                    key = `cashew_level${levelNum}`;
+                } else if (moduleId === 12) {
+                    key = `drought_level${levelNum}`;
+                } else if (moduleId === 13) {
+                    key = `maize_level${levelNum}`;
+                } else if (moduleId === 14) {
+                    key = `tomato_level${levelNum}`;
+                } else if (moduleId === 15) {
+                    key = `beans_level${levelNum}`;
+                } else {
+                    key = `module${moduleId}_level${levelNum}`;
+                }
+
                 if (window.ALL_QUESTIONS && window.ALL_QUESTIONS[moduleId] && window.ALL_QUESTIONS[moduleId][key]) {
                     return window.ALL_QUESTIONS[moduleId][key];
                 }

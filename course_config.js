@@ -213,6 +213,7 @@ const COURSE_CONFIG = {
             icon: '🥜',
             color: 'from-amber-500 to-orange-600',
             description: { en: 'Cashew cultivation and harvesting', sw: 'Upanzi na uvunaji wa korosho' },
+            levels: 10,
             levelNames: [
                 { en: 'Basics', sw: 'Misingi' },
                 { en: 'Planting', sw: 'Kupanda' },
@@ -232,6 +233,7 @@ const COURSE_CONFIG = {
             icon: '🏜️',
             color: 'from-yellow-500 to-red-500',
             description: { en: 'Climate adaptation and drought management', sw: 'Kukabiliana na ukame na mabadiliko ya hali ya hewa' },
+            levels: 10,
             levelNames: [
                 { en: 'Drought Basics', sw: 'Misingi ya Ukame' },
                 { en: 'Water Conservation', sw: 'Kuhifadhi Maji' },
@@ -251,6 +253,7 @@ const COURSE_CONFIG = {
             icon: '🌽',
             color: 'from-yellow-400 to-orange-500',
             description: { en: 'Maize/corn cultivation', sw: 'Upanzi wa mahindi' },
+            levels: 5,
             levelNames: [
                 { en: 'Basics', sw: 'Misingi' },
                 { en: 'Care & Fertilizer', sw: 'Utunzaji na Mbolea' },
@@ -265,6 +268,7 @@ const COURSE_CONFIG = {
             icon: '🍅',
             color: 'from-red-400 to-red-600',
             description: { en: 'Tomato cultivation', sw: 'Upanzi wa nyanya' },
+            levels: 5,
             levelNames: [
                 { en: 'Basics', sw: 'Misingi' },
                 { en: 'Diseases & Care', sw: 'Magonjwa na Utunzaji' },
@@ -279,6 +283,7 @@ const COURSE_CONFIG = {
             icon: '🫘',
             color: 'from-amber-600 to-yellow-700',
             description: { en: 'Bean cultivation', sw: 'Upanzi wa maharagwe' },
+            levels: 5,
             levelNames: [
                 { en: 'Basics', sw: 'Misingi' },
                 { en: 'Fertilizer & Pests', sw: 'Mbolea na Wadudu' },
