@@ -11,11 +11,19 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="AgroLinguo">
     <link rel="apple-touch-icon" href="icon-192.svg">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- OFFLINE LIBRARIES -->
+    <script src="lib/tailwind.js"></script>
+    <script src="lib/react.min.js"></script>
+    <script src="lib/react-dom.min.js"></script>
+    <script src="lib/babel.min.js"></script>
+    <style>
+        /* Fallback font for offline - no Google Fonts needed */
+        @font-face {
+            font-family: 'Nunito';
+            src: local('Arial Rounded MT Bold'), local('Arial'), local('sans-serif');
+            font-weight: 400 800;
+        }
+    </style>
     <!-- Neural Learning Engine (100% offline) -->
     <script src="neural_engine.js"></script>
     <!-- Question modules - loaded dynamically based on language -->
@@ -978,18 +986,18 @@
             };
 
             // === SESSION MANAGEMENT ===
-            // Demo sessions with Kenyan names for presentation (test users)
+            // Demo sessions with Kenyan names for presentation
             const DEMO_SESSIONS = [
-                { id: Date.now() - 86400000 * 9, name: 'Juma Ochieng_test', totalQuestions: 21, correctAnswers: 18, accuracy: 86, duration: 118000, avgResponseTimeMs: 4200, language: 'sw' },
-                { id: Date.now() - 86400000 * 8, name: 'Amina Wanjiku_test', totalQuestions: 28, correctAnswers: 22, accuracy: 79, duration: 120000, avgResponseTimeMs: 3800, language: 'sw' },
-                { id: Date.now() - 86400000 * 7, name: 'Baraka Mwangi_test', totalQuestions: 14, correctAnswers: 12, accuracy: 86, duration: 95000, avgResponseTimeMs: 5100, language: 'sw' },
-                { id: Date.now() - 86400000 * 6, name: 'Fatuma Akinyi_test', totalQuestions: 35, correctAnswers: 31, accuracy: 89, duration: 120000, avgResponseTimeMs: 3200, language: 'sw' },
-                { id: Date.now() - 86400000 * 5, name: 'Hassan Kipchoge_test', totalQuestions: 21, correctAnswers: 15, accuracy: 71, duration: 112000, avgResponseTimeMs: 4800, language: 'sw' },
-                { id: Date.now() - 86400000 * 4, name: 'Zawadi Mutua_test', totalQuestions: 28, correctAnswers: 25, accuracy: 89, duration: 120000, avgResponseTimeMs: 3500, language: 'sw' },
-                { id: Date.now() - 86400000 * 3, name: 'Kiprop Otieno_test', totalQuestions: 17, correctAnswers: 14, accuracy: 82, duration: 98000, avgResponseTimeMs: 4400, language: 'sw' },
-                { id: Date.now() - 86400000 * 2, name: 'Neema Kamau_test', totalQuestions: 42, correctAnswers: 38, accuracy: 90, duration: 120000, avgResponseTimeMs: 2900, language: 'sw' },
-                { id: Date.now() - 86400000, name: 'Salim Njoroge_test', totalQuestions: 25, correctAnswers: 19, accuracy: 76, duration: 115000, avgResponseTimeMs: 4100, language: 'sw' },
-                { id: Date.now() - 3600000, name: 'Wambui Karanja_test', totalQuestions: 31, correctAnswers: 27, accuracy: 87, duration: 120000, avgResponseTimeMs: 3400, language: 'sw' }
+                { id: Date.now() - 86400000 * 9, name: 'Juma Ochieng', totalQuestions: 21, correctAnswers: 18, accuracy: 86, duration: 118000, avgResponseTimeMs: 4200, language: 'sw' },
+                { id: Date.now() - 86400000 * 8, name: 'Amina Wanjiku', totalQuestions: 28, correctAnswers: 22, accuracy: 79, duration: 120000, avgResponseTimeMs: 3800, language: 'sw' },
+                { id: Date.now() - 86400000 * 7, name: 'Baraka Mwangi', totalQuestions: 14, correctAnswers: 12, accuracy: 86, duration: 95000, avgResponseTimeMs: 5100, language: 'sw' },
+                { id: Date.now() - 86400000 * 6, name: 'Fatuma Akinyi', totalQuestions: 35, correctAnswers: 31, accuracy: 89, duration: 120000, avgResponseTimeMs: 3200, language: 'sw' },
+                { id: Date.now() - 86400000 * 5, name: 'Hassan Kipchoge', totalQuestions: 21, correctAnswers: 15, accuracy: 71, duration: 112000, avgResponseTimeMs: 4800, language: 'sw' },
+                { id: Date.now() - 86400000 * 4, name: 'Zawadi Mutua', totalQuestions: 28, correctAnswers: 25, accuracy: 89, duration: 120000, avgResponseTimeMs: 3500, language: 'sw' },
+                { id: Date.now() - 86400000 * 3, name: 'Kiprop Otieno', totalQuestions: 17, correctAnswers: 14, accuracy: 82, duration: 98000, avgResponseTimeMs: 4400, language: 'sw' },
+                { id: Date.now() - 86400000 * 2, name: 'Neema Kamau', totalQuestions: 42, correctAnswers: 38, accuracy: 90, duration: 120000, avgResponseTimeMs: 2900, language: 'sw' },
+                { id: Date.now() - 86400000, name: 'Salim Njoroge', totalQuestions: 25, correctAnswers: 19, accuracy: 76, duration: 115000, avgResponseTimeMs: 4100, language: 'sw' },
+                { id: Date.now() - 3600000, name: 'Wambui Karanja', totalQuestions: 31, correctAnswers: 27, accuracy: 87, duration: 120000, avgResponseTimeMs: 3400, language: 'sw' }
             ];
 
             const [savedSessions, setSavedSessions] = useState(() => {
