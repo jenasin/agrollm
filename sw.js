@@ -1,36 +1,44 @@
-const CACHE_NAME = 'agrolinguo-v8';
+const CACHE_NAME = 'agrolinguo-v9';
 
 // Files to cache for offline use - ALL local files
+// GitHub Pages path: /agrollm/
 const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icon-192.svg',
-  '/icon-512.svg',
-  '/course_config.js',
-  '/neural_engine.js',
-  '/questions.js',
+  '/agrollm/',
+  '/agrollm/index.html',
+  '/agrollm/manifest.json',
+  '/agrollm/icon-192.svg',
+  '/agrollm/icon-512.svg',
+  '/agrollm/course_config.js',
+  '/agrollm/neural_engine.js',
+  '/agrollm/questions.js',
   // English questions
-  '/questions/en/questions_module1.js',
-  '/questions/en/questions_module2.js',
-  '/questions/en/questions_module3.js',
-  '/questions/en/questions_module4.js',
-  '/questions/en/questions_module5.js',
-  '/questions/en/questions_module6.js',
-  '/questions/en/questions_module7.js',
-  '/questions/en/questions_module8.js',
-  '/questions/en/questions_module9.js',
-  '/questions/en/questions_module10.js',
-  // Swahili questions (modules 1-9)
-  '/questions/sw/questions_module1.js',
-  '/questions/sw/questions_module2.js',
-  '/questions/sw/questions_module3.js',
-  '/questions/sw/questions_module4.js',
-  '/questions/sw/questions_module5.js',
-  '/questions/sw/questions_module6.js',
-  '/questions/sw/questions_module7.js',
-  '/questions/sw/questions_module8.js',
-  '/questions/sw/questions_module9.js'
+  '/agrollm/questions/en/questions_module1.js',
+  '/agrollm/questions/en/questions_module2.js',
+  '/agrollm/questions/en/questions_module3.js',
+  '/agrollm/questions/en/questions_module4.js',
+  '/agrollm/questions/en/questions_module5.js',
+  '/agrollm/questions/en/questions_module6.js',
+  '/agrollm/questions/en/questions_module7.js',
+  '/agrollm/questions/en/questions_module8.js',
+  '/agrollm/questions/en/questions_module9.js',
+  '/agrollm/questions/en/questions_module10.js',
+  // Swahili questions (modules 1-10)
+  '/agrollm/questions/sw/questions_module1.js',
+  '/agrollm/questions/sw/questions_module2.js',
+  '/agrollm/questions/sw/questions_module3.js',
+  '/agrollm/questions/sw/questions_module4.js',
+  '/agrollm/questions/sw/questions_module5.js',
+  '/agrollm/questions/sw/questions_module6.js',
+  '/agrollm/questions/sw/questions_module7.js',
+  '/agrollm/questions/sw/questions_module8.js',
+  '/agrollm/questions/sw/questions_module9.js',
+  '/agrollm/questions/sw/questions_module10.js',
+  // Special modules
+  '/agrollm/questions/sw/questions_cashew.js',
+  '/agrollm/questions/sw/questions_drought.js',
+  '/agrollm/questions/sw/questions_maize.js',
+  '/agrollm/questions/sw/questions_tomato.js',
+  '/agrollm/questions/sw/questions_beans.js'
 ];
 
 // External CDN files needed for offline - CRITICAL for iOS PWA
@@ -167,7 +175,7 @@ self.addEventListener('fetch', (event) => {
         // Offline fallback
         console.log('[SW] Offline, no cache for:', request.url);
         if (request.destination === 'document') {
-          return caches.match('/index.html');
+          return caches.match('/agrollm/index.html');
         }
         return new Response('Offline - Resource not cached', {
           status: 503,
