@@ -285,7 +285,7 @@
             const [currentSessionId, setCurrentSessionId] = useState(null);
 
             // === LANGUAGE STATE ===
-            const [currentLang, setCurrentLang] = useState(() => window.CURRENT_LANG || 'en');
+            const [currentLang, setCurrentLang] = useState(() => window.CURRENT_LANG || 'sw');
             const [showLangSelect, setShowLangSelect] = useState(() => !localStorage.getItem('agrolinguo_lang_selected'));
             const [isChangingLang, setIsChangingLang] = useState(false);
 
@@ -498,8 +498,8 @@
                 };
             });
 
-            // === 3 MINUTE SESSION TIMER (for testing - change to 30*60 for production) ===
-            const SESSION_DURATION = 3 * 60;
+            // === 10 MINUTE SESSION TIMER ===
+            const SESSION_DURATION = 10 * 60;
             const sessionStartTimeRef = React.useRef(Date.now());
 
             const formatTimer = (seconds) => {
@@ -529,7 +529,7 @@
                                 <span className="text-2xl">⏱️</span>
                                 <div>
                                     <div className="font-bold text-sm">{timeUp ? '⏰ TIME UP!' : 'Session Time'}</div>
-                                    <div className="text-[10px] opacity-80">3 min test</div>
+                                    <div className="text-[10px] opacity-80">10 min test</div>
                                 </div>
                             </div>
                             <div className="text-right">
