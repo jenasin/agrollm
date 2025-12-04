@@ -1977,6 +1977,7 @@
                                 const stars = levelProgress[levelKey] || 0;
                                 const prevLevelKey = `${module.id}-${levelNum - 1}`;
                                 const isUnlocked = levelNum === 1 || (levelProgress[prevLevelKey] || 0) >= 1;
+                                const levelName = module.levelNames?.[i] ? lt(module.levelNames[i]) : `${currentLang === 'sw' ? 'Kiwango' : 'Level'} ${levelNum}`;
 
                                 return (
                                     <button
@@ -2001,13 +2002,11 @@
                                             )}
                                             <div className="text-left">
                                                 <div className={`font-bold ${isUnlocked ? 'text-gray-800' : 'text-gray-400'}`}>
-                                                    {currentLang === 'sw' ? 'Kiwango' : 'Level'} {levelNum}
+                                                    {levelName}
                                                 </div>
-                                                {isUnlocked && stars > 0 && (
-                                                    <div className="text-xs text-gray-500">
-                                                        {stars === 3 ? '🏆 Perfect!' : `${stars}/3 stars`}
-                                                    </div>
-                                                )}
+                                                <div className="text-xs text-gray-500">
+                                                    {stars > 0 ? (stars === 3 ? '🏆 Perfect!' : `${stars}/3 ⭐`) : `${currentLang === 'sw' ? 'Kiwango' : 'Level'} ${levelNum}`}
+                                                </div>
                                             </div>
                                         </div>
 
