@@ -1819,7 +1819,7 @@
                 </div>
             );
 
-            // Home screen with tabs
+            // Home screen with tabs - Clean Duolingo style
             const HomeScreen = () => {
                 // If skills, stats, or profile tab selected, show those
                 if (activeTab === 'skills') return <SkillsScreen />;
@@ -1830,55 +1830,8 @@
                     <div className="min-h-screen bg-gradient-to-b from-green-50 to-green-100 pb-20">
                         <Header />
 
-                        {/* Profile and level */}
+                        {/* Profile and level - Simple like Duolingo */}
                         <div className="p-4">
-                            {/* SESSION TIMER - isolated component, no parent re-renders */}
-                            <SessionTimer />
-
-                            {/* LIVE STATS PANEL - visible for research photos */}
-                            <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-3 shadow-lg mb-4 text-white" onClick={() => setActiveTab('stats')}>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-lg">📊</span>
-                                        <span className="font-bold text-sm">Live Stats</span>
-                                    </div>
-                                    <span className="text-xs opacity-70">{new Date().toLocaleDateString()}</span>
-                                </div>
-                                <div className="grid grid-cols-4 gap-2 text-center">
-                                    <div className="bg-white/20 rounded-lg p-2">
-                                        <div className="text-lg font-bold">{researchStats.totalQuestions}</div>
-                                        <div className="text-[10px] opacity-80">Questions</div>
-                                    </div>
-                                    <div className="bg-white/20 rounded-lg p-2">
-                                        <div className="text-lg font-bold text-green-300">{researchStats.correctAnswers}</div>
-                                        <div className="text-[10px] opacity-80">Correct</div>
-                                    </div>
-                                    <div className="bg-white/20 rounded-lg p-2">
-                                        <div className="text-lg font-bold">
-                                            {researchStats.totalQuestions > 0
-                                                ? Math.round(researchStats.correctAnswers / researchStats.totalQuestions * 100)
-                                                : 0}%
-                                        </div>
-                                        <div className="text-[10px] opacity-80">Accuracy</div>
-                                    </div>
-                                    <div className="bg-white/20 rounded-lg p-2">
-                                        <div className="text-lg font-bold">
-                                            {researchStats.totalQuestions > 0
-                                                ? Math.round(researchStats.totalResponseTimeMs / researchStats.totalQuestions / 1000 * 10) / 10
-                                                : 0}s
-                                        </div>
-                                        <div className="text-[10px] opacity-80">Avg Time</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Compact Neural Panel on home */}
-                            {activeTab === 'home' && neuralState.knowledgeState && (
-                                <div className="mb-4" onClick={() => setActiveTab('skills')}>
-                                    <NeuralPanel compact={true} />
-                                </div>
-                            )}
-
                             <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
                                 <div className="flex items-center gap-4">
                                     <div className="relative">
