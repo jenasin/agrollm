@@ -284,6 +284,12 @@
             const [sessionStarted, setSessionStarted] = useState(false);
             const [currentSessionId, setCurrentSessionId] = useState(null);
 
+            // === TEST END SCREEN STATE ===
+            const [showTestEndScreen, setShowTestEndScreen] = useState(false);
+            const [participantName, setParticipantName] = useState(() =>
+                localStorage.getItem('agrolinguo_participant_name') || ''
+            );
+
             // === LANGUAGE STATE ===
             const [currentLang, setCurrentLang] = useState(() => window.CURRENT_LANG || 'sw');
             const [showLangSelect, setShowLangSelect] = useState(() => !localStorage.getItem('agrolinguo_lang_selected'));
@@ -519,8 +525,8 @@
                 };
             });
 
-            // === 10 MINUTE SESSION TIMER ===
-            const SESSION_DURATION = 10 * 60;
+            // === 5 MINUTE SESSION TIMER ===
+            const SESSION_DURATION = 5 * 60;
             const sessionStartTimeRef = React.useRef(Date.now());
 
             const formatTimer = (seconds) => {
@@ -561,7 +567,7 @@
                                 <span className="text-2xl">⏱️</span>
                                 <div>
                                     <div className="font-bold text-sm">{timeUp ? '⏰ MUDA UMEISHA!' : 'Session Time'}</div>
-                                    <div className="text-[10px] opacity-80">10 min test</div>
+                                    <div className="text-[10px] opacity-80">5 min test</div>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -1412,6 +1418,8 @@
                 // Auto-save when timer expires (no confirmation)
                 const handleTimeUp = React.useCallback(() => {
                     endAndSaveSession();
+                    setShowTestEndScreen(true);
+                    setScreen('home');
                 }, []);
 
                 // Reset and start new test
@@ -2588,6 +2596,177 @@
                 </div>
             );
 
+            // Test End Screen - shown when 5 min timer expires
+            const TestEndScreen = () => {
+                const [name, setName] = useState(participantName);
+                const [showStats, setShowStats] = useState(false);
+
+                const accuracy = researchStats.totalQuestions > 0
+                    ? Math.round((researchStats.correctAnswers / researchStats.totalQuestions) * 100)
+                    : 0;
+
+                const handleStartNewTest = () => {
+                    // Save participant name
+                    localStorage.setItem('agrolinguo_participant_name', name);
+                    setParticipantName(name);
+
+                    // Reset everything for new test
+                    setLevelProgress({});
+                    setTotalXp(0);
+                    setDailyXp(0);
+                    setStreak(0);
+                    setHearts(5);
+                    localStorage.removeItem('agrolinguo_save');
+
+                    // Reset research stats for new participant
+                    const newStats = {
+                        startDate: Date.now(),
+                        totalQuestions: 0,
+                        correctAnswers: 0,
+                        incorrectAnswers: 0,
+                        totalResponseTimeMs: 0,
+                        totalSessionTimeMs: 0,
+                        sessions: [],
+                        answerHistory: [],
+                        moduleStats: {},
+                        dailyStats: {},
+                        currentSessionStart: Date.now()
+                    };
+                    setResearchStats(newStats);
+                    localStorage.setItem('agrolinguo_research_stats', JSON.stringify(newStats));
+
+                    // Reset timer
+                    sessionStartTimeRef.current = Date.now();
+
+                    // Close end screen
+                    setShowTestEndScreen(false);
+                };
+
+                if (showStats) {
+                    return (
+                        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-4">
+                            <div className="max-w-md mx-auto">
+                                <button
+                                    onClick={() => setShowStats(false)}
+                                    className="mb-4 text-2xl"
+                                >
+                                    ← {currentLang === 'sw' ? 'Rudi' : 'Back'}
+                                </button>
+
+                                <div className="bg-white rounded-3xl p-6 shadow-xl">
+                                    <h2 className="text-2xl font-bold text-center mb-6">
+                                        📊 {currentLang === 'sw' ? 'Takwimu za Test' : 'Test Statistics'}
+                                    </h2>
+
+                                    <div className="space-y-4">
+                                        <div className="flex justify-between items-center p-3 bg-blue-50 rounded-xl">
+                                            <span>📝 {currentLang === 'sw' ? 'Maswali' : 'Questions'}</span>
+                                            <span className="font-bold text-xl">{researchStats.totalQuestions}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center p-3 bg-green-50 rounded-xl">
+                                            <span>✅ {currentLang === 'sw' ? 'Sahihi' : 'Correct'}</span>
+                                            <span className="font-bold text-xl text-green-600">{researchStats.correctAnswers}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center p-3 bg-red-50 rounded-xl">
+                                            <span>❌ {currentLang === 'sw' ? 'Makosa' : 'Wrong'}</span>
+                                            <span className="font-bold text-xl text-red-600">{researchStats.incorrectAnswers}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
+                                            <span>🎯 {currentLang === 'sw' ? 'Usahihi' : 'Accuracy'}</span>
+                                            <span className="font-bold text-xl text-purple-600">{accuracy}%</span>
+                                        </div>
+                                        <div className="flex justify-between items-center p-3 bg-orange-50 rounded-xl">
+                                            <span>⏱️ {currentLang === 'sw' ? 'Muda' : 'Time'}</span>
+                                            <span className="font-bold text-xl text-orange-600">
+                                                {Math.round(researchStats.totalSessionTimeMs / 60000)} min
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Per-module stats */}
+                                    {Object.keys(researchStats.moduleStats).length > 0 && (
+                                        <div className="mt-6">
+                                            <h3 className="font-bold mb-3">
+                                                📚 {currentLang === 'sw' ? 'Kwa Moduli' : 'By Module'}
+                                            </h3>
+                                            {Object.entries(researchStats.moduleStats).map(([key, stats]) => {
+                                                const moduleId = parseInt(key.replace('module_', ''));
+                                                const moduleInfo = modules.find(m => m.id === moduleId);
+                                                const modAccuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+                                                return (
+                                                    <div key={key} className="flex justify-between items-center p-2 border-b">
+                                                        <span>{moduleInfo?.icon} {lt(moduleInfo?.name) || key}</span>
+                                                        <span className="font-bold">{stats.correct}/{stats.total} ({modAccuracy}%)</span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-red-100 flex flex-col items-center justify-center p-4">
+                        <div className="bg-white rounded-3xl p-8 shadow-2xl text-center max-w-sm w-full">
+                            <div className="text-6xl mb-4">⏰</div>
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                                {currentLang === 'sw' ? 'Muda Umeisha!' : 'Time is Up!'}
+                            </h2>
+                            <p className="text-gray-500 mb-6">
+                                {currentLang === 'sw' ? 'Test imehifadhiwa' : 'Test has been saved'}
+                            </p>
+
+                            {/* Quick stats */}
+                            <div className="bg-gray-50 rounded-xl p-4 mb-6">
+                                <div className="flex justify-around text-center">
+                                    <div>
+                                        <div className="text-2xl font-bold text-blue-600">{researchStats.totalQuestions}</div>
+                                        <div className="text-xs text-gray-500">{currentLang === 'sw' ? 'Maswali' : 'Questions'}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-2xl font-bold text-green-600">{accuracy}%</div>
+                                        <div className="text-xs text-gray-500">{currentLang === 'sw' ? 'Sahihi' : 'Correct'}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Name input */}
+                            <div className="mb-6">
+                                <label className="block text-left text-sm font-bold text-gray-700 mb-2">
+                                    {currentLang === 'sw' ? 'Jina lako:' : 'Your name:'}
+                                </label>
+                                <input
+                                    type="text"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    placeholder={currentLang === 'sw' ? 'Andika jina...' : 'Enter name...'}
+                                    className="w-full p-3 border-2 border-gray-200 rounded-xl text-center text-lg focus:border-blue-500 focus:outline-none"
+                                />
+                            </div>
+
+                            {/* Buttons */}
+                            <div className="space-y-3">
+                                <button
+                                    onClick={handleStartNewTest}
+                                    className="w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg"
+                                >
+                                    🚀 {currentLang === 'sw' ? 'Anza Test Mpya' : 'Start New Test'}
+                                </button>
+                                <button
+                                    onClick={() => setShowStats(true)}
+                                    className="w-full py-3 rounded-xl font-bold text-gray-700 bg-gray-100"
+                                >
+                                    📊 {currentLang === 'sw' ? 'Angalia Takwimu' : 'View Statistics'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
             // Render podle aktuální obrazovky
             // First show language selector if not selected yet
             if (showLangSelect) {
@@ -2597,6 +2776,11 @@
             // Show start screen before session begins
             if (!sessionStarted) {
                 return <StartScreen />;
+            }
+
+            // Show test end screen when timer expires
+            if (showTestEndScreen) {
+                return <TestEndScreen />;
             }
 
             switch (screen) {
