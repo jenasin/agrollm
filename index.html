@@ -525,8 +525,8 @@
                 };
             });
 
-            // === 2 MINUTE SESSION TIMER (demo) ===
-            const SESSION_DURATION = 2 * 60;
+            // === 1 MINUTE SESSION TIMER (demo) ===
+            const SESSION_DURATION = 1 * 60;
             const sessionStartTimeRef = React.useRef(Date.now());
 
             const formatTimer = (seconds) => {
@@ -567,7 +567,7 @@
                                 <span className="text-2xl">⏱️</span>
                                 <div>
                                     <div className="font-bold text-sm">{timeUp ? '⏰ MUDA UMEISHA!' : 'Session Time'}</div>
-                                    <div className="text-[10px] opacity-80">2 min test</div>
+                                    <div className="text-[10px] opacity-80">1 min test</div>
                                 </div>
                             </div>
                             <div className="text-right">
