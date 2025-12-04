@@ -206,6 +206,44 @@ const COURSE_CONFIG = {
                 { en: 'Solar Power', sw: 'Nguvu ya Jua' },
                 { en: 'Future Farming', sw: 'Kilimo cha Siku Zijazo' }
             ]
+        },
+        {
+            id: 11,
+            name: { en: 'Cashew Farming', sw: 'Kilimo cha Korosho' },
+            icon: '🥜',
+            color: 'from-amber-500 to-orange-600',
+            description: { en: 'Cashew cultivation and harvesting', sw: 'Upanzi na uvunaji wa korosho' },
+            levelNames: [
+                { en: 'Basics', sw: 'Misingi' },
+                { en: 'Planting', sw: 'Kupanda' },
+                { en: 'Care', sw: 'Utunzaji' },
+                { en: 'Pests & Diseases', sw: 'Wadudu na Magonjwa' },
+                { en: 'Harvesting', sw: 'Mavuno' },
+                { en: 'Storage & Processing', sw: 'Uhifadhi na Usindikaji' },
+                { en: 'Markets & Trade', sw: 'Soko na Biashara' },
+                { en: 'Improving Yields', sw: 'Kuboresha Mavuno' },
+                { en: 'Drought Adaptation', sw: 'Kukabiliana na Ukame' },
+                { en: 'Climate Change', sw: 'Mabadiliko ya Hali ya Hewa' }
+            ]
+        },
+        {
+            id: 12,
+            name: { en: 'Drought & Climate', sw: 'Ukame na Hali ya Hewa' },
+            icon: '🏜️',
+            color: 'from-yellow-500 to-red-500',
+            description: { en: 'Climate adaptation and drought management', sw: 'Kukabiliana na ukame na mabadiliko ya hali ya hewa' },
+            levelNames: [
+                { en: 'Drought Basics', sw: 'Misingi ya Ukame' },
+                { en: 'Water Conservation', sw: 'Kuhifadhi Maji' },
+                { en: 'Drought-Resistant Crops', sw: 'Mazao Yanayostahimili' },
+                { en: 'Soil Care', sw: 'Utunzaji wa Udongo' },
+                { en: 'Livestock & Drought', sw: 'Mifugo na Ukame' },
+                { en: 'Technology', sw: 'Teknolojia' },
+                { en: 'Planning & Prep', sw: 'Mipango na Maandalizi' },
+                { en: 'Climate Change', sw: 'Mabadiliko ya Hali ya Hewa' },
+                { en: 'Community Action', sw: 'Hatua za Jumuiya' },
+                { en: 'Future & Innovation', sw: 'Mustakabali na Ubunifu' }
+            ]
         }
     ],
 

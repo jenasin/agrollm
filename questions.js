@@ -11,7 +11,7 @@
         const modules = {};
         let moduleId = 1;
 
-        // Scan for MODULE*_QUESTIONS in window
+        // Scan for MODULE*_QUESTIONS in window (modules 1-10)
         while (true) {
             const varName = `MODULE${moduleId}_QUESTIONS`;
             if (window[varName]) {
@@ -20,6 +20,14 @@
             } else {
                 break;
             }
+        }
+
+        // Add specialized modules (cashew = 11, drought = 12)
+        if (window.cashewQuestions) {
+            modules[11] = window.cashewQuestions;
+        }
+        if (window.droughtQuestions) {
+            modules[12] = window.droughtQuestions;
         }
 
         return modules;
@@ -125,7 +133,16 @@
 
 // Get questions for a specific module and level
 function getQuestions(moduleId, levelNum) {
-    const key = `module${moduleId}_level${levelNum}`;
+    // Different key formats for different modules
+    let key;
+    if (moduleId === 11) {
+        key = `cashew_level${levelNum}`;
+    } else if (moduleId === 12) {
+        key = `drought_level${levelNum}`;
+    } else {
+        key = `module${moduleId}_level${levelNum}`;
+    }
+
     if (window.ALL_QUESTIONS &&
         window.ALL_QUESTIONS[moduleId] &&
         window.ALL_QUESTIONS[moduleId][key]) {

@@ -32,6 +32,15 @@
             document.head.appendChild(script);
         }
 
+        // Load specialized modules (cashew and drought - Swahili only for now)
+        const specialModules = ['questions_cashew.js', 'questions_drought.js'];
+        specialModules.forEach(file => {
+            const script = document.createElement('script');
+            script.src = 'questions/sw/' + file;
+            script.async = false;
+            document.head.appendChild(script);
+        });
+
         // Language info
         window.CURRENT_LANG = LANG;
         window.AVAILABLE_LANGS = {
@@ -489,8 +498,8 @@
                 };
             });
 
-            // === 30 MINUTE SESSION TIMER (isolated component) ===
-            const SESSION_DURATION = 30 * 60;
+            // === 3 MINUTE SESSION TIMER (for testing - change to 30*60 for production) ===
+            const SESSION_DURATION = 3 * 60;
             const sessionStartTimeRef = React.useRef(Date.now());
 
             const formatTimer = (seconds) => {
@@ -2056,6 +2065,30 @@
                     { icon: '🧬', en: 'Biotechnology', sw: 'Bayoteknolojia' },
                     { icon: '☀️', en: 'Solar Power', sw: 'Nguvu ya Jua' },
                     { icon: '🚀', en: 'Future Farming', sw: 'Kilimo cha Siku Zijazo' }
+                ],
+                11: [
+                    { icon: '🥜', en: 'Basics', sw: 'Misingi' },
+                    { icon: '🌱', en: 'Planting', sw: 'Kupanda' },
+                    { icon: '✋', en: 'Care', sw: 'Utunzaji' },
+                    { icon: '🐛', en: 'Pests & Diseases', sw: 'Wadudu na Magonjwa' },
+                    { icon: '🧺', en: 'Harvesting', sw: 'Mavuno' },
+                    { icon: '📦', en: 'Storage & Processing', sw: 'Uhifadhi na Usindikaji' },
+                    { icon: '💵', en: 'Markets & Trade', sw: 'Soko na Biashara' },
+                    { icon: '📈', en: 'Improving Yields', sw: 'Kuboresha Mavuno' },
+                    { icon: '🏜️', en: 'Drought Adaptation', sw: 'Kukabiliana na Ukame' },
+                    { icon: '🌡️', en: 'Climate Change', sw: 'Mabadiliko ya Hali ya Hewa' }
+                ],
+                12: [
+                    { icon: '🏜️', en: 'Drought Basics', sw: 'Misingi ya Ukame' },
+                    { icon: '💧', en: 'Water Conservation', sw: 'Kuhifadhi Maji' },
+                    { icon: '🌾', en: 'Drought-Resistant Crops', sw: 'Mazao Yanayostahimili' },
+                    { icon: '🌍', en: 'Soil Care', sw: 'Utunzaji wa Udongo' },
+                    { icon: '🐄', en: 'Livestock & Drought', sw: 'Mifugo na Ukame' },
+                    { icon: '📱', en: 'Technology', sw: 'Teknolojia' },
+                    { icon: '📋', en: 'Planning & Prep', sw: 'Mipango na Maandalizi' },
+                    { icon: '🌡️', en: 'Climate Change', sw: 'Mabadiliko ya Hali ya Hewa' },
+                    { icon: '🤝', en: 'Community Action', sw: 'Hatua za Jumuiya' },
+                    { icon: '🚀', en: 'Future & Innovation', sw: 'Mustakabali na Ubunifu' }
                 ]
             };
 
