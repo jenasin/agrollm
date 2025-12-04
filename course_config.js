@@ -10,7 +10,7 @@ const COURSE_CONFIG = {
             en: 'Learn Farming',
             sw: 'Jifunze Kilimo'
         },
-        questionsPerLevel: 10,
+        questionsPerLevel: 7,
         xpPerCorrect: 10,
         xpPerLevel: 100
     },

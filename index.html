@@ -509,8 +509,11 @@
             };
 
             // Self-contained Timer component - doesn't cause parent re-renders
-            const SessionTimer = React.memo(() => {
+            const timeUpSavedRef = React.useRef(false);
+
+            const SessionTimer = React.memo(({ onTimeUp }) => {
                 const [elapsed, setElapsed] = useState(0);
+                const hasTriggeredRef = React.useRef(false);
 
                 useEffect(() => {
                     const timer = setInterval(() => {
@@ -522,19 +525,27 @@
                 const remaining = Math.max(0, SESSION_DURATION - elapsed);
                 const timeUp = remaining === 0;
 
+                // Auto-save when time is up
+                useEffect(() => {
+                    if (timeUp && !hasTriggeredRef.current && onTimeUp) {
+                        hasTriggeredRef.current = true;
+                        onTimeUp();
+                    }
+                }, [timeUp, onTimeUp]);
+
                 return (
                     <div className={`rounded-2xl p-3 shadow-lg mb-3 text-white ${timeUp ? 'bg-gradient-to-r from-red-500 to-red-600' : 'bg-gradient-to-r from-orange-500 to-red-500'}`}>
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
                                 <span className="text-2xl">⏱️</span>
                                 <div>
-                                    <div className="font-bold text-sm">{timeUp ? '⏰ TIME UP!' : 'Session Time'}</div>
+                                    <div className="font-bold text-sm">{timeUp ? '⏰ MUDA UMEISHA!' : 'Session Time'}</div>
                                     <div className="text-[10px] opacity-80">10 min test</div>
                                 </div>
                             </div>
                             <div className="text-right">
                                 <div className="text-3xl font-bold font-mono">{formatTimer(elapsed)}</div>
-                                <div className="text-[10px] opacity-80">{timeUp ? 'completed' : `${formatTimer(remaining)} left`}</div>
+                                <div className="text-[10px] opacity-80">{timeUp ? 'imehifadhiwa' : `${formatTimer(remaining)} left`}</div>
                             </div>
                         </div>
                         <div className="mt-2 bg-white/20 rounded-full h-2 overflow-hidden">
@@ -1377,6 +1388,11 @@
             const SkillsScreen = () => {
                 const state = neuralState;
 
+                // Auto-save when timer expires (no confirmation)
+                const handleTimeUp = React.useCallback(() => {
+                    endAndSaveSession();
+                }, []);
+
                 // Reset and start new test
                 const resetTest = () => {
                     if (confirm(currentLang === 'sw'
@@ -1403,7 +1419,7 @@
                                     💾 {currentLang === 'sw' ? 'Hifadhi & Test Mpya' : 'Save & New Test'}
                                 </button>
                             </div>
-                            <SessionTimer />
+                            <SessionTimer onTimeUp={handleTimeUp} />
                         </div>
 
                         <div className="bg-gradient-to-r from-purple-500 to-indigo-600 shadow-md p-4 mx-3 rounded-2xl">
@@ -1895,14 +1911,14 @@
                                                 className="relative cursor-pointer transform transition hover:scale-110 active:scale-95"
                                                 style={{marginLeft: offset}}
                                             >
-                                                <div className={`w-20 h-20 rounded-full flex items-center justify-center shadow-[0_6px_0_rgba(0,0,0,0.2)] ${
+                                                <div className={`w-28 h-28 rounded-full flex items-center justify-center shadow-[0_8px_0_rgba(0,0,0,0.2)] ${
                                                     isCompleted
-                                                        ? 'bg-gradient-to-b from-yellow-400 to-yellow-500 shadow-[0_6px_0_#b45309]'
+                                                        ? 'bg-gradient-to-b from-yellow-400 to-yellow-500 shadow-[0_8px_0_#b45309]'
                                                         : hasProgress
-                                                            ? 'bg-gradient-to-b from-green-400 to-green-500 shadow-[0_6px_0_#166534]'
-                                                            : 'bg-gradient-to-b from-gray-300 to-gray-400 shadow-[0_6px_0_#6b7280]'
+                                                            ? 'bg-gradient-to-b from-green-400 to-green-500 shadow-[0_8px_0_#166534]'
+                                                            : 'bg-gradient-to-b from-gray-300 to-gray-400 shadow-[0_8px_0_#6b7280]'
                                                 }`}>
-                                                    <span className="text-4xl">{module.icon}</span>
+                                                    <span className="text-5xl">{module.icon}</span>
                                                 </div>
 
                                                 {/* Crown for completed */}
@@ -1912,13 +1928,13 @@
 
                                                 {/* Progress ring */}
                                                 {hasProgress && !isCompleted && (
-                                                    <svg className="absolute -inset-1 w-[88px] h-[88px] -rotate-90">
+                                                    <svg className="absolute -inset-1 w-[120px] h-[120px] -rotate-90">
                                                         <circle
-                                                            cx="44" cy="44" r="40"
+                                                            cx="60" cy="60" r="54"
                                                             fill="none"
                                                             stroke="#22c55e"
-                                                            strokeWidth="4"
-                                                            strokeDasharray={`${(completedLevels / module.levels) * 251} 251`}
+                                                            strokeWidth="5"
+                                                            strokeDasharray={`${(completedLevels / module.levels) * 339} 339`}
                                                             strokeLinecap="round"
                                                         />
                                                     </svg>
