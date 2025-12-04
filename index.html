@@ -1675,220 +1675,198 @@
                 };
 
                 const accuracy = researchStats.totalQuestions > 0
-                    ? ((researchStats.correctAnswers / researchStats.totalQuestions) * 100).toFixed(1)
+                    ? Math.round((researchStats.correctAnswers / researchStats.totalQuestions) * 100)
                     : 0;
 
                 const avgResponseTime = researchStats.totalQuestions > 0
                     ? Math.round(researchStats.totalResponseTimeMs / researchStats.totalQuestions)
                     : 0;
 
-                // Get last 7 days data for chart
-                const getLast7Days = () => {
-                    const days = [];
-                    for (let i = 6; i >= 0; i--) {
-                        const date = new Date();
-                        date.setDate(date.getDate() - i);
-                        const dateStr = date.toISOString().split('T')[0];
-                        const dayStats = researchStats.dailyStats[dateStr] || { total: 0, correct: 0 };
-                        days.push({
-                            date: dateStr,
-                            day: date.toLocaleDateString(currentLang === 'sw' ? 'sw-KE' : 'en-US', { weekday: 'short' }),
-                            total: dayStats.total,
-                            correct: dayStats.correct,
-                            accuracy: dayStats.total > 0 ? (dayStats.correct / dayStats.total * 100) : 0
-                        });
-                    }
-                    return days;
-                };
+                // Count unique modules and levels played
+                const modulesPlayed = Object.keys(researchStats.moduleStats || {}).length;
+                const levelsPlayed = Object.values(researchStats.moduleStats || {}).reduce((acc, mod) => {
+                    return acc + (mod.levels ? Object.keys(mod.levels).length : 0);
+                }, 0);
 
-                const last7Days = getLast7Days();
-                const maxDaily = Math.max(...last7Days.map(d => d.total), 1);
+                // Get elapsed time in current session
+                const currentSessionTime = Math.floor((Date.now() - sessionStartTimeRef.current) / 1000);
+                const sessionMins = Math.floor(currentSessionTime / 60);
+                const sessionSecs = currentSessionTime % 60;
 
                 return (
                     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 pb-20">
-                        {/* Header */}
-                        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 shadow-md p-4">
-                            <div className="flex items-center gap-2">
-                                <span className="text-2xl">📊</span>
-                                <span className="font-bold text-white text-lg">{t('statistics')}</span>
+                        {/* Header with big summary */}
+                        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 shadow-lg p-6 text-white">
+                            <h1 className="text-2xl font-bold mb-4 flex items-center gap-2">
+                                📊 {currentLang === 'sw' ? 'Matokeo ya Test' : 'Test Results'}
+                            </h1>
+
+                            {/* Big accuracy circle */}
+                            <div className="flex items-center justify-center mb-4">
+                                <div className="relative w-32 h-32">
+                                    <svg className="w-full h-full transform -rotate-90">
+                                        <circle cx="64" cy="64" r="56" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="12" />
+                                        <circle cx="64" cy="64" r="56" fill="none" stroke="#4ade80" strokeWidth="12"
+                                            strokeDasharray={`${accuracy * 3.52} 352`}
+                                            strokeLinecap="round" />
+                                    </svg>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                        <span className="text-4xl font-bold">{accuracy}%</span>
+                                        <span className="text-xs opacity-80">{currentLang === 'sw' ? 'sahihi' : 'correct'}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Quick stats row */}
+                            <div className="grid grid-cols-3 gap-2 text-center">
+                                <div className="bg-white/10 rounded-xl p-2">
+                                    <div className="text-2xl font-bold">{researchStats.totalQuestions}</div>
+                                    <div className="text-xs opacity-80">{currentLang === 'sw' ? 'maswali' : 'questions'}</div>
+                                </div>
+                                <div className="bg-white/10 rounded-xl p-2">
+                                    <div className="text-2xl font-bold text-green-300">{researchStats.correctAnswers}</div>
+                                    <div className="text-xs opacity-80">{currentLang === 'sw' ? 'sahihi' : 'correct'}</div>
+                                </div>
+                                <div className="bg-white/10 rounded-xl p-2">
+                                    <div className="text-2xl font-bold text-red-300">{researchStats.incorrectAnswers}</div>
+                                    <div className="text-xs opacity-80">{currentLang === 'sw' ? 'makosa' : 'wrong'}</div>
+                                </div>
                             </div>
                         </div>
 
                         <div className="p-4 space-y-4">
                             {researchStats.totalQuestions === 0 ? (
                                 <div className="bg-white rounded-2xl p-8 shadow-lg text-center">
-                                    <div className="text-6xl mb-4">📚</div>
-                                    <p className="text-gray-500">{t('noData')}</p>
+                                    <div className="text-6xl mb-4">📝</div>
+                                    <h3 className="text-xl font-bold text-gray-700 mb-2">
+                                        {currentLang === 'sw' ? 'Hakuna maswali bado' : 'No questions yet'}
+                                    </h3>
+                                    <p className="text-gray-500">
+                                        {currentLang === 'sw' ? 'Anza kujifunza kupata takwimu!' : 'Start learning to see statistics!'}
+                                    </p>
                                 </div>
                             ) : (
                                 <>
-                                    {/* Main Stats Grid */}
+                                    {/* Progress Summary Card */}
                                     <div className="bg-white rounded-2xl p-4 shadow-lg">
-                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                            <span>📈</span> {t('allTime')}
+                                        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                            🎯 {currentLang === 'sw' ? 'Maendeleo' : 'Progress'}
                                         </h3>
                                         <div className="grid grid-cols-2 gap-3">
-                                            <div className="bg-blue-50 rounded-xl p-3 text-center">
-                                                <div className="text-2xl font-bold text-blue-600">{researchStats.totalQuestions}</div>
-                                                <div className="text-xs text-gray-500">{t('totalQuestions')}</div>
+                                            <div className="bg-purple-50 rounded-xl p-4 text-center">
+                                                <div className="text-3xl font-bold text-purple-600">{modulesPlayed}</div>
+                                                <div className="text-sm text-gray-600">{currentLang === 'sw' ? 'moduli zilizochezwa' : 'modules played'}</div>
                                             </div>
-                                            <div className="bg-green-50 rounded-xl p-3 text-center">
-                                                <div className="text-2xl font-bold text-green-600">{accuracy}%</div>
-                                                <div className="text-xs text-gray-500">{t('accuracy')}</div>
-                                            </div>
-                                            <div className="bg-emerald-50 rounded-xl p-3 text-center">
-                                                <div className="text-2xl font-bold text-emerald-600">{researchStats.correctAnswers}</div>
-                                                <div className="text-xs text-gray-500">{t('correctAnswers')}</div>
-                                            </div>
-                                            <div className="bg-red-50 rounded-xl p-3 text-center">
-                                                <div className="text-2xl font-bold text-red-500">{researchStats.incorrectAnswers}</div>
-                                                <div className="text-xs text-gray-500">{t('incorrectAnswers')}</div>
-                                            </div>
-                                            <div className="bg-purple-50 rounded-xl p-3 text-center">
-                                                <div className="text-2xl font-bold text-purple-600">{avgResponseTime}ms</div>
-                                                <div className="text-xs text-gray-500">{t('avgResponseTime')}</div>
-                                            </div>
-                                            <div className="bg-orange-50 rounded-xl p-3 text-center">
-                                                <div className="text-2xl font-bold text-orange-600">{formatTime(researchStats.totalSessionTimeMs)}</div>
-                                                <div className="text-xs text-gray-500">{t('totalTime')}</div>
+                                            <div className="bg-indigo-50 rounded-xl p-4 text-center">
+                                                <div className="text-3xl font-bold text-indigo-600">{levelsPlayed}</div>
+                                                <div className="text-sm text-gray-600">{currentLang === 'sw' ? 'viwango vilizo­jaribiwa' : 'levels attempted'}</div>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Last 7 Days Chart */}
+                                    {/* Time Stats */}
                                     <div className="bg-white rounded-2xl p-4 shadow-lg">
-                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                            <span>📅</span> {t('last7Days')}
+                                        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                            ⏱️ {currentLang === 'sw' ? 'Muda' : 'Time'}
                                         </h3>
-                                        <div className="flex items-end justify-between h-32 gap-2">
-                                            {last7Days.map((day, i) => (
-                                                <div key={i} className="flex-1 flex flex-col items-center">
-                                                    <div className="w-full flex flex-col items-center" style={{ height: '80px' }}>
-                                                        <div
-                                                            className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg transition-all"
-                                                            style={{
-                                                                height: `${(day.total / maxDaily) * 100}%`,
-                                                                minHeight: day.total > 0 ? '4px' : '0'
-                                                            }}
-                                                        />
-                                                    </div>
-                                                    <div className="text-xs text-gray-500 mt-1">{day.day}</div>
-                                                    <div className="text-xs font-bold text-gray-700">{day.total}</div>
-                                                </div>
-                                            ))}
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <div className="bg-orange-50 rounded-xl p-4 text-center">
+                                                <div className="text-3xl font-bold text-orange-600">{sessionMins}:{sessionSecs.toString().padStart(2,'0')}</div>
+                                                <div className="text-sm text-gray-600">{currentLang === 'sw' ? 'test hii' : 'this test'}</div>
+                                            </div>
+                                            <div className="bg-amber-50 rounded-xl p-4 text-center">
+                                                <div className="text-3xl font-bold text-amber-600">{avgResponseTime > 1000 ? (avgResponseTime/1000).toFixed(1) + 's' : avgResponseTime + 'ms'}</div>
+                                                <div className="text-sm text-gray-600">{currentLang === 'sw' ? 'wastani/swali' : 'avg per question'}</div>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Module Stats */}
+                                    {/* Module Breakdown - Clear Cards */}
                                     <div className="bg-white rounded-2xl p-4 shadow-lg">
-                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                            <span>📚</span> {t('moduleStats')}
+                                        <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
+                                            📚 {currentLang === 'sw' ? 'Matokeo kwa Moduli' : 'Results by Module'}
                                         </h3>
                                         <div className="space-y-3">
                                             {modules.map(module => {
                                                 const moduleStats = researchStats.moduleStats[`module_${module.id}`];
                                                 if (!moduleStats || moduleStats.total === 0) return null;
 
-                                                const moduleAccuracy = (moduleStats.correct / moduleStats.total * 100).toFixed(0);
+                                                const moduleAccuracy = Math.round((moduleStats.correct / moduleStats.total) * 100);
                                                 const levelCount = moduleStats.levels ? Object.keys(moduleStats.levels).length : 0;
 
                                                 return (
-                                                    <div key={module.id} className="flex items-center gap-3">
-                                                        <span className="text-2xl">{module.icon}</span>
-                                                        <div className="flex-1">
-                                                            <div className="flex justify-between items-center mb-1">
-                                                                <span className="font-medium text-sm">{lt(module.name)}</span>
-                                                                <span className="text-sm text-gray-500">{moduleStats.total}Q • {levelCount} {currentLang === 'sw' ? 'viwango' : 'levels'}</span>
+                                                    <div key={module.id} className="bg-gray-50 rounded-xl p-3">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <span className="text-3xl">{module.icon}</span>
+                                                            <div className="flex-1">
+                                                                <div className="font-bold text-gray-800">{lt(module.name)}</div>
+                                                                <div className="text-sm text-gray-500">
+                                                                    {levelCount} {currentLang === 'sw' ? 'viwango' : 'levels'} • {moduleStats.total} {currentLang === 'sw' ? 'maswali' : 'questions'}
+                                                                </div>
                                                             </div>
-                                                            <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
-                                                                <div
-                                                                    className={`bg-gradient-to-r ${module.color} h-full`}
-                                                                    style={{ width: `${moduleAccuracy}%` }}
-                                                                />
+                                                            <div className={`text-2xl font-bold ${moduleAccuracy >= 70 ? 'text-green-500' : moduleAccuracy >= 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                                {moduleAccuracy}%
                                                             </div>
-                                                            <div className="text-xs text-gray-400 mt-1">{moduleAccuracy}% {t('accuracy').toLowerCase()}</div>
                                                         </div>
+                                                        {/* Progress bar */}
+                                                        <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
+                                                            <div
+                                                                className={`h-full rounded-full ${moduleAccuracy >= 70 ? 'bg-green-500' : moduleAccuracy >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                                                style={{ width: `${moduleAccuracy}%` }}
+                                                            />
+                                                        </div>
+                                                        {/* Level details */}
+                                                        {moduleStats.levels && (
+                                                            <div className="mt-2 flex flex-wrap gap-1">
+                                                                {Object.entries(moduleStats.levels).map(([levelKey, levelData]) => {
+                                                                    const levelNum = levelKey.split('_')[1];
+                                                                    const lvlAcc = Math.round((levelData.correct / levelData.total) * 100);
+                                                                    return (
+                                                                        <span key={levelKey} className={`text-xs px-2 py-1 rounded-full ${lvlAcc >= 70 ? 'bg-green-100 text-green-700' : lvlAcc >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-red-100 text-red-700'}`}>
+                                                                            L{levelNum}: {lvlAcc}%
+                                                                        </span>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 );
                                             })}
+                                            {Object.keys(researchStats.moduleStats || {}).length === 0 && (
+                                                <div className="text-center text-gray-400 py-4">
+                                                    {currentLang === 'sw' ? 'Hakuna moduli bado' : 'No modules yet'}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
 
-                                    {/* Level Repetitions - Detailed Stats */}
-                                    <div className="bg-white rounded-2xl p-4 shadow-lg">
-                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                            <span>🔄</span> {currentLang === 'sw' ? 'Marudio ya Viwango' : 'Level Details'}
-                                        </h3>
-                                        <div className="space-y-2 max-h-64 overflow-y-auto">
-                                            {modules.map(module => {
-                                                const moduleStats = researchStats.moduleStats[`module_${module.id}`];
-                                                if (!moduleStats?.levels) return null;
-
-                                                return Object.entries(moduleStats.levels).map(([levelKey, levelData]) => {
-                                                    const levelNum = levelKey.split('_')[1];
-                                                    const levelAccuracy = levelData.total > 0 ? Math.round((levelData.correct / levelData.total) * 100) : 0;
-
-                                                    return (
-                                                        <div key={`${module.id}-${levelKey}`} className="flex items-center justify-between bg-gray-50 rounded-lg p-2 text-sm">
-                                                            <div className="flex items-center gap-2">
-                                                                <span>{module.icon}</span>
-                                                                <span className="font-medium">{currentLang === 'sw' ? 'Kiwango' : 'Lvl'} {levelNum}</span>
-                                                            </div>
-                                                            <div className="flex items-center gap-3 text-xs">
-                                                                <span className="text-gray-500">{levelData.total}x</span>
-                                                                <span className={`font-bold ${levelAccuracy >= 70 ? 'text-green-600' : levelAccuracy >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
-                                                                    {levelAccuracy}%
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    );
-                                                });
-                                            })}
-                                        </div>
-                                    </div>
-
-                                    {/* Export Section */}
-                                    <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl p-4 shadow-lg text-white">
+                                    {/* Export Section - Compact */}
+                                    <div className="bg-gradient-to-r from-gray-700 to-gray-800 rounded-2xl p-4 shadow-lg text-white">
                                         <h3 className="font-bold mb-3 flex items-center gap-2">
-                                            <span>📤</span> {t('researchExport')}
+                                            📤 {currentLang === 'sw' ? 'Hamisha Data' : 'Export Data'}
                                         </h3>
-                                        <p className="text-sm opacity-80 mb-4">
-                                            {currentLang === 'sw'
-                                                ? 'Hamisha data kwa uchambuzi wa kisayansi'
-                                                : 'Export data for scientific analysis'}
-                                        </p>
-                                        <div className="grid grid-cols-2 gap-3">
+                                        <div className="grid grid-cols-2 gap-2">
                                             <button
                                                 onClick={exportStatsAsJSON}
-                                                className="bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition"
+                                                className="bg-white/20 hover:bg-white/30 py-2 px-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition"
                                             >
-                                                <span>📋</span> {t('exportJson')}
+                                                📋 JSON
                                             </button>
                                             <button
                                                 onClick={exportStatsAsCSV}
-                                                className="bg-white/20 hover:bg-white/30 py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 transition"
+                                                className="bg-white/20 hover:bg-white/30 py-2 px-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition"
                                             >
-                                                <span>📊</span> {t('exportCsv')}
+                                                📊 CSV
                                             </button>
-                                        </div>
-
-                                        {/* Additional info for researchers */}
-                                        <div className="mt-4 pt-4 border-t border-white/20 text-xs opacity-70">
-                                            <div className="grid grid-cols-2 gap-2">
-                                                <div>Start: {new Date(researchStats.startDate).toLocaleDateString()}</div>
-                                                <div>Answers: {researchStats.answerHistory.length}</div>
-                                                <div>Sessions: {researchStats.sessions.length}</div>
-                                                <div>Language: {currentLang.toUpperCase()}</div>
-                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Reset Button */}
                                     <button
                                         onClick={resetResearchStats}
-                                        className="w-full bg-white rounded-2xl p-4 shadow-lg text-red-500 font-bold flex items-center justify-center gap-2"
+                                        className="w-full bg-red-50 border-2 border-red-200 rounded-2xl p-3 text-red-500 font-bold flex items-center justify-center gap-2"
                                     >
-                                        <span>🗑️</span> {t('resetStats')}
+                                        🗑️ {currentLang === 'sw' ? 'Futa Takwimu Zote' : 'Reset All Statistics'}
                                     </button>
                                 </>
                             )}
@@ -2746,11 +2724,17 @@
             // Test End Screen - shown when 5 min timer expires
             const TestEndScreen = () => {
                 const [name, setName] = useState(participantName);
-                const [showStats, setShowStats] = useState(false);
+                const [view, setView] = useState('main'); // 'main', 'stats', 'answers'
 
                 const accuracy = researchStats.totalQuestions > 0
                     ? Math.round((researchStats.correctAnswers / researchStats.totalQuestions) * 100)
                     : 0;
+
+                // Count modules and levels
+                const modulesPlayed = Object.keys(researchStats.moduleStats || {}).length;
+                const levelsPlayed = Object.values(researchStats.moduleStats || {}).reduce((acc, mod) => {
+                    return acc + (mod.levels ? Object.keys(mod.levels).length : 0);
+                }, 0);
 
                 const handleStartNewTest = () => {
                     // Save participant name
@@ -2789,124 +2773,213 @@
                     setShowTestEndScreen(false);
                 };
 
-                if (showStats) {
+                // Answer history view
+                if (view === 'answers') {
                     return (
-                        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-4">
+                        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4">
                             <div className="max-w-md mx-auto">
-                                <button
-                                    onClick={() => setShowStats(false)}
-                                    className="mb-4 text-2xl"
-                                >
+                                <button onClick={() => setView('main')} className="mb-4 text-xl font-bold text-gray-600">
                                     ← {currentLang === 'sw' ? 'Rudi' : 'Back'}
                                 </button>
 
-                                <div className="bg-white rounded-3xl p-6 shadow-xl">
-                                    <h2 className="text-2xl font-bold text-center mb-6">
-                                        📊 {currentLang === 'sw' ? 'Takwimu za Test' : 'Test Statistics'}
-                                    </h2>
-
-                                    <div className="space-y-4">
-                                        <div className="flex justify-between items-center p-3 bg-blue-50 rounded-xl">
-                                            <span>📝 {currentLang === 'sw' ? 'Maswali' : 'Questions'}</span>
-                                            <span className="font-bold text-xl">{researchStats.totalQuestions}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center p-3 bg-green-50 rounded-xl">
-                                            <span>✅ {currentLang === 'sw' ? 'Sahihi' : 'Correct'}</span>
-                                            <span className="font-bold text-xl text-green-600">{researchStats.correctAnswers}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center p-3 bg-red-50 rounded-xl">
-                                            <span>❌ {currentLang === 'sw' ? 'Makosa' : 'Wrong'}</span>
-                                            <span className="font-bold text-xl text-red-600">{researchStats.incorrectAnswers}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center p-3 bg-purple-50 rounded-xl">
-                                            <span>🎯 {currentLang === 'sw' ? 'Usahihi' : 'Accuracy'}</span>
-                                            <span className="font-bold text-xl text-purple-600">{accuracy}%</span>
-                                        </div>
-                                        <div className="flex justify-between items-center p-3 bg-orange-50 rounded-xl">
-                                            <span>⏱️ {currentLang === 'sw' ? 'Muda' : 'Time'}</span>
-                                            <span className="font-bold text-xl text-orange-600">
-                                                {Math.round(researchStats.totalSessionTimeMs / 60000)} min
-                                            </span>
-                                        </div>
+                                <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+                                    <div className="bg-gradient-to-r from-purple-500 to-indigo-600 p-4 text-white">
+                                        <h2 className="text-xl font-bold">📝 {currentLang === 'sw' ? 'Historia ya Majibu' : 'Answer History'}</h2>
+                                        <p className="text-sm opacity-80">{researchStats.answerHistory?.length || 0} {currentLang === 'sw' ? 'majibu' : 'answers'}</p>
                                     </div>
 
-                                    {/* Per-module stats */}
-                                    {Object.keys(researchStats.moduleStats).length > 0 && (
-                                        <div className="mt-6">
-                                            <h3 className="font-bold mb-3">
-                                                📚 {currentLang === 'sw' ? 'Kwa Moduli' : 'By Module'}
-                                            </h3>
-                                            {Object.entries(researchStats.moduleStats).map(([key, stats]) => {
-                                                const moduleId = parseInt(key.replace('module_', ''));
-                                                const moduleInfo = modules.find(m => m.id === moduleId);
-                                                const modAccuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
-                                                return (
-                                                    <div key={key} className="flex justify-between items-center p-2 border-b">
-                                                        <span>{moduleInfo?.icon} {lt(moduleInfo?.name) || key}</span>
-                                                        <span className="font-bold">{stats.correct}/{stats.total} ({modAccuracy}%)</span>
+                                    <div className="divide-y max-h-[60vh] overflow-y-auto">
+                                        {(researchStats.answerHistory || []).map((answer, idx) => {
+                                            const moduleInfo = modules.find(m => m.id === answer.moduleId);
+                                            return (
+                                                <div key={idx} className={`p-3 ${answer.isCorrect ? 'bg-green-50' : 'bg-red-50'}`}>
+                                                    <div className="flex items-start gap-2">
+                                                        <span className="text-xl">{answer.isCorrect ? '✅' : '❌'}</span>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="text-xs text-gray-500 mb-1">
+                                                                {moduleInfo?.icon} {currentLang === 'sw' ? 'Kiwango' : 'Level'} {answer.levelNum} • {Math.round(answer.responseTimeMs/1000)}s
+                                                            </div>
+                                                            <div className="font-medium text-sm text-gray-800 line-clamp-2">
+                                                                {answer.questionText}
+                                                            </div>
+                                                            <div className="mt-1 text-xs">
+                                                                <span className={answer.isCorrect ? 'text-green-600' : 'text-red-600'}>
+                                                                    {currentLang === 'sw' ? 'Jibu lako: ' : 'Your answer: '}{answer.selectedAnswer}
+                                                                </span>
+                                                                {!answer.isCorrect && (
+                                                                    <span className="text-green-600 ml-2">
+                                                                        ({currentLang === 'sw' ? 'Sahihi: ' : 'Correct: '}{answer.correctAnswer})
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                        {(!researchStats.answerHistory || researchStats.answerHistory.length === 0) && (
+                                            <div className="p-8 text-center text-gray-400">
+                                                {currentLang === 'sw' ? 'Hakuna majibu bado' : 'No answers yet'}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     );
                 }
 
-                return (
-                    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-red-100 flex flex-col items-center justify-center p-4">
-                        <div className="bg-white rounded-3xl p-8 shadow-2xl text-center max-w-sm w-full">
-                            <div className="text-6xl mb-4">⏰</div>
-                            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-                                {currentLang === 'sw' ? 'Muda Umeisha!' : 'Time is Up!'}
-                            </h2>
-                            <p className="text-gray-500 mb-6">
-                                {currentLang === 'sw' ? 'Test imehifadhiwa' : 'Test has been saved'}
-                            </p>
+                // Stats view
+                if (view === 'stats') {
+                    return (
+                        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-4">
+                            <div className="max-w-md mx-auto">
+                                <button onClick={() => setView('main')} className="mb-4 text-xl font-bold text-gray-600">
+                                    ← {currentLang === 'sw' ? 'Rudi' : 'Back'}
+                                </button>
 
-                            {/* Quick stats */}
-                            <div className="bg-gray-50 rounded-xl p-4 mb-6">
-                                <div className="flex justify-around text-center">
-                                    <div>
-                                        <div className="text-2xl font-bold text-blue-600">{researchStats.totalQuestions}</div>
-                                        <div className="text-xs text-gray-500">{currentLang === 'sw' ? 'Maswali' : 'Questions'}</div>
+                                {/* Big summary card */}
+                                <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg mb-4">
+                                    <div className="text-center mb-4">
+                                        <div className="text-5xl font-bold">{accuracy}%</div>
+                                        <div className="text-sm opacity-80">{currentLang === 'sw' ? 'usahihi' : 'accuracy'}</div>
                                     </div>
-                                    <div>
-                                        <div className="text-2xl font-bold text-green-600">{accuracy}%</div>
-                                        <div className="text-xs text-gray-500">{currentLang === 'sw' ? 'Sahihi' : 'Correct'}</div>
+                                    <div className="grid grid-cols-3 gap-2 text-center text-sm">
+                                        <div className="bg-white/10 rounded-lg p-2">
+                                            <div className="font-bold text-lg">{researchStats.totalQuestions}</div>
+                                            <div className="opacity-80">{currentLang === 'sw' ? 'maswali' : 'questions'}</div>
+                                        </div>
+                                        <div className="bg-white/10 rounded-lg p-2">
+                                            <div className="font-bold text-lg text-green-300">{researchStats.correctAnswers}</div>
+                                            <div className="opacity-80">{currentLang === 'sw' ? 'sahihi' : 'correct'}</div>
+                                        </div>
+                                        <div className="bg-white/10 rounded-lg p-2">
+                                            <div className="font-bold text-lg text-red-300">{researchStats.incorrectAnswers}</div>
+                                            <div className="opacity-80">{currentLang === 'sw' ? 'makosa' : 'wrong'}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Modules breakdown */}
+                                <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                    <h3 className="font-bold text-gray-800 mb-3">📚 {currentLang === 'sw' ? 'Matokeo kwa Moduli' : 'Results by Module'}</h3>
+                                    <div className="space-y-3">
+                                        {Object.entries(researchStats.moduleStats || {}).map(([key, stats]) => {
+                                            const moduleId = parseInt(key.replace('module_', ''));
+                                            const moduleInfo = modules.find(m => m.id === moduleId);
+                                            const modAccuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+                                            const levelCount = stats.levels ? Object.keys(stats.levels).length : 0;
+
+                                            return (
+                                                <div key={key} className="bg-gray-50 rounded-xl p-3">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <span className="text-2xl">{moduleInfo?.icon || '📚'}</span>
+                                                        <div className="flex-1">
+                                                            <div className="font-bold">{lt(moduleInfo?.name) || key}</div>
+                                                            <div className="text-xs text-gray-500">{levelCount} {currentLang === 'sw' ? 'viwango' : 'levels'} • {stats.total} {currentLang === 'sw' ? 'maswali' : 'Q'}</div>
+                                                        </div>
+                                                        <div className={`text-xl font-bold ${modAccuracy >= 70 ? 'text-green-500' : modAccuracy >= 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                                                            {modAccuracy}%
+                                                        </div>
+                                                    </div>
+                                                    <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
+                                                        <div className={`h-full ${modAccuracy >= 70 ? 'bg-green-500' : modAccuracy >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
+                                                            style={{ width: `${modAccuracy}%` }} />
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    );
+                }
 
-                            {/* Name input */}
-                            <div className="mb-6">
-                                <label className="block text-left text-sm font-bold text-gray-700 mb-2">
-                                    {currentLang === 'sw' ? 'Jina lako:' : 'Your name:'}
-                                </label>
-                                <input
-                                    type="text"
-                                    value={name}
-                                    onChange={(e) => setName(e.target.value)}
-                                    placeholder={currentLang === 'sw' ? 'Andika jina...' : 'Enter name...'}
-                                    className="w-full p-3 border-2 border-gray-200 rounded-xl text-center text-lg focus:border-blue-500 focus:outline-none"
-                                />
+                // Main view
+                return (
+                    <div className="min-h-screen bg-gradient-to-b from-green-50 to-emerald-100 p-4">
+                        <div className="max-w-md mx-auto">
+                            {/* Result Card */}
+                            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden mb-4">
+                                {/* Header with score */}
+                                <div className={`p-6 text-center text-white ${accuracy >= 70 ? 'bg-gradient-to-r from-green-500 to-emerald-600' : accuracy >= 50 ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : 'bg-gradient-to-r from-red-500 to-pink-600'}`}>
+                                    <div className="text-6xl mb-2">{accuracy >= 70 ? '🎉' : accuracy >= 50 ? '👍' : '💪'}</div>
+                                    <div className="text-5xl font-bold mb-1">{accuracy}%</div>
+                                    <div className="text-sm opacity-90">
+                                        {accuracy >= 70
+                                            ? (currentLang === 'sw' ? 'Hongera! Umefanya vizuri!' : 'Great job!')
+                                            : accuracy >= 50
+                                            ? (currentLang === 'sw' ? 'Vizuri! Endelea kujifunza!' : 'Good! Keep learning!')
+                                            : (currentLang === 'sw' ? 'Jaribu tena! Utafanikiwa!' : 'Try again! You can do it!')
+                                        }
+                                    </div>
+                                </div>
+
+                                {/* Quick stats */}
+                                <div className="p-4 grid grid-cols-4 gap-2 text-center border-b">
+                                    <div>
+                                        <div className="text-xl font-bold text-blue-600">{researchStats.totalQuestions}</div>
+                                        <div className="text-[10px] text-gray-500">{currentLang === 'sw' ? 'MASWALI' : 'QUESTIONS'}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-xl font-bold text-green-600">{researchStats.correctAnswers}</div>
+                                        <div className="text-[10px] text-gray-500">{currentLang === 'sw' ? 'SAHIHI' : 'CORRECT'}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-xl font-bold text-purple-600">{modulesPlayed}</div>
+                                        <div className="text-[10px] text-gray-500">{currentLang === 'sw' ? 'MODULI' : 'MODULES'}</div>
+                                    </div>
+                                    <div>
+                                        <div className="text-xl font-bold text-indigo-600">{levelsPlayed}</div>
+                                        <div className="text-[10px] text-gray-500">{currentLang === 'sw' ? 'VIWANGO' : 'LEVELS'}</div>
+                                    </div>
+                                </div>
+
+                                {/* Name input */}
+                                <div className="p-4">
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">
+                                        {currentLang === 'sw' ? 'Jina la mshiriki:' : 'Participant name:'}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                        placeholder={currentLang === 'sw' ? 'Andika jina...' : 'Enter name...'}
+                                        className="w-full p-3 border-2 border-gray-200 rounded-xl text-lg focus:border-green-500 focus:outline-none"
+                                    />
+                                </div>
                             </div>
 
-                            {/* Buttons */}
+                            {/* Action buttons */}
                             <div className="space-y-3">
                                 <button
                                     onClick={handleStartNewTest}
-                                    className="w-full py-4 rounded-xl font-bold text-lg bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg"
+                                    className="w-full py-4 rounded-2xl font-bold text-lg bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg flex items-center justify-center gap-2"
                                 >
                                     🚀 {currentLang === 'sw' ? 'Anza Test Mpya' : 'Start New Test'}
                                 </button>
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <button
+                                        onClick={() => setView('stats')}
+                                        className="py-3 rounded-xl font-bold bg-blue-100 text-blue-700 flex items-center justify-center gap-2"
+                                    >
+                                        📊 {currentLang === 'sw' ? 'Takwimu' : 'Stats'}
+                                    </button>
+                                    <button
+                                        onClick={() => setView('answers')}
+                                        className="py-3 rounded-xl font-bold bg-purple-100 text-purple-700 flex items-center justify-center gap-2"
+                                    >
+                                        📝 {currentLang === 'sw' ? 'Majibu' : 'Answers'}
+                                    </button>
+                                </div>
+
                                 <button
-                                    onClick={() => setShowStats(true)}
-                                    className="w-full py-3 rounded-xl font-bold text-gray-700 bg-gray-100"
+                                    onClick={exportStatsAsCSV}
+                                    className="w-full py-3 rounded-xl font-bold bg-gray-100 text-gray-700 flex items-center justify-center gap-2"
                                 >
-                                    📊 {currentLang === 'sw' ? 'Angalia Takwimu' : 'View Statistics'}
+                                    📤 {currentLang === 'sw' ? 'Hamisha CSV' : 'Export CSV'}
                                 </button>
                             </div>
                         </div>
