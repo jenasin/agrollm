@@ -1856,20 +1856,6 @@
                                 </div>
                             </div>
 
-                            {/* Daily goal */}
-                            <div className="bg-white rounded-2xl p-4 shadow-lg mb-4">
-                                <div className="flex justify-between items-center mb-2">
-                                    <span className="font-bold">{t('dailyGoal')}</span>
-                                    <span className="text-sm text-gray-500">{dailyXp}/{dailyGoal} XP</span>
-                                </div>
-                                <div className="bg-gray-200 rounded-full h-3 overflow-hidden">
-                                    <div
-                                        className="bg-gradient-to-r from-yellow-400 to-orange-500 h-full transition-all duration-500"
-                                        style={{width: `${Math.min((dailyXp / dailyGoal) * 100, 100)}%`}}
-                                    />
-                                </div>
-                            </div>
-
                             {/* Modules - Duolingo style big icons with progress */}
                             <div className="space-y-4">
                                 <h2 className="font-bold text-xl text-gray-800">{t('courses')}</h2>
