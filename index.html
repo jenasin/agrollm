@@ -525,8 +525,8 @@
                 };
             });
 
-            // === 1 MINUTE SESSION TIMER (demo) ===
-            const SESSION_DURATION = 1 * 60;
+            // === 10 MINUTE SESSION TIMER ===
+            const SESSION_DURATION = 10 * 60;
             const sessionStartTimeRef = React.useRef(Date.now());
 
             const formatTimer = (seconds) => {
@@ -567,7 +567,7 @@
                                 <span className="text-2xl">⏱️</span>
                                 <div>
                                     <div className="font-bold text-sm">{timeUp ? '⏰ MUDA UMEISHA!' : 'Session Time'}</div>
-                                    <div className="text-[10px] opacity-80">1 min test</div>
+                                    <div className="text-[10px] opacity-80">10 min test</div>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -629,20 +629,21 @@
                 };
             }, []);
 
-            // Function to record answer for research
-            const recordAnswerForResearch = (moduleId, levelNum, questionIndex, isCorrect, responseTimeMs, questionText) => {
+            // Function to record answer for research - FULL LOGGING
+            const recordAnswerForResearch = (moduleId, levelNum, questionIndex, isCorrect, responseTimeMs, questionText, selectedAnswer, correctAnswer) => {
                 const now = Date.now();
                 const today = new Date().toISOString().split('T')[0];
+                const elapsedSinceStart = now - sessionStartTimeRef.current;
 
                 setResearchStats(prev => {
                     const moduleKey = `module_${moduleId}`;
                     const moduleStats = prev.moduleStats[moduleKey] || {
-                        total: 0, correct: 0, incorrect: 0, totalTimeMs: 0, levels: {}
+                        total: 0, correct: 0, incorrect: 0, totalTimeMs: 0, levels: {}, attempts: 0
                     };
 
                     const levelKey = `level_${levelNum}`;
                     const levelStats = moduleStats.levels[levelKey] || {
-                        total: 0, correct: 0, incorrect: 0, totalTimeMs: 0
+                        total: 0, correct: 0, incorrect: 0, totalTimeMs: 0, attempts: 0
                     };
 
                     const dailyStats = prev.dailyStats[today] || {
@@ -657,13 +658,16 @@
                         totalResponseTimeMs: prev.totalResponseTimeMs + responseTimeMs,
                         answerHistory: [...prev.answerHistory, {
                             timestamp: now,
+                            elapsedMs: elapsedSinceStart,
                             moduleId,
                             levelNum,
                             questionIndex,
                             isCorrect,
                             responseTimeMs,
-                            questionText: questionText?.substring(0, 100) // truncate for storage
-                        }].slice(-1000), // Keep last 1000 answers
+                            questionText: questionText?.substring(0, 150),
+                            selectedAnswer: selectedAnswer?.substring(0, 100),
+                            correctAnswer: correctAnswer?.substring(0, 100)
+                        }].slice(-2000), // Keep last 2000 answers
                         moduleStats: {
                             ...prev.moduleStats,
                             [moduleKey]: {
@@ -694,6 +698,27 @@
                                 totalTimeMs: dailyStats.totalTimeMs + responseTimeMs
                             }
                         }
+                    };
+                });
+            };
+
+            // Track level attempts
+            const recordLevelAttempt = (moduleId, levelNum, score, total, passed) => {
+                const now = Date.now();
+                setResearchStats(prev => {
+                    const levelAttempts = prev.levelAttempts || [];
+                    return {
+                        ...prev,
+                        levelAttempts: [...levelAttempts, {
+                            timestamp: now,
+                            elapsedMs: now - sessionStartTimeRef.current,
+                            moduleId,
+                            levelNum,
+                            score,
+                            total,
+                            percentage: Math.round((score / total) * 100),
+                            passed
+                        }]
                     };
                 });
             };
@@ -832,14 +857,18 @@
                 setNeuralState(neuralState);
                 console.log('[Neural] State:', neuralState.phase, 'Momentum:', neuralState.momentum.toFixed(2));
 
-                // === RESEARCH STATISTICS UPDATE ===
+                // === RESEARCH STATISTICS UPDATE - FULL LOGGING ===
+                const selectedAnswerText = question.options[answerIndex]?.text || '';
+                const correctAnswerText = question.options.find(o => o.isCorrect)?.text || '';
                 recordAnswerForResearch(
                     selectedModule,
                     selectedLevel,
                     currentQuestion,
                     isCorrect,
                     responseTime,
-                    question.question
+                    question.question,
+                    selectedAnswerText,
+                    correctAnswerText
                 );
 
                 if (isCorrect) {
@@ -872,7 +901,11 @@
             const finishLevel = () => {
                 const questions = getQuestionsForLevel(selectedModule, selectedLevel);
                 const percentage = (score / questions.length) * 100;
-                const stars = percentage >= 90 ? 3 : percentage >= 70 ? 2 : percentage >= 50 ? 1 : 0;
+                const stars = percentage >= 90 ? 3 : percentage >= 80 ? 2 : percentage >= 60 ? 1 : 0;
+                const passed = percentage >= 80; // 80% to pass
+
+                // Record level attempt for research
+                recordLevelAttempt(selectedModule, selectedLevel, score, questions.length, passed);
 
                 const levelKey = `${selectedModule}-${selectedLevel}`;
                 const prevStars = levelProgress[levelKey] || 0;
@@ -1030,10 +1063,11 @@
             const endAndSaveSession = () => {
                 if (!currentSessionId) return;
 
+                const now = Date.now();
                 const sessionData = {
                     id: currentSessionId,
-                    endTime: Date.now(),
-                    duration: Date.now() - currentSessionId,
+                    endTime: now,
+                    duration: now - currentSessionId,
                     totalQuestions: researchStats.totalQuestions,
                     correctAnswers: researchStats.correctAnswers,
                     incorrectAnswers: researchStats.incorrectAnswers,
@@ -1045,9 +1079,17 @@
                         : 0,
                     xpEarned: xp,
                     language: currentLang,
-                    // Full answer history for research
+                    // Full research data
                     answerHistory: researchStats.answerHistory,
-                    moduleStats: researchStats.moduleStats
+                    moduleStats: researchStats.moduleStats,
+                    levelAttempts: researchStats.levelAttempts || [],
+                    dailyStats: researchStats.dailyStats,
+                    // Summary stats
+                    uniqueModules: Object.keys(researchStats.moduleStats || {}).length,
+                    uniqueLevels: Object.values(researchStats.moduleStats || {}).reduce((sum, m) => sum + Object.keys(m.levels || {}).length, 0),
+                    totalLevelAttempts: (researchStats.levelAttempts || []).length,
+                    passedLevels: (researchStats.levelAttempts || []).filter(a => a.passed).length,
+                    failedLevels: (researchStats.levelAttempts || []).filter(a => !a.passed).length
                 };
 
                 const updatedSessions = [...savedSessions, sessionData];
