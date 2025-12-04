@@ -1011,18 +1011,18 @@
             };
 
             // === SESSION MANAGEMENT ===
-            // Demo sessions with Kenyan names for presentation (test users)
+            // Demo sessions with Kenyan names for presentation (test users) - 5 min test = 300000ms
             const DEMO_SESSIONS = [
-                { id: Date.now() - 86400000 * 9, name: 'Juma Ochieng_test', totalQuestions: 21, correctAnswers: 18, accuracy: 86, duration: 118000, avgResponseTimeMs: 4200, language: 'sw' },
-                { id: Date.now() - 86400000 * 8, name: 'Amina Wanjiku_test', totalQuestions: 28, correctAnswers: 22, accuracy: 79, duration: 120000, avgResponseTimeMs: 3800, language: 'sw' },
-                { id: Date.now() - 86400000 * 7, name: 'Baraka Mwangi_test', totalQuestions: 14, correctAnswers: 12, accuracy: 86, duration: 95000, avgResponseTimeMs: 5100, language: 'sw' },
-                { id: Date.now() - 86400000 * 6, name: 'Fatuma Akinyi_test', totalQuestions: 35, correctAnswers: 31, accuracy: 89, duration: 120000, avgResponseTimeMs: 3200, language: 'sw' },
-                { id: Date.now() - 86400000 * 5, name: 'Hassan Kipchoge_test', totalQuestions: 21, correctAnswers: 15, accuracy: 71, duration: 112000, avgResponseTimeMs: 4800, language: 'sw' },
-                { id: Date.now() - 86400000 * 4, name: 'Zawadi Mutua_test', totalQuestions: 28, correctAnswers: 25, accuracy: 89, duration: 120000, avgResponseTimeMs: 3500, language: 'sw' },
-                { id: Date.now() - 86400000 * 3, name: 'Kiprop Otieno_test', totalQuestions: 17, correctAnswers: 14, accuracy: 82, duration: 98000, avgResponseTimeMs: 4400, language: 'sw' },
-                { id: Date.now() - 86400000 * 2, name: 'Neema Kamau_test', totalQuestions: 42, correctAnswers: 38, accuracy: 90, duration: 120000, avgResponseTimeMs: 2900, language: 'sw' },
-                { id: Date.now() - 86400000, name: 'Salim Njoroge_test', totalQuestions: 25, correctAnswers: 19, accuracy: 76, duration: 115000, avgResponseTimeMs: 4100, language: 'sw' },
-                { id: Date.now() - 3600000, name: 'Wambui Karanja_test', totalQuestions: 31, correctAnswers: 27, accuracy: 87, duration: 120000, avgResponseTimeMs: 3400, language: 'sw' }
+                { id: Date.now() - 86400000 * 9, name: 'Juma Ochieng_test', totalQuestions: 21, correctAnswers: 18, accuracy: 86, duration: 295000, avgResponseTimeMs: 4200, language: 'sw', uniqueModules: 2, uniqueLevels: 3, totalLevelAttempts: 4, passedLevels: 3, failedLevels: 1 },
+                { id: Date.now() - 86400000 * 8, name: 'Amina Wanjiku_test', totalQuestions: 28, correctAnswers: 22, accuracy: 79, duration: 300000, avgResponseTimeMs: 3800, language: 'sw', uniqueModules: 3, uniqueLevels: 4, totalLevelAttempts: 5, passedLevels: 3, failedLevels: 2 },
+                { id: Date.now() - 86400000 * 7, name: 'Baraka Mwangi_test', totalQuestions: 14, correctAnswers: 12, accuracy: 86, duration: 245000, avgResponseTimeMs: 5100, language: 'sw', uniqueModules: 1, uniqueLevels: 2, totalLevelAttempts: 2, passedLevels: 2, failedLevels: 0 },
+                { id: Date.now() - 86400000 * 6, name: 'Fatuma Akinyi_test', totalQuestions: 35, correctAnswers: 31, accuracy: 89, duration: 300000, avgResponseTimeMs: 3200, language: 'sw', uniqueModules: 3, uniqueLevels: 5, totalLevelAttempts: 6, passedLevels: 5, failedLevels: 1 },
+                { id: Date.now() - 86400000 * 5, name: 'Hassan Kipchoge_test', totalQuestions: 21, correctAnswers: 15, accuracy: 71, duration: 280000, avgResponseTimeMs: 4800, language: 'sw', uniqueModules: 2, uniqueLevels: 3, totalLevelAttempts: 5, passedLevels: 2, failedLevels: 3 },
+                { id: Date.now() - 86400000 * 4, name: 'Zawadi Mutua_test', totalQuestions: 28, correctAnswers: 25, accuracy: 89, duration: 300000, avgResponseTimeMs: 3500, language: 'sw', uniqueModules: 2, uniqueLevels: 4, totalLevelAttempts: 4, passedLevels: 4, failedLevels: 0 },
+                { id: Date.now() - 86400000 * 3, name: 'Kiprop Otieno_test', totalQuestions: 17, correctAnswers: 14, accuracy: 82, duration: 265000, avgResponseTimeMs: 4400, language: 'sw', uniqueModules: 2, uniqueLevels: 2, totalLevelAttempts: 3, passedLevels: 2, failedLevels: 1 },
+                { id: Date.now() - 86400000 * 2, name: 'Neema Kamau_test', totalQuestions: 42, correctAnswers: 38, accuracy: 90, duration: 300000, avgResponseTimeMs: 2900, language: 'sw', uniqueModules: 4, uniqueLevels: 6, totalLevelAttempts: 7, passedLevels: 6, failedLevels: 1 },
+                { id: Date.now() - 86400000, name: 'Salim Njoroge_test', totalQuestions: 25, correctAnswers: 19, accuracy: 76, duration: 290000, avgResponseTimeMs: 4100, language: 'sw', uniqueModules: 2, uniqueLevels: 3, totalLevelAttempts: 5, passedLevels: 3, failedLevels: 2 },
+                { id: Date.now() - 3600000, name: 'Wambui Karanja_test', totalQuestions: 31, correctAnswers: 27, accuracy: 87, duration: 300000, avgResponseTimeMs: 3400, language: 'sw', uniqueModules: 3, uniqueLevels: 4, totalLevelAttempts: 5, passedLevels: 4, failedLevels: 1 }
             ];
 
             const [savedSessions, setSavedSessions] = useState(() => {
@@ -3013,12 +3013,12 @@
                                     </div>
                                 </div>
 
-                                {/* End Test Button */}
+                                {/* End Test Button - BIG */}
                                 <button
                                     onClick={handleEndTest}
-                                    className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg font-bold text-sm flex items-center gap-1"
+                                    className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl font-bold text-base flex items-center gap-2 shadow-lg animate-pulse"
                                 >
-                                    🛑 {currentLang === 'sw' ? 'Maliza' : 'End'}
+                                    🛑 {currentLang === 'sw' ? 'MALIZA TEST' : 'END TEST'}
                                 </button>
                             </div>
                         </div>
