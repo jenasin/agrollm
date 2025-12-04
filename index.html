@@ -1935,127 +1935,127 @@
                 );
             };
 
-            // Level names for each module
+            // Level names with icons for each module
             const LEVEL_NAMES = {
                 1: [
-                    { en: 'Soil Types', sw: 'Aina za Udongo' },
-                    { en: 'pH & Acidity', sw: 'pH na Asidi' },
-                    { en: 'NPK Nutrients', sw: 'Virutubisho NPK' },
-                    { en: 'Composting', sw: 'Kutengeneza Mboji' },
-                    { en: 'Crop Rotation', sw: 'Kubadilisha Mazao' },
-                    { en: 'Mulching', sw: 'Kufunika Udongo' },
-                    { en: 'Erosion Control', sw: 'Kudhibiti Mmomonyoko' },
-                    { en: 'Soil Testing', sw: 'Kupima Udongo' },
-                    { en: 'Organic Matter', sw: 'Vitu vya Kikaboni' },
-                    { en: 'Soil Health', sw: 'Afya ya Udongo' }
+                    { icon: '🏔️', en: 'Soil Types', sw: 'Aina za Udongo' },
+                    { icon: '🧪', en: 'pH & Acidity', sw: 'pH na Asidi' },
+                    { icon: '🧬', en: 'NPK Nutrients', sw: 'Virutubisho NPK' },
+                    { icon: '♻️', en: 'Composting', sw: 'Kutengeneza Mboji' },
+                    { icon: '🔄', en: 'Crop Rotation', sw: 'Kubadilisha Mazao' },
+                    { icon: '🍂', en: 'Mulching', sw: 'Kufunika Udongo' },
+                    { icon: '🛡️', en: 'Erosion Control', sw: 'Kudhibiti Mmomonyoko' },
+                    { icon: '📊', en: 'Soil Testing', sw: 'Kupima Udongo' },
+                    { icon: '🌿', en: 'Organic Matter', sw: 'Vitu vya Kikaboni' },
+                    { icon: '💚', en: 'Soil Health', sw: 'Afya ya Udongo' }
                 ],
                 2: [
-                    { en: 'Common Pests', sw: 'Wadudu wa Kawaida' },
-                    { en: 'Plant Diseases', sw: 'Magonjwa ya Mimea' },
-                    { en: 'Natural Remedies', sw: 'Dawa za Asili' },
-                    { en: 'Pesticides Safety', sw: 'Usalama wa Dawa' },
-                    { en: 'Beneficial Insects', sw: 'Wadudu Wenye Faida' },
-                    { en: 'Weed Control', sw: 'Kudhibiti Magugu' },
-                    { en: 'Disease Prevention', sw: 'Kuzuia Magonjwa' },
-                    { en: 'Integrated Pest Mgmt', sw: 'Usimamizi wa Wadudu' },
-                    { en: 'Storage Pests', sw: 'Wadudu wa Hifadhi' },
-                    { en: 'Crop Protection', sw: 'Ulinzi wa Mazao' }
+                    { icon: '🐛', en: 'Common Pests', sw: 'Wadudu wa Kawaida' },
+                    { icon: '🦠', en: 'Plant Diseases', sw: 'Magonjwa ya Mimea' },
+                    { icon: '🌿', en: 'Natural Remedies', sw: 'Dawa za Asili' },
+                    { icon: '⚠️', en: 'Pesticides Safety', sw: 'Usalama wa Dawa' },
+                    { icon: '🐝', en: 'Beneficial Insects', sw: 'Wadudu Wenye Faida' },
+                    { icon: '🌾', en: 'Weed Control', sw: 'Kudhibiti Magugu' },
+                    { icon: '💉', en: 'Disease Prevention', sw: 'Kuzuia Magonjwa' },
+                    { icon: '🎯', en: 'Integrated Pest Mgmt', sw: 'Usimamizi wa Wadudu' },
+                    { icon: '📦', en: 'Storage Pests', sw: 'Wadudu wa Hifadhi' },
+                    { icon: '🛡️', en: 'Crop Protection', sw: 'Ulinzi wa Mazao' }
                 ],
                 3: [
-                    { en: 'Harvest Timing', sw: 'Wakati wa Kuvuna' },
-                    { en: 'Harvest Methods', sw: 'Njia za Kuvuna' },
-                    { en: 'Post-Harvest', sw: 'Baada ya Mavuno' },
-                    { en: 'Storage Basics', sw: 'Misingi ya Hifadhi' },
-                    { en: 'Quality Grading', sw: 'Kupanga Ubora' },
-                    { en: 'Market Prices', sw: 'Bei za Soko' },
-                    { en: 'Selling Strategies', sw: 'Mikakati ya Kuuza' },
-                    { en: 'Value Addition', sw: 'Kuongeza Thamani' },
-                    { en: 'Cooperatives', sw: 'Vyama vya Ushirika' },
-                    { en: 'Export Markets', sw: 'Masoko ya Nje' }
+                    { icon: '⏰', en: 'Harvest Timing', sw: 'Wakati wa Kuvuna' },
+                    { icon: '🔪', en: 'Harvest Methods', sw: 'Njia za Kuvuna' },
+                    { icon: '📋', en: 'Post-Harvest', sw: 'Baada ya Mavuno' },
+                    { icon: '🏪', en: 'Storage Basics', sw: 'Misingi ya Hifadhi' },
+                    { icon: '⭐', en: 'Quality Grading', sw: 'Kupanga Ubora' },
+                    { icon: '💵', en: 'Market Prices', sw: 'Bei za Soko' },
+                    { icon: '📈', en: 'Selling Strategies', sw: 'Mikakati ya Kuuza' },
+                    { icon: '✨', en: 'Value Addition', sw: 'Kuongeza Thamani' },
+                    { icon: '🤝', en: 'Cooperatives', sw: 'Vyama vya Ushirika' },
+                    { icon: '🌍', en: 'Export Markets', sw: 'Masoko ya Nje' }
                 ],
                 4: [
-                    { en: 'Water Sources', sw: 'Vyanzo vya Maji' },
-                    { en: 'Drip Irrigation', sw: 'Umwagiliaji kwa Tone' },
-                    { en: 'Sprinkler Systems', sw: 'Mfumo wa Kunyunyizia' },
-                    { en: 'Flood Irrigation', sw: 'Umwagiliaji wa Mafuriko' },
-                    { en: 'Water Conservation', sw: 'Kuhifadhi Maji' },
-                    { en: 'Pump Systems', sw: 'Mifumo ya Pampu' },
-                    { en: 'Scheduling', sw: 'Ratiba ya Kumwagilia' },
-                    { en: 'Water Quality', sw: 'Ubora wa Maji' },
-                    { en: 'Rainwater Harvest', sw: 'Kuvuna Maji ya Mvua' },
-                    { en: 'Smart Irrigation', sw: 'Umwagiliaji wa Kisasa' }
+                    { icon: '🏞️', en: 'Water Sources', sw: 'Vyanzo vya Maji' },
+                    { icon: '💧', en: 'Drip Irrigation', sw: 'Umwagiliaji kwa Tone' },
+                    { icon: '🚿', en: 'Sprinkler Systems', sw: 'Mfumo wa Kunyunyizia' },
+                    { icon: '🌊', en: 'Flood Irrigation', sw: 'Umwagiliaji wa Mafuriko' },
+                    { icon: '💎', en: 'Water Conservation', sw: 'Kuhifadhi Maji' },
+                    { icon: '⚙️', en: 'Pump Systems', sw: 'Mifumo ya Pampu' },
+                    { icon: '📅', en: 'Scheduling', sw: 'Ratiba ya Kumwagilia' },
+                    { icon: '🔬', en: 'Water Quality', sw: 'Ubora wa Maji' },
+                    { icon: '🌧️', en: 'Rainwater Harvest', sw: 'Kuvuna Maji ya Mvua' },
+                    { icon: '📱', en: 'Smart Irrigation', sw: 'Umwagiliaji wa Kisasa' }
                 ],
                 5: [
-                    { en: 'Hand Tools', sw: 'Zana za Mkono' },
-                    { en: 'Plowing Equipment', sw: 'Vifaa vya Kulima' },
-                    { en: 'Planting Tools', sw: 'Zana za Kupanda' },
-                    { en: 'Sprayers', sw: 'Vinyunyizio' },
-                    { en: 'Tractors', sw: 'Trekta' },
-                    { en: 'Harvesters', sw: 'Mashine za Kuvuna' },
-                    { en: 'Processing Machines', sw: 'Mashine za Kusindika' },
-                    { en: 'Maintenance', sw: 'Matengenezo' },
-                    { en: 'Safety Equipment', sw: 'Vifaa vya Usalama' },
-                    { en: 'Modern Technology', sw: 'Teknolojia ya Kisasa' }
+                    { icon: '🔧', en: 'Hand Tools', sw: 'Zana za Mkono' },
+                    { icon: '🪓', en: 'Plowing Equipment', sw: 'Vifaa vya Kulima' },
+                    { icon: '🌱', en: 'Planting Tools', sw: 'Zana za Kupanda' },
+                    { icon: '💨', en: 'Sprayers', sw: 'Vinyunyizio' },
+                    { icon: '🚜', en: 'Tractors', sw: 'Trekta' },
+                    { icon: '🌾', en: 'Harvesters', sw: 'Mashine za Kuvuna' },
+                    { icon: '🏭', en: 'Processing Machines', sw: 'Mashine za Kusindika' },
+                    { icon: '🔩', en: 'Maintenance', sw: 'Matengenezo' },
+                    { icon: '🦺', en: 'Safety Equipment', sw: 'Vifaa vya Usalama' },
+                    { icon: '🤖', en: 'Modern Technology', sw: 'Teknolojia ya Kisasa' }
                 ],
                 6: [
-                    { en: 'Biodiversity', sw: 'Bioanuwai' },
-                    { en: 'Organic Farming', sw: 'Kilimo hai' },
-                    { en: 'Soil Conservation', sw: 'Uhifadhi wa Udongo' },
-                    { en: 'Agroforestry', sw: 'Kilimo Msitu' },
-                    { en: 'Climate Smart', sw: 'Kilimo na Hali ya Hewa' },
-                    { en: 'Pollinators', sw: 'Wachavushaji' },
-                    { en: 'Natural Cycles', sw: 'Mizunguko ya Asili' },
-                    { en: 'Waste Management', sw: 'Usimamizi wa Taka' },
-                    { en: 'Green Energy', sw: 'Nishati ya Kijani' },
-                    { en: 'Sustainability', sw: 'Uendelevu' }
+                    { icon: '🦋', en: 'Biodiversity', sw: 'Bioanuwai' },
+                    { icon: '🌿', en: 'Organic Farming', sw: 'Kilimo hai' },
+                    { icon: '🏔️', en: 'Soil Conservation', sw: 'Uhifadhi wa Udongo' },
+                    { icon: '🌳', en: 'Agroforestry', sw: 'Kilimo Msitu' },
+                    { icon: '🌡️', en: 'Climate Smart', sw: 'Kilimo na Hali ya Hewa' },
+                    { icon: '🐝', en: 'Pollinators', sw: 'Wachavushaji' },
+                    { icon: '🔄', en: 'Natural Cycles', sw: 'Mizunguko ya Asili' },
+                    { icon: '🗑️', en: 'Waste Management', sw: 'Usimamizi wa Taka' },
+                    { icon: '⚡', en: 'Green Energy', sw: 'Nishati ya Kijani' },
+                    { icon: '♻️', en: 'Sustainability', sw: 'Uendelevu' }
                 ],
                 7: [
-                    { en: 'Cattle Basics', sw: 'Misingi ya Ng\'ombe' },
-                    { en: 'Poultry', sw: 'Kuku' },
-                    { en: 'Goats & Sheep', sw: 'Mbuzi na Kondoo' },
-                    { en: 'Pig Farming', sw: 'Ufugaji wa Nguruwe' },
-                    { en: 'Animal Feed', sw: 'Chakula cha Mifugo' },
-                    { en: 'Animal Health', sw: 'Afya ya Mifugo' },
-                    { en: 'Breeding', sw: 'Uzalishaji' },
-                    { en: 'Housing', sw: 'Makazi ya Mifugo' },
-                    { en: 'Dairy Production', sw: 'Uzalishaji wa Maziwa' },
-                    { en: 'Mixed Farming', sw: 'Kilimo Mseto' }
+                    { icon: '🐄', en: 'Cattle Basics', sw: 'Misingi ya Ng\'ombe' },
+                    { icon: '🐔', en: 'Poultry', sw: 'Kuku' },
+                    { icon: '🐐', en: 'Goats & Sheep', sw: 'Mbuzi na Kondoo' },
+                    { icon: '🐷', en: 'Pig Farming', sw: 'Ufugaji wa Nguruwe' },
+                    { icon: '🌾', en: 'Animal Feed', sw: 'Chakula cha Mifugo' },
+                    { icon: '💊', en: 'Animal Health', sw: 'Afya ya Mifugo' },
+                    { icon: '🧬', en: 'Breeding', sw: 'Uzalishaji' },
+                    { icon: '🏠', en: 'Housing', sw: 'Makazi ya Mifugo' },
+                    { icon: '🥛', en: 'Dairy Production', sw: 'Uzalishaji wa Maziwa' },
+                    { icon: '🔀', en: 'Mixed Farming', sw: 'Kilimo Mseto' }
                 ],
                 8: [
-                    { en: 'Seasons', sw: 'Misimu' },
-                    { en: 'Rainfall Patterns', sw: 'Mifumo ya Mvua' },
-                    { en: 'Temperature', sw: 'Joto' },
-                    { en: 'Drought', sw: 'Ukame' },
-                    { en: 'Floods', sw: 'Mafuriko' },
-                    { en: 'Frost Protection', sw: 'Kinga ya Baridi' },
-                    { en: 'Weather Forecast', sw: 'Utabiri wa Hewa' },
-                    { en: 'Climate Change', sw: 'Mabadiliko ya Hali ya Hewa' },
-                    { en: 'Planting Calendar', sw: 'Kalenda ya Kupanda' },
-                    { en: 'Risk Management', sw: 'Usimamizi wa Hatari' }
+                    { icon: '🗓️', en: 'Seasons', sw: 'Misimu' },
+                    { icon: '🌧️', en: 'Rainfall Patterns', sw: 'Mifumo ya Mvua' },
+                    { icon: '🌡️', en: 'Temperature', sw: 'Joto' },
+                    { icon: '☀️', en: 'Drought', sw: 'Ukame' },
+                    { icon: '🌊', en: 'Floods', sw: 'Mafuriko' },
+                    { icon: '❄️', en: 'Frost Protection', sw: 'Kinga ya Baridi' },
+                    { icon: '📺', en: 'Weather Forecast', sw: 'Utabiri wa Hewa' },
+                    { icon: '🌍', en: 'Climate Change', sw: 'Mabadiliko ya Hali ya Hewa' },
+                    { icon: '📅', en: 'Planting Calendar', sw: 'Kalenda ya Kupanda' },
+                    { icon: '⚠️', en: 'Risk Management', sw: 'Usimamizi wa Hatari' }
                 ],
                 9: [
-                    { en: 'Business Planning', sw: 'Kupanga Biashara' },
-                    { en: 'Budgeting', sw: 'Bajeti' },
-                    { en: 'Record Keeping', sw: 'Kuweka Rekodi' },
-                    { en: 'Farm Loans', sw: 'Mikopo ya Kilimo' },
-                    { en: 'Insurance', sw: 'Bima' },
-                    { en: 'Marketing', sw: 'Masoko' },
-                    { en: 'Pricing', sw: 'Kuweka Bei' },
-                    { en: 'Profit & Loss', sw: 'Faida na Hasara' },
-                    { en: 'Savings', sw: 'Akiba' },
-                    { en: 'Farm Growth', sw: 'Kukuza Shamba' }
+                    { icon: '📝', en: 'Business Planning', sw: 'Kupanga Biashara' },
+                    { icon: '💰', en: 'Budgeting', sw: 'Bajeti' },
+                    { icon: '📒', en: 'Record Keeping', sw: 'Kuweka Rekodi' },
+                    { icon: '🏦', en: 'Farm Loans', sw: 'Mikopo ya Kilimo' },
+                    { icon: '🛡️', en: 'Insurance', sw: 'Bima' },
+                    { icon: '📢', en: 'Marketing', sw: 'Masoko' },
+                    { icon: '🏷️', en: 'Pricing', sw: 'Kuweka Bei' },
+                    { icon: '📊', en: 'Profit & Loss', sw: 'Faida na Hasara' },
+                    { icon: '🐷', en: 'Savings', sw: 'Akiba' },
+                    { icon: '📈', en: 'Farm Growth', sw: 'Kukuza Shamba' }
                 ],
                 10: [
-                    { en: 'Digital Tools', sw: 'Zana za Kidijitali' },
-                    { en: 'Mobile Apps', sw: 'Programu za Simu' },
-                    { en: 'GPS Farming', sw: 'Kilimo kwa GPS' },
-                    { en: 'Drones', sw: 'Ndege zisizo na Rubani' },
-                    { en: 'Sensors', sw: 'Vihisi' },
-                    { en: 'Greenhouse Tech', sw: 'Teknolojia ya Greenhaus' },
-                    { en: 'Hydroponics', sw: 'Kilimo cha Maji' },
-                    { en: 'Biotechnology', sw: 'Bayoteknolojia' },
-                    { en: 'Solar Power', sw: 'Nguvu ya Jua' },
-                    { en: 'Future Farming', sw: 'Kilimo cha Siku Zijazo' }
+                    { icon: '💻', en: 'Digital Tools', sw: 'Zana za Kidijitali' },
+                    { icon: '📱', en: 'Mobile Apps', sw: 'Programu za Simu' },
+                    { icon: '📍', en: 'GPS Farming', sw: 'Kilimo kwa GPS' },
+                    { icon: '🚁', en: 'Drones', sw: 'Ndege zisizo na Rubani' },
+                    { icon: '📡', en: 'Sensors', sw: 'Vihisi' },
+                    { icon: '🏡', en: 'Greenhouse Tech', sw: 'Teknolojia ya Greenhaus' },
+                    { icon: '🌊', en: 'Hydroponics', sw: 'Kilimo cha Maji' },
+                    { icon: '🧬', en: 'Biotechnology', sw: 'Bayoteknolojia' },
+                    { icon: '☀️', en: 'Solar Power', sw: 'Nguvu ya Jua' },
+                    { icon: '🚀', en: 'Future Farming', sw: 'Kilimo cha Siku Zijazo' }
                 ]
             };
 
@@ -2101,8 +2101,9 @@
                                 const stars = levelProgress[levelKey] || 0;
                                 const prevLevelKey = `${module.id}-${levelNum - 1}`;
                                 const isUnlocked = levelNum === 1 || (levelProgress[prevLevelKey] || 0) >= 1;
-                                const levelNameObj = LEVEL_NAMES[module.id]?.[i];
-                                const levelName = levelNameObj ? (currentLang === 'sw' ? levelNameObj.sw : levelNameObj.en) : `Level ${levelNum}`;
+                                const levelData = LEVEL_NAMES[module.id]?.[i];
+                                const levelName = levelData ? (currentLang === 'sw' ? levelData.sw : levelData.en) : `Level ${levelNum}`;
+                                const levelIcon = levelData?.icon || module.icon;
 
                                 return (
                                     <button
@@ -2115,13 +2116,13 @@
                                                 : 'bg-gray-100 opacity-60'
                                         }`}
                                     >
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-3">
                                             {isUnlocked ? (
-                                                <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${module.color} flex items-center justify-center text-white font-bold text-xl shadow-md`}>
-                                                    {levelNum}
+                                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${module.color} flex items-center justify-center text-2xl shadow-md`}>
+                                                    {levelIcon}
                                                 </div>
                                             ) : (
-                                                <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-2xl">
+                                                <div className="w-14 h-14 rounded-2xl bg-gray-300 flex items-center justify-center text-2xl">
                                                     🔒
                                                 </div>
                                             )}
@@ -2130,7 +2131,7 @@
                                                     {levelName}
                                                 </div>
                                                 <div className="text-xs text-gray-500">
-                                                    {stars > 0 ? (stars === 3 ? '🏆 Perfect!' : `${stars}/3 ⭐`) : `${currentLang === 'sw' ? 'Kiwango' : 'Level'} ${levelNum}`}
+                                                    {currentLang === 'sw' ? 'Kiwango' : 'Level'} {levelNum} {stars > 0 && `• ${stars}/3 ⭐`}
                                                 </div>
                                             </div>
                                         </div>
