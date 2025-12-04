@@ -2517,9 +2517,16 @@
             const ResultsScreen = () => {
                 const questions = getQuestionsForLevel(selectedModule, selectedLevel);
                 const percentage = Math.round((score / questions.length) * 100);
-                const stars = percentage >= 90 ? 3 : percentage >= 70 ? 2 : percentage >= 50 ? 1 : 0;
+                const stars = percentage >= 90 ? 3 : percentage >= 80 ? 2 : percentage >= 60 ? 1 : 0;
                 const module = modules.find(m => m.id === selectedModule);
-                const isWin = stars >= 1;
+                // Need 80% to pass and move to next level
+                const isWin = percentage >= 80;
+
+                // Calculate elapsed time
+                const elapsedSeconds = Math.floor((Date.now() - sessionStartTimeRef.current) / 1000);
+                const elapsedMins = Math.floor(elapsedSeconds / 60);
+                const elapsedSecs = elapsedSeconds % 60;
+                const elapsedTimeStr = `${elapsedMins}:${elapsedSecs.toString().padStart(2, '0')}`;
 
                 // Přejít na další level
                 const goToNextLevel = () => {
@@ -2541,9 +2548,14 @@
                                 {stars >= 2 ? '🏆' : stars === 1 ? '🎉' : '💪'}
                             </div>
 
-                            <h2 className="text-3xl font-bold text-gray-800 mb-4">
-                                {stars >= 2 ? t('excellent') : stars === 1 ? t('goodJob') : t('tryAgain')}
+                            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+                                {isWin ? (stars >= 2 ? t('excellent') : t('goodJob')) : t('tryAgain')}
                             </h2>
+                            {!isWin && (
+                                <p className="text-red-500 font-bold mb-2">
+                                    {currentLang === 'sw' ? 'Unahitaji 80% kupita!' : 'Need 80% to pass!'}
+                                </p>
+                            )}
 
                             <div className="flex justify-center gap-4 mb-6">
                                 {[1,2,3].map(s => (
@@ -2558,14 +2570,18 @@
                             </div>
 
                             <div className="bg-white/80 backdrop-blur rounded-2xl p-5 shadow-lg">
-                                <div className="grid grid-cols-2 gap-8">
+                                <div className="grid grid-cols-3 gap-4">
                                     <div className="text-center">
-                                        <div className="text-4xl font-bold text-green-600">{score}/{questions.length}</div>
+                                        <div className="text-3xl font-bold text-green-600">{score}/{questions.length}</div>
                                         <div className="text-sm text-gray-500 mt-1">{t('correct')}</div>
                                     </div>
                                     <div className="text-center">
-                                        <div className="text-4xl font-bold text-yellow-600">+{xp + (stars * 5)}</div>
-                                        <div className="text-sm text-gray-500 mt-1">XP</div>
+                                        <div className={`text-3xl font-bold ${percentage >= 80 ? 'text-green-600' : 'text-red-500'}`}>{percentage}%</div>
+                                        <div className="text-sm text-gray-500 mt-1">{currentLang === 'sw' ? 'Usahihi' : 'Accuracy'}</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-3xl font-bold text-blue-600">{elapsedTimeStr}</div>
+                                        <div className="text-sm text-gray-500 mt-1">{currentLang === 'sw' ? 'Muda' : 'Time'}</div>
                                     </div>
                                 </div>
                             </div>
@@ -2612,9 +2628,11 @@
                         <div className="p-4 bg-white border-t shadow-lg space-y-2">
                             <button
                                 onClick={goToNextLevel}
-                                className={`w-full py-5 rounded-2xl font-bold text-xl text-white shadow-lg bg-gradient-to-r ${module.color}`}
+                                className={`w-full py-5 rounded-2xl font-bold text-xl text-white shadow-lg bg-gradient-to-r ${isWin ? module.color : 'from-red-500 to-red-600'}`}
                             >
-                                {isWin ? (selectedLevel < module.levels ? `🚀 ${t('nextLevel')}` : `🔄 ${t('playAgain')}`) : `🔄 ${t('tryAgain')}`}
+                                {isWin
+                                    ? (selectedLevel < module.levels ? `🚀 ${t('nextLevel')}` : `🔄 ${t('playAgain')}`)
+                                    : `🔄 ${currentLang === 'sw' ? 'Rudia Kiwango' : 'Repeat Level'}`}
                             </button>
                             <button
                                 onClick={() => setScreen('levels')}
