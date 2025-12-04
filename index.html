@@ -529,7 +529,7 @@
                                 <span className="text-2xl">⏱️</span>
                                 <div>
                                     <div className="font-bold text-sm">{timeUp ? '⏰ TIME UP!' : 'Session Time'}</div>
-                                    <div className="text-[10px] opacity-80">30 min research</div>
+                                    <div className="text-[10px] opacity-80">3 min test</div>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -2136,7 +2136,6 @@
                                 const isUnlocked = levelNum === 1 || (levelProgress[prevLevelKey] || 0) >= 1;
                                 const levelData = LEVEL_NAMES[module.id]?.[i];
                                 const levelName = levelData ? (currentLang === 'sw' ? levelData.sw : levelData.en) : `Level ${levelNum}`;
-                                const levelIcon = levelData?.icon || module.icon;
 
                                 return (
                                     <button
@@ -2151,8 +2150,8 @@
                                     >
                                         <div className="flex items-center gap-3">
                                             {isUnlocked ? (
-                                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${module.color} flex items-center justify-center text-2xl shadow-md`}>
-                                                    {levelIcon}
+                                                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${module.color} flex items-center justify-center text-2xl font-bold text-white shadow-md`}>
+                                                    {levelNum}
                                                 </div>
                                             ) : (
                                                 <div className="w-14 h-14 rounded-2xl bg-gray-300 flex items-center justify-center text-2xl">
