@@ -1733,13 +1733,15 @@
                                                 if (!moduleStats || moduleStats.total === 0) return null;
 
                                                 const moduleAccuracy = (moduleStats.correct / moduleStats.total * 100).toFixed(0);
+                                                const levelCount = moduleStats.levels ? Object.keys(moduleStats.levels).length : 0;
+
                                                 return (
                                                     <div key={module.id} className="flex items-center gap-3">
                                                         <span className="text-2xl">{module.icon}</span>
                                                         <div className="flex-1">
                                                             <div className="flex justify-between items-center mb-1">
                                                                 <span className="font-medium text-sm">{lt(module.name)}</span>
-                                                                <span className="text-sm text-gray-500">{moduleStats.total} {t('questionsAnswered').toLowerCase()}</span>
+                                                                <span className="text-sm text-gray-500">{moduleStats.total}Q • {levelCount} {currentLang === 'sw' ? 'viwango' : 'levels'}</span>
                                                             </div>
                                                             <div className="bg-gray-200 rounded-full h-2 overflow-hidden">
                                                                 <div
@@ -1751,6 +1753,39 @@
                                                         </div>
                                                     </div>
                                                 );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Level Repetitions - Detailed Stats */}
+                                    <div className="bg-white rounded-2xl p-4 shadow-lg">
+                                        <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                            <span>🔄</span> {currentLang === 'sw' ? 'Marudio ya Viwango' : 'Level Details'}
+                                        </h3>
+                                        <div className="space-y-2 max-h-64 overflow-y-auto">
+                                            {modules.map(module => {
+                                                const moduleStats = researchStats.moduleStats[`module_${module.id}`];
+                                                if (!moduleStats?.levels) return null;
+
+                                                return Object.entries(moduleStats.levels).map(([levelKey, levelData]) => {
+                                                    const levelNum = levelKey.split('_')[1];
+                                                    const levelAccuracy = levelData.total > 0 ? Math.round((levelData.correct / levelData.total) * 100) : 0;
+
+                                                    return (
+                                                        <div key={`${module.id}-${levelKey}`} className="flex items-center justify-between bg-gray-50 rounded-lg p-2 text-sm">
+                                                            <div className="flex items-center gap-2">
+                                                                <span>{module.icon}</span>
+                                                                <span className="font-medium">{currentLang === 'sw' ? 'Kiwango' : 'Lvl'} {levelNum}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-3 text-xs">
+                                                                <span className="text-gray-500">{levelData.total}x</span>
+                                                                <span className={`font-bold ${levelAccuracy >= 70 ? 'text-green-600' : levelAccuracy >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                                                    {levelAccuracy}%
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                });
                                             })}
                                         </div>
                                     </div>
@@ -2820,14 +2855,98 @@
                 return <TestEndScreen />;
             }
 
-            switch (screen) {
-                case 'home': return <HomeScreen />;
-                case 'levels': return <LevelsScreen />;
-                case 'quiz': return <QuizScreen />;
-                case 'results': return <ResultsScreen />;
-                case 'gameover': return <GameOverScreen />;
-                default: return <HomeScreen />;
-            }
+            // Moderator Bar Component - sticky at top
+            const ModeratorBar = () => {
+                const elapsed = Math.floor((Date.now() - sessionStartTimeRef.current) / 1000);
+                const [time, setTime] = useState(elapsed);
+
+                useEffect(() => {
+                    const timer = setInterval(() => {
+                        setTime(Math.floor((Date.now() - sessionStartTimeRef.current) / 1000));
+                    }, 1000);
+                    return () => clearInterval(timer);
+                }, []);
+
+                const mins = Math.floor(time / 60);
+                const secs = time % 60;
+                const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+                const isTimeUp = time >= SESSION_DURATION;
+
+                // Calculate stats
+                const totalQ = researchStats.totalQuestions;
+                const correctQ = researchStats.correctAnswers;
+                const accuracy = totalQ > 0 ? Math.round((correctQ / totalQ) * 100) : 0;
+
+                // Count unique levels played
+                const levelsPlayed = Object.keys(researchStats.moduleStats || {}).reduce((acc, key) => {
+                    const mod = researchStats.moduleStats[key];
+                    if (mod.levels) {
+                        return acc + Object.keys(mod.levels).length;
+                    }
+                    return acc + 1;
+                }, 0);
+
+                return (
+                    <div className="fixed top-0 left-0 right-0 bg-gradient-to-r from-gray-800 to-gray-900 text-white px-3 py-2 z-50 shadow-lg">
+                        <div className="flex items-center justify-between gap-2">
+                            {/* Timer */}
+                            <div className={`flex items-center gap-1 px-2 py-1 rounded-lg ${isTimeUp ? 'bg-red-500' : 'bg-green-600'}`}>
+                                <span>⏱️</span>
+                                <span className="font-mono font-bold">{timeStr}</span>
+                            </div>
+
+                            {/* Stats */}
+                            <div className="flex items-center gap-3 text-xs">
+                                <div className="flex items-center gap-1">
+                                    <span>📝</span>
+                                    <span className="font-bold">{totalQ}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span>✅</span>
+                                    <span className="font-bold text-green-400">{correctQ}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span>📊</span>
+                                    <span className={`font-bold ${accuracy >= 70 ? 'text-green-400' : accuracy >= 50 ? 'text-yellow-400' : 'text-red-400'}`}>{accuracy}%</span>
+                                </div>
+                            </div>
+
+                            {/* End Test Button */}
+                            <button
+                                onClick={() => {
+                                    endAndSaveSession();
+                                    setShowTestEndScreen(true);
+                                    setScreen('home');
+                                }}
+                                className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded-lg font-bold text-sm flex items-center gap-1"
+                            >
+                                🛑 {currentLang === 'sw' ? 'Maliza' : 'End'}
+                            </button>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Main content with moderator bar
+            const MainContent = () => {
+                switch (screen) {
+                    case 'home': return <HomeScreen />;
+                    case 'levels': return <LevelsScreen />;
+                    case 'quiz': return <QuizScreen />;
+                    case 'results': return <ResultsScreen />;
+                    case 'gameover': return <GameOverScreen />;
+                    default: return <HomeScreen />;
+                }
+            };
+
+            return (
+                <div>
+                    <ModeratorBar />
+                    <div className="pt-12">
+                        <MainContent />
+                    </div>
+                </div>
+            );
         }
 
         ReactDOM.createRoot(document.getElementById('root')).render(<App />);
