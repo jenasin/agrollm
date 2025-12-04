@@ -2859,12 +2859,12 @@
                                     <div className="bg-white rounded-2xl shadow-lg mb-4 overflow-hidden">
                                         <div className="bg-gray-100 p-3 flex justify-between items-center">
                                             <span className="font-bold">{selectedParticipant.name}</span>
-                                            <button onClick={() => setSelectedParticipant(null)} className="text-gray-500">✕</button>
+                                            <button onClick={() => setSelectedParticipant(null)} className="text-gray-500 text-xl">✕</button>
                                         </div>
-                                        <div className="p-4">
+                                        <div className="p-4 max-h-[60vh] overflow-y-auto">
                                             {/* Score */}
-                                            <div className={`text-center p-4 rounded-xl mb-3 ${selectedParticipant.accuracy >= 70 ? 'bg-green-100' : selectedParticipant.accuracy >= 50 ? 'bg-yellow-100' : 'bg-red-100'}`}>
-                                                <div className={`text-4xl font-bold ${selectedParticipant.accuracy >= 70 ? 'text-green-600' : selectedParticipant.accuracy >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
+                                            <div className={`text-center p-3 rounded-xl mb-3 ${selectedParticipant.accuracy >= 70 ? 'bg-green-100' : selectedParticipant.accuracy >= 50 ? 'bg-yellow-100' : 'bg-red-100'}`}>
+                                                <div className={`text-3xl font-bold ${selectedParticipant.accuracy >= 70 ? 'text-green-600' : selectedParticipant.accuracy >= 50 ? 'text-yellow-600' : 'text-red-600'}`}>
                                                     {selectedParticipant.accuracy}%
                                                 </div>
                                                 <div className="text-sm text-gray-600">{selectedParticipant.correctAnswers}/{selectedParticipant.totalQuestions} {currentLang === 'sw' ? 'sahihi' : 'correct'}</div>
@@ -2881,13 +2881,47 @@
                                                     <div className="text-xs text-gray-500">{currentLang === 'sw' ? 'moduli' : 'modules'}</div>
                                                 </div>
                                                 <div className="bg-gray-50 rounded-lg p-2">
-                                                    <div className="font-bold">{selectedParticipant.avgResponseTime > 1000 ? (selectedParticipant.avgResponseTime/1000).toFixed(1)+'s' : selectedParticipant.avgResponseTime+'ms'}</div>
-                                                    <div className="text-xs text-gray-500">{currentLang === 'sw' ? 'wastani' : 'avg'}</div>
+                                                    <div className="font-bold">{(selectedParticipant.levelAttempts || []).length}</div>
+                                                    <div className="text-xs text-gray-500">{currentLang === 'sw' ? 'pokusy' : 'attempts'}</div>
                                                 </div>
                                             </div>
 
-                                            {/* Module progress */}
-                                            <h4 className="font-bold text-sm mb-2">{currentLang === 'sw' ? 'Maendeleo kwa Moduli' : 'Module Progress'}</h4>
+                                            {/* Level attempts TABLE */}
+                                            {(selectedParticipant.levelAttempts || []).length > 0 && (
+                                                <div className="mb-3">
+                                                    <h4 className="font-bold text-sm mb-2">📋 {currentLang === 'sw' ? 'Majaribio ya Viwango' : 'Level Attempts'}</h4>
+                                                    <div className="bg-gray-50 rounded-lg overflow-hidden">
+                                                        <table className="w-full text-xs">
+                                                            <thead className="bg-gray-200">
+                                                                <tr>
+                                                                    <th className="p-2 text-left">{currentLang === 'sw' ? 'Moduli' : 'Module'}</th>
+                                                                    <th className="p-2 text-center">Lvl</th>
+                                                                    <th className="p-2 text-center">{currentLang === 'sw' ? 'Alama' : 'Score'}</th>
+                                                                    <th className="p-2 text-center">%</th>
+                                                                    <th className="p-2 text-center">{currentLang === 'sw' ? 'Hali' : 'Status'}</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-gray-200">
+                                                                {(selectedParticipant.levelAttempts || []).map((attempt, idx) => {
+                                                                    const moduleInfo = modules.find(m => m.id === attempt.moduleId);
+                                                                    return (
+                                                                        <tr key={idx} className={attempt.passed ? 'bg-green-50' : 'bg-red-50'}>
+                                                                            <td className="p-2">{moduleInfo?.icon || '📚'}</td>
+                                                                            <td className="p-2 text-center font-bold">{attempt.levelNum}</td>
+                                                                            <td className="p-2 text-center">{attempt.score}/{attempt.total}</td>
+                                                                            <td className="p-2 text-center font-bold">{attempt.percentage}%</td>
+                                                                            <td className="p-2 text-center">{attempt.passed ? '✅' : '❌'}</td>
+                                                                        </tr>
+                                                                    );
+                                                                })}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Module progress bars */}
+                                            <h4 className="font-bold text-sm mb-2">📊 {currentLang === 'sw' ? 'Maendeleo kwa Moduli' : 'Module Progress'}</h4>
                                             <div className="space-y-2">
                                                 {Object.entries(selectedParticipant.moduleStats || {}).map(([key, stats]) => {
                                                     const moduleId = parseInt(key.replace('module_', ''));
@@ -2897,7 +2931,7 @@
                                                         <div key={key} className="bg-gray-50 rounded-lg p-2">
                                                             <div className="flex justify-between items-center text-sm mb-1">
                                                                 <span>{moduleInfo?.icon || '📚'} {lt(moduleInfo?.name) || key}</span>
-                                                                <span className="font-bold">{modAcc}%</span>
+                                                                <span className="font-bold">{stats.correct}/{stats.total} ({modAcc}%)</span>
                                                             </div>
                                                             <div className="bg-gray-200 rounded-full h-2">
                                                                 <div className={`h-full rounded-full ${modAcc >= 70 ? 'bg-green-500' : modAcc >= 50 ? 'bg-yellow-500' : 'bg-red-500'}`}
