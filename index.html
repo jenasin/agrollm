@@ -483,18 +483,39 @@
                         console.error('Failed to parse research stats:', e);
                     }
                 }
+                // Demo data - pre-filled test results for demonstration
+                const now = Date.now();
+                const day1 = new Date(); day1.setDate(day1.getDate() - 2);
+                const day2 = new Date(); day2.setDate(day2.getDate() - 1);
+                const day3 = new Date();
+                const dateStr1 = day1.toISOString().split('T')[0];
+                const dateStr2 = day2.toISOString().split('T')[0];
+                const dateStr3 = day3.toISOString().split('T')[0];
+
                 return {
-                    startDate: Date.now(),
-                    totalQuestions: 0,
-                    correctAnswers: 0,
-                    incorrectAnswers: 0,
-                    totalResponseTimeMs: 0,
-                    totalSessionTimeMs: 0,
-                    sessions: [],
-                    answerHistory: [], // detailed log of all answers
-                    moduleStats: {}, // per-module statistics
-                    dailyStats: {}, // per-day statistics
-                    currentSessionStart: Date.now()
+                    startDate: day1.getTime(),
+                    totalQuestions: 45,
+                    correctAnswers: 38,
+                    incorrectAnswers: 7,
+                    totalResponseTimeMs: 180000, // avg 4s per question
+                    totalSessionTimeMs: 1800000, // 30 min total
+                    sessions: [
+                        { date: day1.getTime(), questions: 15, correct: 12, duration: 600000 },
+                        { date: day2.getTime(), questions: 18, correct: 16, duration: 720000 },
+                        { date: day3.getTime(), questions: 12, correct: 10, duration: 480000 }
+                    ],
+                    answerHistory: [], // will fill on actual use
+                    moduleStats: {
+                        'module_11': { total: 20, correct: 17, avgTime: 3800 }, // Cashew
+                        'module_12': { total: 15, correct: 13, avgTime: 4200 }, // Drought
+                        'module_1': { total: 10, correct: 8, avgTime: 4000 }    // Soil
+                    },
+                    dailyStats: {
+                        [dateStr1]: { total: 15, correct: 12 },
+                        [dateStr2]: { total: 18, correct: 16 },
+                        [dateStr3]: { total: 12, correct: 10 }
+                    },
+                    currentSessionStart: now
                 };
             });
 
