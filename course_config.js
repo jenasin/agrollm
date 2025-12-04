@@ -244,6 +244,48 @@ const COURSE_CONFIG = {
                 { en: 'Community Action', sw: 'Hatua za Jumuiya' },
                 { en: 'Future & Innovation', sw: 'Mustakabali na Ubunifu' }
             ]
+        },
+        {
+            id: 13,
+            name: { en: 'Maize Farming', sw: 'Kilimo cha Mahindi' },
+            icon: '🌽',
+            color: 'from-yellow-400 to-orange-500',
+            description: { en: 'Maize/corn cultivation', sw: 'Upanzi wa mahindi' },
+            levelNames: [
+                { en: 'Basics', sw: 'Misingi' },
+                { en: 'Care & Fertilizer', sw: 'Utunzaji na Mbolea' },
+                { en: 'Harvest & Storage', sw: 'Mavuno na Hifadhi' },
+                { en: 'Pests & Varieties', sw: 'Wadudu na Aina' },
+                { en: 'Processing', sw: 'Usindikaji' }
+            ]
+        },
+        {
+            id: 14,
+            name: { en: 'Tomato Farming', sw: 'Kilimo cha Nyanya' },
+            icon: '🍅',
+            color: 'from-red-400 to-red-600',
+            description: { en: 'Tomato cultivation', sw: 'Upanzi wa nyanya' },
+            levelNames: [
+                { en: 'Basics', sw: 'Misingi' },
+                { en: 'Diseases & Care', sw: 'Magonjwa na Utunzaji' },
+                { en: 'Harvest & Storage', sw: 'Mavuno na Hifadhi' },
+                { en: 'Processing', sw: 'Usindikaji' },
+                { en: 'Advanced', sw: 'Kiwango cha Juu' }
+            ]
+        },
+        {
+            id: 15,
+            name: { en: 'Bean Farming', sw: 'Kilimo cha Maharagwe' },
+            icon: '🫘',
+            color: 'from-amber-600 to-yellow-700',
+            description: { en: 'Bean cultivation', sw: 'Upanzi wa maharagwe' },
+            levelNames: [
+                { en: 'Basics', sw: 'Misingi' },
+                { en: 'Fertilizer & Pests', sw: 'Mbolea na Wadudu' },
+                { en: 'Harvest & Storage', sw: 'Mavuno na Hifadhi' },
+                { en: 'Nutrition & Varieties', sw: 'Lishe na Aina' },
+                { en: 'Markets', sw: 'Masoko' }
+            ]
         }
     ],
 

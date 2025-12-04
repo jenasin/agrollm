@@ -22,12 +22,21 @@
             }
         }
 
-        // Add specialized modules (cashew = 11, drought = 12)
+        // Add specialized modules
         if (window.cashewQuestions) {
             modules[11] = window.cashewQuestions;
         }
         if (window.droughtQuestions) {
             modules[12] = window.droughtQuestions;
+        }
+        if (window.maizeQuestions) {
+            modules[13] = window.maizeQuestions;
+        }
+        if (window.tomatoQuestions) {
+            modules[14] = window.tomatoQuestions;
+        }
+        if (window.beansQuestions) {
+            modules[15] = window.beansQuestions;
         }
 
         return modules;
@@ -139,6 +148,12 @@ function getQuestions(moduleId, levelNum) {
         key = `cashew_level${levelNum}`;
     } else if (moduleId === 12) {
         key = `drought_level${levelNum}`;
+    } else if (moduleId === 13) {
+        key = `maize_level${levelNum}`;
+    } else if (moduleId === 14) {
+        key = `tomato_level${levelNum}`;
+    } else if (moduleId === 15) {
+        key = `beans_level${levelNum}`;
     } else {
         key = `module${moduleId}_level${levelNum}`;
     }

@@ -32,8 +32,8 @@
             document.head.appendChild(script);
         }
 
-        // Load specialized modules (cashew and drought - Swahili only for now)
-        const specialModules = ['questions_cashew.js', 'questions_drought.js'];
+        // Load specialized modules (Swahili only for now)
+        const specialModules = ['questions_cashew.js', 'questions_drought.js', 'questions_maize.js', 'questions_tomato.js', 'questions_beans.js'];
         specialModules.forEach(file => {
             const script = document.createElement('script');
             script.src = 'questions/sw/' + file;
@@ -2134,6 +2134,27 @@
                     { icon: '🌡️', en: 'Climate Change', sw: 'Mabadiliko ya Hali ya Hewa' },
                     { icon: '🤝', en: 'Community Action', sw: 'Hatua za Jumuiya' },
                     { icon: '🚀', en: 'Future & Innovation', sw: 'Mustakabali na Ubunifu' }
+                ],
+                13: [
+                    { en: 'Basics', sw: 'Misingi' },
+                    { en: 'Care & Fertilizer', sw: 'Utunzaji na Mbolea' },
+                    { en: 'Harvest & Storage', sw: 'Mavuno na Hifadhi' },
+                    { en: 'Pests & Varieties', sw: 'Wadudu na Aina' },
+                    { en: 'Processing', sw: 'Usindikaji' }
+                ],
+                14: [
+                    { en: 'Basics', sw: 'Misingi' },
+                    { en: 'Diseases & Care', sw: 'Magonjwa na Utunzaji' },
+                    { en: 'Harvest & Storage', sw: 'Mavuno na Hifadhi' },
+                    { en: 'Processing', sw: 'Usindikaji' },
+                    { en: 'Advanced', sw: 'Kiwango cha Juu' }
+                ],
+                15: [
+                    { en: 'Basics', sw: 'Misingi' },
+                    { en: 'Fertilizer & Pests', sw: 'Mbolea na Wadudu' },
+                    { en: 'Harvest & Storage', sw: 'Mavuno na Hifadhi' },
+                    { en: 'Nutrition & Varieties', sw: 'Lishe na Aina' },
+                    { en: 'Markets', sw: 'Masoko' }
                 ]
             };
 
